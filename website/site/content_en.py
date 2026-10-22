@@ -4,7 +4,7 @@
 T = {
     "nav": {"index": "Home", "manifesto": "ZKI Manifesto", "compare": "Compare", "security": "Security",
             "cities": "For cities", "download": "Download", "about": "About"},
-    "nav_support": "Support", "nav_privacy": "Privacy", "nav_terms": "Terms of Use", "nav_node": "Run a node",
+    "nav_support": "Support", "nav_privacy": "Privacy", "nav_terms": "Terms of Use", "nav_node": "Run a node", "nav_source": "Source code",
     "footer_owner": "© 2026 Nevod · Kolpakov Andrey",
 }
 
@@ -257,7 +257,7 @@ NODE = """
 <li>In the panel you set the node's name and admission mode (open, by invitation, or with administrator approval), and optionally join the node to the Nevod network.</li>
 <li>Phones connect to the node by its address or an invitation QR code.</li>
 </ol>
-<p class="note">A public release of the node software is in preparation. For now, access is on request at <a href="mailto:support@nevod.network">support@nevod.network</a>. Setting up a node with the help of an AI assistant is also in development.</p>
+<p class="note">The node software is open source: <a href="https://github.com/avk0978/nevod-messenger">github.com/avk0978/nevod-messenger</a> (GNU AGPL-3.0). Files for running a node in Docker are in the <code>installer/docker</code> folder of the repository. Setting up a node with the help of an AI assistant is also in development.</p>
 </div></main>
 """
 
@@ -268,6 +268,8 @@ ABOUT = """
 <h2>Author</h2>
 <p><b>Kolpakov Andrey</b> — author of the ZKI manifesto and developer of Nevod.</p>
 <!--BIO-->
+<h2>Source code</h2>
+<p>Nevod's source code is open — the node, the iOS app and the protocol specifications: <a href="https://github.com/avk0978/nevod-messenger">github.com/avk0978/nevod-messenger</a>. License: GNU AGPL-3.0. Anyone can check that the app and the node work exactly as described on this site.</p>
 <h2>Contacts</h2>
 <ul>
 <li>General questions and support: <a href="mailto:support@nevod.network">support@nevod.network</a></li>

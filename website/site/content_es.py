@@ -3,7 +3,7 @@
 T = {
     "nav": {"index": "Inicio", "manifesto": "Manifiesto ZKI", "compare": "Comparación", "security": "Seguridad",
             "cities": "Para ciudades", "download": "Descargar", "about": "Sobre el proyecto"},
-    "nav_support": "Soporte", "nav_privacy": "Privacidad", "nav_terms": "Condiciones de uso", "nav_node": "Tu propio nodo",
+    "nav_support": "Soporte", "nav_privacy": "Privacidad", "nav_terms": "Condiciones de uso", "nav_node": "Tu propio nodo", "nav_source": "Código fuente",
     "footer_owner": "© 2026 Nevod · Kolpakov Andrey",
 }
 
@@ -257,7 +257,7 @@ NODE = """
 <li>En el panel defines el nombre del nodo y el modo de admisión (abierto, por invitación o con aprobación del administrador) y, si quieres, conectas el nodo a la red Nevod.</li>
 <li>Los teléfonos se conectan al nodo por su dirección o con un código QR de invitación.</li>
 </ol>
-<p class="note">Se está preparando una versión pública del software del nodo. Por ahora el acceso se concede a petición en <a href="mailto:support@nevod.network">support@nevod.network</a>. También está en desarrollo la instalación de un nodo con ayuda de un asistente de IA.</p>
+<p class="note">El software del nodo es de código abierto: <a href="https://github.com/avk0978/nevod-messenger">github.com/avk0978/nevod-messenger</a> (GNU AGPL-3.0). Los archivos para ejecutar un nodo en Docker están en la carpeta <code>installer/docker</code> del repositorio. También está en desarrollo la instalación de un nodo con ayuda de un asistente de IA.</p>
 </div></main>
 """
 
@@ -268,6 +268,8 @@ ABOUT = """
 <h2>Autor</h2>
 <p><b>Kolpakov Andrey</b> — autor del manifiesto ZKI y desarrollador de Nevod.</p>
 <!--BIO-->
+<h2>Código fuente</h2>
+<p>El código fuente de Nevod es abierto: el nodo, la app para iOS y las especificaciones del protocolo: <a href="https://github.com/avk0978/nevod-messenger">github.com/avk0978/nevod-messenger</a>. Licencia: GNU AGPL-3.0. Cualquiera puede comprobar que la app y el nodo funcionan exactamente como se describe en este sitio.</p>
 <h2>Contacto</h2>
 <ul>
 <li>Preguntas generales y soporte: <a href="mailto:support@nevod.network">support@nevod.network</a></li>

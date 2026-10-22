@@ -413,7 +413,7 @@ def render(lang, page, c, langs):
 {body}
 <footer class="site"><div class="wrap">
 <div>{t["footer_owner"]}</div>
-<div><a href="{url(lang, 'support')}">{t["nav_support"]}</a> · <a href="{url(lang, 'privacy')}">{t["nav_privacy"]}</a> · <a href="{url(lang, 'terms')}">{t["nav_terms"]}</a> · <a href="{url(lang, 'node')}">{t["nav_node"]}</a></div>
+<div><a href="{url(lang, 'support')}">{t["nav_support"]}</a> · <a href="{url(lang, 'privacy')}">{t["nav_privacy"]}</a> · <a href="{url(lang, 'terms')}">{t["nav_terms"]}</a> · <a href="{url(lang, 'node')}">{t["nav_node"]}</a> · <a href="https://github.com/avk0978/nevod-messenger">{t["nav_source"]}</a></div>
 </div></footer>
 </body>
 </html>

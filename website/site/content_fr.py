@@ -3,7 +3,7 @@
 T = {
     "nav": {"index": "Accueil", "manifesto": "Manifeste ZKI", "compare": "Comparaison", "security": "Sécurité",
             "cities": "Pour les villes", "download": "Télécharger", "about": "Le projet"},
-    "nav_support": "Assistance", "nav_privacy": "Confidentialité", "nav_terms": "Conditions d'utilisation", "nav_node": "Votre nœud",
+    "nav_support": "Assistance", "nav_privacy": "Confidentialité", "nav_terms": "Conditions d'utilisation", "nav_node": "Votre nœud", "nav_source": "Code source",
     "footer_owner": "© 2026 Nevod · Kolpakov Andrey",
 }
 
@@ -257,7 +257,7 @@ NODE = """
 <li>Dans le panneau, vous définissez le nom du nœud et le mode d'admission (ouvert, sur invitation ou avec approbation de l'administrateur) et, si vous le souhaitez, vous reliez le nœud au réseau Nevod.</li>
 <li>Les téléphones se connectent au nœud par son adresse ou par un code QR d'invitation.</li>
 </ol>
-<p class="note">Une version publique du logiciel de nœud est en préparation. Pour l'instant, l'accès est accordé sur demande à <a href="mailto:support@nevod.network">support@nevod.network</a>. L'installation d'un nœud avec l'aide d'un assistant IA est également en développement.</p>
+<p class="note">Le logiciel de nœud est open source : <a href="https://github.com/avk0978/nevod-messenger">github.com/avk0978/nevod-messenger</a> (GNU AGPL-3.0). Les fichiers pour faire tourner un nœud dans Docker se trouvent dans le dossier <code>installer/docker</code> du dépôt. L'installation d'un nœud avec l'aide d'un assistant IA est également en développement.</p>
 </div></main>
 """
 
@@ -268,6 +268,8 @@ ABOUT = """
 <h2>Auteur</h2>
 <p><b>Kolpakov Andrey</b> — auteur du manifeste ZKI et développeur de Nevod.</p>
 <!--BIO-->
+<h2>Code source</h2>
+<p>Le code source de Nevod est ouvert : le nœud, l'application iOS et les spécifications du protocole : <a href="https://github.com/avk0978/nevod-messenger">github.com/avk0978/nevod-messenger</a>. Licence : GNU AGPL-3.0. Chacun peut vérifier que l'application et le nœud fonctionnent exactement comme décrit sur ce site.</p>
 <h2>Contact</h2>
 <ul>
 <li>Questions générales et assistance : <a href="mailto:support@nevod.network">support@nevod.network</a></li>

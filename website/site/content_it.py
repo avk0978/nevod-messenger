@@ -3,7 +3,7 @@
 T = {
     "nav": {"index": "Home", "manifesto": "Manifesto ZKI", "compare": "Confronto", "security": "Sicurezza",
             "cities": "Per le città", "download": "Scarica", "about": "Il progetto"},
-    "nav_support": "Supporto", "nav_privacy": "Privacy", "nav_terms": "Condizioni d'uso", "nav_node": "Il tuo nodo",
+    "nav_support": "Supporto", "nav_privacy": "Privacy", "nav_terms": "Condizioni d'uso", "nav_node": "Il tuo nodo", "nav_source": "Codice sorgente",
     "footer_owner": "© 2026 Nevod · Kolpakov Andrey",
 }
 
@@ -257,7 +257,7 @@ NODE = """
 <li>Nel pannello imposti il nome del nodo e la modalità di ammissione (aperta, su invito o con approvazione dell'amministratore) e, se vuoi, colleghi il nodo alla rete Nevod.</li>
 <li>I telefoni si collegano al nodo tramite il suo indirizzo o un codice QR d'invito.</li>
 </ol>
-<p class="note">È in preparazione una versione pubblica del software del nodo. Per ora l'accesso è concesso su richiesta a <a href="mailto:support@nevod.network">support@nevod.network</a>. È in sviluppo anche l'installazione di un nodo con l'aiuto di un assistente IA.</p>
+<p class="note">Il software del nodo è open source: <a href="https://github.com/avk0978/nevod-messenger">github.com/avk0978/nevod-messenger</a> (GNU AGPL-3.0). I file per eseguire un nodo in Docker si trovano nella cartella <code>installer/docker</code> del repository. È in sviluppo anche l'installazione di un nodo con l'aiuto di un assistente IA.</p>
 </div></main>
 """
 
@@ -268,6 +268,8 @@ ABOUT = """
 <h2>Autore</h2>
 <p><b>Kolpakov Andrey</b> — autore del manifesto ZKI e sviluppatore di Nevod.</p>
 <!--BIO-->
+<h2>Codice sorgente</h2>
+<p>Il codice sorgente di Nevod è aperto: il nodo, l'app per iOS e le specifiche del protocollo: <a href="https://github.com/avk0978/nevod-messenger">github.com/avk0978/nevod-messenger</a>. Licenza: GNU AGPL-3.0. Chiunque può verificare che l'app e il nodo funzionino esattamente come descritto su questo sito.</p>
 <h2>Contatti</h2>
 <ul>
 <li>Domande generali e supporto: <a href="mailto:support@nevod.network">support@nevod.network</a></li>

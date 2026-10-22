@@ -3,7 +3,7 @@
 T = {
     "nav": {"index": "Ana sayfa", "manifesto": "ZKI Manifestosu", "compare": "Karşılaştırma", "security": "Güvenlik",
             "cities": "Şehirler için", "download": "İndir", "about": "Proje hakkında"},
-    "nav_support": "Destek", "nav_privacy": "Gizlilik", "nav_terms": "Kullanım Koşulları", "nav_node": "Kendi düğümün",
+    "nav_support": "Destek", "nav_privacy": "Gizlilik", "nav_terms": "Kullanım Koşulları", "nav_node": "Kendi düğümün", "nav_source": "Kaynak kodu",
     "footer_owner": "© 2026 Nevod · Kolpakov Andrey",
 }
 
@@ -257,7 +257,7 @@ NODE = """
 <li>Panelde düğümün adını ve kabul modunu (açık, davetle veya yönetici onayıyla) belirler, isterseniz düğümü Nevod ağına bağlarsınız.</li>
 <li>Telefonlar düğüme adresiyle veya bir davet QR koduyla bağlanır.</li>
 </ol>
-<p class="note">Düğüm yazılımının herkese açık sürümü hazırlanıyor. Şimdilik erişim <a href="mailto:support@nevod.network">support@nevod.network</a> üzerinden talep ile sağlanıyor. Bir yapay zekâ asistanı yardımıyla düğüm kurulumu da geliştirme aşamasında.</p>
+<p class="note">Düğüm yazılımı açık kaynaklıdır: <a href="https://github.com/avk0978/nevod-messenger">github.com/avk0978/nevod-messenger</a> (GNU AGPL-3.0). Bir düğümü Docker ile çalıştırmak için gereken dosyalar deponun <code>installer/docker</code> klasöründedir. Bir yapay zekâ asistanı yardımıyla düğüm kurulumu da geliştirme aşamasında.</p>
 </div></main>
 """
 
@@ -268,6 +268,8 @@ ABOUT = """
 <h2>Yazar</h2>
 <p><b>Kolpakov Andrey</b> — ZKI manifestosunun yazarı ve Nevod'un geliştiricisi.</p>
 <!--BIO-->
+<h2>Kaynak kodu</h2>
+<p>Nevod'un kaynak kodu açıktır — düğüm, iOS uygulaması ve protokol belirtimleri: <a href="https://github.com/avk0978/nevod-messenger">github.com/avk0978/nevod-messenger</a>. Lisans: GNU AGPL-3.0. Herkes, uygulamanın ve düğümün tam olarak bu sitede anlatıldığı gibi çalıştığını kontrol edebilir.</p>
 <h2>İletişim</h2>
 <ul>
 <li>Genel sorular ve destek: <a href="mailto:support@nevod.network">support@nevod.network</a></li>

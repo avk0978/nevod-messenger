@@ -4,7 +4,7 @@ T = {
     "nav": {"index": "Start", "manifesto": "ZKI-Manifest", "compare": "Vergleich", "security": "Sicherheit",
             "cities": "Für Städte", "download": "Download", "about": "Über das Projekt"},
     "nav_support": "Support", "nav_privacy": "Datenschutz", "nav_terms": "Nutzungsbedingungen",
-    "nav_node": "Eigener Node",
+    "nav_node": "Eigener Node", "nav_source": "Quellcode",
     "footer_owner": "© 2026 Nevod · Kolpakov Andrey",
 }
 
@@ -258,7 +258,7 @@ NODE = """
 <li>Im Panel legst du den Namen des Nodes und den Zulassungsmodus fest (offen, per Einladung oder mit Freigabe durch den Administrator) und verbindest den Node auf Wunsch mit dem Nevod-Netz.</li>
 <li>Telefone verbinden sich über die Adresse des Nodes oder einen Einladungs-QR-Code.</li>
 </ol>
-<p class="note">Eine öffentliche Veröffentlichung der Node-Software wird vorbereitet. Derzeit gibt es Zugang auf Anfrage an <a href="mailto:support@nevod.network">support@nevod.network</a>. Auch die Einrichtung eines Nodes mithilfe eines KI-Assistenten ist in Entwicklung.</p>
+<p class="note">Die Node-Software ist Open Source: <a href="https://github.com/avk0978/nevod-messenger">github.com/avk0978/nevod-messenger</a> (GNU AGPL-3.0). Die Dateien zum Betrieb eines Nodes in Docker liegen im Ordner <code>installer/docker</code> des Repositorys. Auch die Einrichtung eines Nodes mithilfe eines KI-Assistenten ist in Entwicklung.</p>
 </div></main>
 """
 
@@ -269,6 +269,8 @@ ABOUT = """
 <h2>Autor</h2>
 <p><b>Kolpakov Andrey</b> — Autor des ZKI-Manifests und Entwickler von Nevod.</p>
 <!--BIO-->
+<h2>Quellcode</h2>
+<p>Der Quellcode von Nevod ist offen — der Node, die iOS-App und die Protokollspezifikationen: <a href="https://github.com/avk0978/nevod-messenger">github.com/avk0978/nevod-messenger</a>. Lizenz: GNU AGPL-3.0. Jeder kann prüfen, dass App und Node genau so arbeiten, wie es auf dieser Website beschrieben ist.</p>
 <h2>Kontakt</h2>
 <ul>
 <li>Allgemeine Fragen und Support: <a href="mailto:support@nevod.network">support@nevod.network</a></li>

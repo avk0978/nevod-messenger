@@ -1,34 +1,31 @@
-# Nevod iOS
+# Nevod for iOS
 
-## Setup in Xcode
+SwiftUI app, iOS 17.2+. Three targets in `Nevod/Nevod.xcodeproj`:
 
-1. Open Xcode → File → New → Project → iOS App
-2. Product Name: **Nevod**
-3. Team: your Apple ID
-4. Bundle ID: e.g. `com.yourname.nevod`
-5. Interface: **SwiftUI**, Language: **Swift**
-6. Save into this `ios/` folder — Xcode creates `Nevod.xcodeproj` here
+| Target | What |
+|---|---|
+| `Nevod` | The app |
+| `NotificationService` | Notification service extension — shows a neutral push text in the user's language; push payloads carry no message content |
+| `SLKey` | Church Slavonic keyboard extension (see `Nevod/SLKEY_KEYBOARD.md`) |
 
-7. In Xcode Project Navigator: right-click the **Nevod** group → Add Files to "Nevod"
-8. Add all files from `Nevod/` (select all, make sure "Copy items if needed" is OFF)
+## Building
 
-9. Delete the auto-generated `ContentView.swift` — we have our own views.
+1. Open `Nevod/Nevod.xcodeproj` in Xcode.
+2. For each target, choose your team in *Signing & Capabilities* and change the bundle identifiers and the App Group (`group.com.avk.Nevod`) to your own.
+3. Xcode fetches the only package dependency, [WebRTC](https://github.com/stasel/WebRTC), through Swift Package Manager.
+4. Build and run on a device. Push notifications and VoIP calls need your own APNs key configured on the node you connect to.
 
-## What's in each file
+The bundled node list (`Nevod/nodes.json`) and the curator-signed list of official accounts (`Nevod/official.json`) point to the public Nevod network.
 
-| File | Purpose |
-|------|---------|
+## Layout
+
+| Path | Purpose |
+|---|---|
 | `NevdApp.swift` | App entry point |
-| `Protocol/MsgPack.swift` | msgpack encoder/decoder |
-| `Crypto/BigUInt.swift` | Big integer for Schnorr mod-L arithmetic |
-| `Crypto/CryptoManager.swift` | Ed25519, X25519, ChaCha20-Poly1305, Schnorr ZKP |
-| `Protocol/NevdProtocol.swift` | Packet pack/unpack, signing |
-| `Protocol/NevdClient.swift` | WebSocket client, auth, send/receive |
-| `Storage/Models.swift` | Contact, Message, card parsing |
-| `Storage/IdentityStore.swift` | Keychain + UserDefaults |
-| `Storage/AppStore.swift` | Central state (ObservableObject) |
-| `Views/*.swift` | SwiftUI UI |
-
-## No external dependencies
-
-Uses only: CryptoKit (built-in), Foundation, SwiftUI.
+| `Crypto/` | Ed25519, X25519, ChaCha20-Poly1305 (CryptoKit), Schnorr ZKP, big-integer arithmetic |
+| `Protocol/` | MessagePack, packet signing, WebSocket client, node browsing |
+| `Storage/` | SwiftData models, identity in the Keychain, central app state, log, safety checks |
+| `Call/` | CallKit + WebRTC voice calls |
+| `Views/` | SwiftUI screens |
+| `Localizable.xcstrings` | UI strings in 8 languages |
+| `NodeManifest.swift` | Verification of the curator-signed bootstrap manifest |

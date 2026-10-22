@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Karşılaştırma — Nevod</title>
+<meta name="description" content="Nevod ile Signal, Telegram ve WhatsApp karşılaştırması: neden yalnızca şifreleme ZKI değildir.">
+<link rel="canonical" href="https://nevod.network/tr/compare/">
+<link rel="alternate" hreflang="uk" href="https://nevod.network/uk/compare/"><link rel="alternate" hreflang="en" href="https://nevod.network/en/compare/"><link rel="alternate" hreflang="de" href="https://nevod.network/de/compare/"><link rel="alternate" hreflang="tr" href="https://nevod.network/tr/compare/"><link rel="alternate" hreflang="es" href="https://nevod.network/es/compare/"><link rel="alternate" hreflang="it" href="https://nevod.network/it/compare/"><link rel="alternate" hreflang="fr" href="https://nevod.network/fr/compare/">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik:wght@500..700&family=IBM+Plex+Sans:wght@400;600&display=swap">
+<style>
+:root { --ink:#14213D; --paper:#F7F6F1; --card:#FFFFFF; --line:#DCDFE6; --muted:#4A5568;
+        --accent:#F2C230; --accent-ink:#8A6A00; --dark2:#1E2F55; --soft:#C9D3E6; }
+* { box-sizing:border-box; }
+html { -webkit-text-size-adjust:100%; }
+body { margin:0; background:var(--paper); color:var(--ink); font:17px/1.6 'IBM Plex Sans', Arial, sans-serif; }
+a { color:#1F4E9E; }
+h1,h2,h3 { font-family:'Rubik', Arial, sans-serif; line-height:1.15; margin:0 0 .5em;
+  overflow-wrap:break-word; hyphens:auto; }
+main, .hero { overflow-wrap:break-word; }
+h1 { font-size:clamp(28px,5vw,56px); } h2 { font-size:clamp(24px,3.2vw,34px); margin-top:1.4em; } h3 { font-size:20px; }
+[id] { scroll-margin-top:76px; }  /* sticky header must not cover an anchor target */
+main.article h2 { margin-top:1.6em; } main.article h1 { font-size:clamp(26px,4vw,44px); }
+main.article hr { border:0; border-top:1px solid var(--line); margin:28px 0; }
+main.article code { font-size:.9em; background:var(--card); border:1px solid var(--line); border-radius:4px; padding:0 4px; }
+main.article ol li, main.article ul li { margin-bottom:.35em; overflow-wrap:anywhere; }
+.pub { margin:16px 0; } .pub h3 a { text-decoration:none; } .pub-date { font-size:14px; color:var(--muted); }
+.pub-back { font-size:15px; }
+p, ul, ol, table { margin:0 0 1em; }
+.wrap { max-width:1080px; margin:0 auto; padding:0 16px; }
+header.top { background:var(--ink); color:var(--paper); position:sticky; top:0; z-index:10; }
+header.top .wrap { display:flex; align-items:center; gap:16px; min-height:60px; }
+header.top a { color:var(--paper); text-decoration:none; }
+.brand { font-family:'Rubik', Arial, sans-serif; font-weight:700; font-size:20px; margin-right:auto; }
+.brand span { color:var(--accent); }
+nav.main { display:flex; gap:14px; font-size:15px; }
+nav.main a { opacity:.85; white-space:nowrap; } nav.main a[aria-current] { opacity:1; border-bottom:2px solid var(--accent); }
+details.menu { display:none; order:3; }
+details.menu summary { list-style:none; cursor:pointer; width:44px; height:44px; margin-right:-10px;
+  display:flex; align-items:center; justify-content:center; }
+details.menu summary::-webkit-details-marker { display:none; }
+.burger, .burger::before, .burger::after { display:block; width:22px; height:2px; background:var(--paper);
+  border-radius:2px; position:relative; transition:transform .2s, background .2s; }
+.burger::before, .burger::after { content:""; position:absolute; left:0; }
+.burger::before { top:-7px; } .burger::after { top:7px; }
+details.menu[open] .burger { background:transparent; }
+details.menu[open] .burger::before { transform:translateY(7px) rotate(45deg); }
+details.menu[open] .burger::after { transform:translateY(-7px) rotate(-45deg); }
+details.menu nav { position:absolute; left:0; right:0; top:100%; background:var(--ink);
+  border-top:1px solid var(--dark2); box-shadow:0 12px 24px rgba(0,0,0,.25); padding:6px 0 12px; }
+details.menu nav a { display:block; padding:12px 16px; font-size:17px; opacity:.9; }
+details.menu nav a[aria-current] { opacity:1; color:var(--accent); }
+details.lang { position:relative; font-size:15px; }
+details.lang summary { list-style:none; cursor:pointer; border:1px solid var(--accent); color:var(--accent);
+  padding:3px 12px; border-radius:999px; }
+details.lang summary::-webkit-details-marker { display:none; }
+details.lang summary:empty { min-width:6em; height:calc(1.6em + 8px); box-sizing:border-box; }
+details.lang ul { position:absolute; right:0; top:34px; background:var(--card); color:var(--ink); list-style:none;
+  padding:8px 0; margin:0; border-radius:10px; box-shadow:0 8px 24px rgba(0,0,0,.2); min-width:160px; }
+details.lang li a { color:var(--ink); display:block; padding:6px 16px; }
+@media (max-width:960px) {
+  nav.main { display:none; }
+  details.menu { display:block; }
+  header.top .wrap { min-height:56px; gap:12px; }
+  details.lang li a { padding:10px 16px; }
+}
+.hero { background:var(--ink); color:var(--paper); padding:56px 0 64px; }
+.hero p.lead { font-size:clamp(18px,2.2vw,22px); color:var(--soft); max-width:760px; }
+.eyebrow { font-size:14px; letter-spacing:3px; text-transform:uppercase; color:var(--accent); margin-bottom:12px; }
+.btns { display:flex; gap:12px; flex-wrap:wrap; margin-top:24px; }
+.btn { display:inline-block; padding:12px 22px; border-radius:10px; text-decoration:none; font-weight:600; }
+.btn.primary { background:var(--accent); color:var(--ink); } .btn.ghost { border:1px solid var(--soft); color:var(--paper); }
+main { padding:40px 0 56px; }
+.grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:16px; margin:16px 0 8px; }
+.card { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:20px; }
+.card h3 { margin-bottom:6px; } .card p { margin:0; color:var(--muted); }
+.status td:first-child { font-weight:600; }
+.tbl { overflow-x:auto; }
+table { border-collapse:collapse; width:100%; background:var(--card); border:1px solid var(--line); border-radius:12px; }
+th, td { text-align:left; padding:10px 12px; border-bottom:1px solid var(--line); vertical-align:top; }
+th { background:var(--ink); color:var(--paper); font-weight:600; }
+.note { background:#FBF3D6; border-left:4px solid var(--accent); padding:14px 16px; border-radius:8px; }
+.legal h2 { font-size:22px; }
+.ncard { display:flex; gap:20px; align-items:flex-start; background:var(--card); border:1px solid var(--line);
+  border-radius:14px; padding:20px; margin:8px 0 16px; }
+.ncard-qr { flex:0 0 220px; } .ncard-qr svg { display:block; width:100%; height:auto; }
+.ncard-body { min-width:0; } .ncard-body h3 { margin-bottom:6px; } .ncard-body p { color:var(--muted); }
+.ncard code { display:block; font-size:12px; line-height:1.45; word-break:break-all; background:var(--paper);
+  border:1px solid var(--line); border-radius:8px; padding:8px 10px; margin:0 0 12px; user-select:all; }
+.ncard .btn { border:0; cursor:pointer; font:inherit; font-weight:600; }
+@media (max-width:640px) { .ncard { flex-direction:column; align-items:stretch; } .ncard-qr { flex-basis:auto; width:220px; margin:0 auto; } }
+footer.site { background:var(--ink); color:var(--soft); font-size:14px; padding:28px 0; }
+footer.site a { color:var(--soft); }
+footer.site .wrap { display:flex; flex-wrap:wrap; gap:8px 24px; justify-content:space-between; }
+@media (max-width:640px) {
+  body { font-size:16px; }
+  .hero { padding:36px 0 44px; }
+  main { padding:28px 0 40px; }
+  .btns .btn { flex:1 1 auto; text-align:center; }
+  .card { padding:16px; }
+  /* Wide tables (4+ columns) become one card per row: the first cell is the row title,
+     every other cell is prefixed with its column header (data-label, added by stack_tables). */
+  table.stack, table.stack tbody, table.stack tr, table.stack td { display:block; width:auto !important; }
+  table.stack { background:none; border:0; }
+  table.stack tr:first-child { display:none; }
+  table.stack tr { background:var(--card); border:1px solid var(--line); border-radius:12px; margin-bottom:12px; overflow:hidden; }
+  table.stack td { border-bottom:1px solid var(--line); padding:8px 14px; }
+  table.stack td:last-child { border-bottom:0; }
+  table.stack td:first-child { background:var(--ink); color:var(--paper); font-weight:600; }
+  table.stack td:not(:first-child)::before { content:attr(data-label); display:block; font-size:13px;
+    font-weight:600; color:var(--muted); text-transform:uppercase; letter-spacing:.5px; }
+  footer.site .wrap { flex-direction:column; }
+}
+</style>
+</head>
+<body>
+<header class="top"><div class="wrap">
+<a class="brand" href="/tr/">Nevod<span>.</span></a>
+<nav class="main"><a href="/tr/">Ana sayfa</a><a href="/tr/manifesto/">ZKI Manifestosu</a><a href="/tr/compare/" aria-current="page">Karşılaştırma</a><a href="/tr/security/">Güvenlik</a><a href="/tr/cities/">Şehirler için</a><a href="/tr/download/">İndir</a><a href="/tr/publications/">Yayınlar</a><a href="/tr/about/">Proje hakkında</a></nav>
+<details class="menu"><summary aria-label="Menü"><span class="burger"></span></summary><nav><a href="/tr/">Ana sayfa</a><a href="/tr/manifesto/">ZKI Manifestosu</a><a href="/tr/compare/" aria-current="page">Karşılaştırma</a><a href="/tr/security/">Güvenlik</a><a href="/tr/cities/">Şehirler için</a><a href="/tr/download/">İndir</a><a href="/tr/publications/">Yayınlar</a><a href="/tr/about/">Proje hakkında</a></nav></details>
+<details class="lang"><summary>Türkçe</summary><ul><li><a href="/uk/compare/" hreflang="uk" lang="uk">Українська</a></li><li><a href="/en/compare/" hreflang="en" lang="en">English</a></li><li><a href="/de/compare/" hreflang="de" lang="de">Deutsch</a></li><li><a href="/tr/compare/" hreflang="tr" lang="tr">Türkçe</a></li><li><a href="/es/compare/" hreflang="es" lang="es">Español</a></li><li><a href="/it/compare/" hreflang="it" lang="it">Italiano</a></li><li><a href="/fr/compare/" hreflang="fr" lang="fr">Français</a></li></ul></details>
+</div></header>
+
+<main><div class="wrap">
+<h1>Nevod ve diğer mesajlaşma uygulamaları</h1>
+<p>Modern mesajlaşma uygulamalarının çoğu mesajları şifreler. Fark, şifreleme olup olmamasında değil, <b>şirketin elinde neyin kaldığındadır</b>: sunucular, kullanıcı veritabanı, telefon numaraları, rehber, meta veriler — ve bunlardan nelerin talep edilebileceği.</p>
+<p class="note">Nevod, <a href="/tr/manifesto/">Zero Knowledge Infrastructure</a> ilkesini uygular: geliştirici, kullanıcı verilerinden yalnızca şifrelemeyle değil <b>mimariyle</b> koparılmıştır. Diğer uygulamalar hakkındaki bilgiler 2026 itibarıyla kamuya açık açıklamalarına dayanır ve değişebilir.</p>
+<div class="tbl"><table class="stack">
+<tr><th style="width:24%"></th><th>Nevod</th><th>Signal</th><th>Telegram</th><th>WhatsApp</th></tr>
+<tr><td data-label="">Normal bir sohbeti teknik olarak kim okuyabilir</td><td data-label="Nevod">Yalnızca katılımcılar</td><td data-label="Signal">Yalnızca katılımcılar</td><td data-label="Telegram">Normal ve grup sohbetleri — Telegram sunucuları (uçtan uca yalnızca bire bir "gizli sohbetlerde")</td><td data-label="WhatsApp">Yalnızca katılımcılar</td></tr>
+<tr><td data-label="">Şirketin merkezi sunucuları</td><td data-label="Nevod">Yok — herkesin çalıştırabileceği bağımsız düğümler</td><td data-label="Signal">Evet</td><td data-label="Telegram">Evet</td><td data-label="WhatsApp">Evet, Meta'nın</td></tr>
+<tr><td data-label="">Telefon numarasına bağlı</td><td data-label="Nevod">Hayır — kimlik bir anahtardır</td><td data-label="Signal">Evet (numara bir kullanıcı adının arkasına gizlenebilir)</td><td data-label="Telegram">Evet</td><td data-label="WhatsApp">Evet</td></tr>
+<tr><td data-label="">Rehberin yüklenmesi</td><td data-label="Nevod">Hayır — kişiler kart veya QR ile eklenir</td><td data-label="Signal">Gizli kişi bulma</td><td data-label="Telegram">Evet, izin verilirse</td><td data-label="WhatsApp">Evet, izin verilirse</td></tr>
+<tr><td data-label="">Şirketteki kullanıcı veritabanı</td><td data-label="Nevod">Merkezi yok — her düğüm yalnızca kendi kullanıcılarını bilir</td><td data-label="Signal">Asgari</td><td data-label="Telegram">Evet</td><td data-label="WhatsApp">Evet</td></tr>
+<tr><td data-label="">Şirketin talep üzerine verebilecekleri</td><td data-label="Nevod">Geliştiricinin verecek hiçbir şeyi yok: ne anahtar, ne mesaj, ne veritabanı</td><td data-label="Signal">Raporlarına göre — hesap oluşturma ve son bağlantı tarihleri</td><td data-label="Telegram">Politikasına göre — bazı durumlarda IP adresi ve telefon numarası</td><td data-label="WhatsApp">Politikasına göre hesap meta verileri</td></tr>
+<tr><td data-label="">Sohbetlerin bulut yedekleri</td><td data-label="Nevod">Yok — anahtarlar ve geçmiş yalnızca cihazda bulunur (telefon kaybolursa geçmiş de kaybolur)</td><td data-label="Signal">İsteğe bağlı; yalnızca kullanıcıda bulunan bir anahtarla şifrelenir</td><td data-label="Telegram">Gerek yok — normal sohbetler zaten Telegram sunucularında saklanır</td><td data-label="WhatsApp">iCloud / Google Drive'a; varsayılan olarak uçtan uca şifresiz (elle açılması gerekir)</td></tr>
+<tr><td data-label="">Tek hata veya engelleme noktası</td><td data-label="Nevod">Yok — düğümler bağımsızdır</td><td data-label="Signal">Evet</td><td data-label="Telegram">Evet</td><td data-label="WhatsApp">Evet</td></tr>
+<tr><td data-label="">Bir şehir içinde internetsiz çalışma</td><td data-label="Nevod">Mimarinin parçası (şehir ağı, Wi-Fi mesh, radyo)</td><td data-label="Signal">Hayır</td><td data-label="Telegram">Hayır</td><td data-label="WhatsApp">Hayır</td></tr>
+<tr><td data-label="">İş modeli</td><td data-label="Nevod">Veri üzerinden değil, araç üzerinden</td><td data-label="Signal">Bağışlar (kâr amacı gütmeyen)</td><td data-label="Telegram">Reklam ve Premium</td><td data-label="WhatsApp">Meta'nın işletme hizmetleri</td></tr>
+<tr><td data-label="">Açık kaynak</td><td data-label="Nevod">Henüz değil — üretim sürümüne kadar kapalı</td><td data-label="Signal">Evet</td><td data-label="Telegram">Kısmen (istemciler)</td><td data-label="WhatsApp">Hayır</td></tr>
+</table></div>
+<h2>"Yalnızca şifreleme" neden yetmez</h2>
+<p>Uçtan uca şifreleme, bir mesajın içeriğini yolda korur. Ancak bir şirket tüm sunucuları işletiyor, telefon numaralarına göre bir hesap veritabanı tutuyor ve kimin kiminle ne zaman konuştuğunu görüyorsa sistem üzerindeki gücünü korur: zorlanabilir, ele geçirilebilir veya engellenebilir; bir uygulama güncellemesi de kuralları değiştirebilir.</p>
+<p>ZKI farklı bir soru sorar: <b>altyapının yaratıcısı, teoride bile, neyi elde edebilir?</b> Nevod'da cevap mimaride yatar: anahtarlar cihazı asla terk etmez, ana anahtar ve yedek yoktur, merkezi sunucu ve telefon numarasına göre insan kaydı yoktur.</p>
+<h2 id="low-load">Az yüklü dağıtık ağ: bir karşılaştırma</h2>
+<p>Ağları, az yüklü dağıtık ağın altı özelliğine göre değerlendiriyoruz: her düğümün yükü tüm ağın büyüklüğüyle değil, kendi kullanıcı çevresiyle sınırlıdır. Bu özellikler Nevod'un kendi ilkelerinden türetildi, bu yüzden karşılaştırma baştan Nevod'un lehine.</p>
+<ol>
+<li>Kendi çevresi: düğümün yükü tüm ağla değil, kendi çevresiyle (aile, ev, ekip) büyür.</li>
+<li>Sıradan donanım: ev bilgisayarı, mini sunucu veya yönlendirici; veri merkezi gerekmez.</li>
+<li>Tasarruf: önce metin ve sinyaller, ağır veriler istek üzerine.</li>
+<li>Gecikme toleransı: bağlantı yoksa mesaj bekler ve daha sonra, yavaş bir kanal üzerinden de gider.</li>
+<li>Merkez yok: tek bir arıza, engelleme veya el koyma noktası yok.</li>
+<li>Kör düğüm: düğüm yalnızca şifreli metin taşır ve onu okuyamaz.</li>
+</ol>
+<p class="note">1: evet, ½: kısmen, 0: hayır. Yıl: ilk herkese açık sürüm. Sınıf: LL-0, düğüm yükü kendi çevresiyle sınırlıdır; LL-1, ayrıca sınırlı yabancı transit; LL-3, yük tüm ağla artar ya da yabancı kullanıcılara bağlıdır. Ayrıntılar: <a href="/tr/publications/low-load-networks/">makale</a>.</p>
+<div class="tbl"><table class="stack">
+<tr><th>Ağ</th><th>Yıl</th><th>Kendi çevresi</th><th>Sıradan donanım</th><th>Tasarruf</th><th>Gecikmeler</th><th>Merkez yok</th><th>Kör düğüm</th><th>Sınıf</th></tr>
+<tr><td data-label="Ağ">Secure Scuttlebutt</td><td data-label="Yıl">2014</td><td data-label="Kendi çevresi">1</td><td data-label="Sıradan donanım">1</td><td data-label="Tasarruf">½</td><td data-label="Gecikmeler">1</td><td data-label="Merkez yok">1</td><td data-label="Kör düğüm">0</td><td data-label="Sınıf">LL-0</td></tr>
+<tr><td data-label="Ağ">Briar</td><td data-label="Yıl">2018</td><td data-label="Kendi çevresi">1</td><td data-label="Sıradan donanım">1</td><td data-label="Tasarruf">½</td><td data-label="Gecikmeler">½</td><td data-label="Merkez yok">1</td><td data-label="Kör düğüm">1</td><td data-label="Sınıf">LL-0</td></tr>
+<tr><td data-label="Ağ"><b>Nevod</b></td><td data-label="Yıl">2026</td><td data-label="Kendi çevresi">1</td><td data-label="Sıradan donanım">1</td><td data-label="Tasarruf">½</td><td data-label="Gecikmeler">½</td><td data-label="Merkez yok">1</td><td data-label="Kör düğüm">1</td><td data-label="Sınıf">LL-0</td></tr>
+<tr><td data-label="Ağ">FidoNet</td><td data-label="Yıl">1984</td><td data-label="Kendi çevresi">1</td><td data-label="Sıradan donanım">1</td><td data-label="Tasarruf">1</td><td data-label="Gecikmeler">1</td><td data-label="Merkez yok">0</td><td data-label="Kör düğüm">0</td><td data-label="Sınıf">LL-1</td></tr>
+<tr><td data-label="Ağ">NNCP</td><td data-label="Yıl">2016</td><td data-label="Kendi çevresi">½</td><td data-label="Sıradan donanım">1</td><td data-label="Tasarruf">1</td><td data-label="Gecikmeler">1</td><td data-label="Merkez yok">1</td><td data-label="Kör düğüm">1</td><td data-label="Sınıf">LL-1</td></tr>
+<tr><td data-label="Ağ">Reticulum / LXMF</td><td data-label="Yıl">2016</td><td data-label="Kendi çevresi">½</td><td data-label="Sıradan donanım">1</td><td data-label="Tasarruf">1</td><td data-label="Gecikmeler">1</td><td data-label="Merkez yok">1</td><td data-label="Kör düğüm">1</td><td data-label="Sınıf">LL-1</td></tr>
+<tr><td data-label="Ağ">Meshtastic</td><td data-label="Yıl">2020</td><td data-label="Kendi çevresi">0</td><td data-label="Sıradan donanım">1</td><td data-label="Tasarruf">1</td><td data-label="Gecikmeler">½</td><td data-label="Merkez yok">1</td><td data-label="Kör düğüm">½</td><td data-label="Sınıf">LL-1</td></tr>
+<tr><td data-label="Ağ">Tor</td><td data-label="Yıl">2002</td><td data-label="Kendi çevresi">0</td><td data-label="Sıradan donanım">½</td><td data-label="Tasarruf">0</td><td data-label="Gecikmeler">0</td><td data-label="Merkez yok">1</td><td data-label="Kör düğüm">1</td><td data-label="Sınıf">LL-3</td></tr>
+<tr><td data-label="Ağ">WhatsApp</td><td data-label="Yıl">2009</td><td data-label="Kendi çevresi">0</td><td data-label="Sıradan donanım">0</td><td data-label="Tasarruf">0</td><td data-label="Gecikmeler">0</td><td data-label="Merkez yok">0</td><td data-label="Kör düğüm">½</td><td data-label="Sınıf">LL-3</td></tr>
+<tr><td data-label="Ağ">Telegram</td><td data-label="Yıl">2013</td><td data-label="Kendi çevresi">0</td><td data-label="Sıradan donanım">0</td><td data-label="Tasarruf">0</td><td data-label="Gecikmeler">0</td><td data-label="Merkez yok">0</td><td data-label="Kör düğüm">0</td><td data-label="Sınıf">LL-3</td></tr>
+<tr><td data-label="Ağ">Matrix</td><td data-label="Yıl">2014</td><td data-label="Kendi çevresi">0</td><td data-label="Sıradan donanım">½</td><td data-label="Tasarruf">0</td><td data-label="Gecikmeler">0</td><td data-label="Merkez yok">½</td><td data-label="Kör düğüm">½</td><td data-label="Sınıf">LL-3</td></tr>
+<tr><td data-label="Ağ">Signal</td><td data-label="Yıl">2014</td><td data-label="Kendi çevresi">0</td><td data-label="Sıradan donanım">0</td><td data-label="Tasarruf">0</td><td data-label="Gecikmeler">0</td><td data-label="Merkez yok">0</td><td data-label="Kör düğüm">½</td><td data-label="Sınıf">LL-3</td></tr>
+<tr><td data-label="Ağ">Mastodon</td><td data-label="Yıl">2016</td><td data-label="Kendi çevresi">0</td><td data-label="Sıradan donanım">½</td><td data-label="Tasarruf">0</td><td data-label="Gecikmeler">0</td><td data-label="Merkez yok">½</td><td data-label="Kör düğüm">0</td><td data-label="Sınıf">LL-3</td></tr>
+<tr><td data-label="Ağ">Nostr</td><td data-label="Yıl">2020</td><td data-label="Kendi çevresi">0</td><td data-label="Sıradan donanım">½</td><td data-label="Tasarruf">0</td><td data-label="Gecikmeler">0</td><td data-label="Merkez yok">1</td><td data-label="Kör düğüm">½</td><td data-label="Sınıf">LL-3</td></tr>
+<tr><td data-label="Ağ">Session</td><td data-label="Yıl">2020</td><td data-label="Kendi çevresi">0</td><td data-label="Sıradan donanım">½</td><td data-label="Tasarruf">0</td><td data-label="Gecikmeler">½</td><td data-label="Merkez yok">1</td><td data-label="Kör düğüm">1</td><td data-label="Sınıf">LL-3</td></tr>
+</table></div>
+<p>Signal ve WhatsApp körlük için ½ alır: içerik uçtan uca şifrelidir, ancak şirket meta verileri görür ve sunucuları yönetir. Reticulum ve NNCP'de ara düğümler başkalarının paketlerini taşır ve saklar. Nevod şimdilik medyayı bütün olarak gönderir, teslim edilmeyenleri 72 saat saklar ve yalnızca internet üzerinden çalışır.</p>
+<h3>Pratikte</h3>
+<div class="tbl"><table class="stack">
+<tr><th>Ağ</th><th>Yıl</th><th>Sıradan insanlar için</th><th>Olgunluk</th><th>Bağımsız denetim</th></tr>
+<tr><td data-label="Ağ">Reticulum / LXMF</td><td data-label="Yıl">2016</td><td data-label="Sıradan insanlar için">hayır, meraklılar için</td><td data-label="Olgunluk">aktif topluluk</td><td data-label="Bağımsız denetim">hayır</td></tr>
+<tr><td data-label="Ağ">NNCP</td><td data-label="Yıl">2016</td><td data-label="Sıradan insanlar için">hayır, komut satırı aracı</td><td data-label="Olgunluk">niş</td><td data-label="Bağımsız denetim">hayır</td></tr>
+<tr><td data-label="Ağ"><b>Nevod</b></td><td data-label="Yıl">2026</td><td data-label="Sıradan insanlar için">evet: iPhone/iPad, mesajlar, medya, aramalar</td><td data-label="Olgunluk">test aşamasında, henüz gerçek kullanıcı yok</td><td data-label="Bağımsız denetim">hayır</td></tr>
+<tr><td data-label="Ağ">Briar</td><td data-label="Yıl">2018</td><td data-label="Sıradan insanlar için">evet, ama arama yok; Android ve masaüstü</td><td data-label="Olgunluk">olgun</td><td data-label="Bağımsız denetim">evet (Cure53, 2017)</td></tr>
+<tr><td data-label="Ağ">Signal</td><td data-label="Yıl">2014</td><td data-label="Sıradan insanlar için">evet</td><td data-label="Olgunluk">çok olgun</td><td data-label="Bağımsız denetim">evet, defalarca</td></tr>
+</table></div>
+<p>Ana özelliğe göre Nevod, Briar ve Secure Scuttlebutt ile birlikte LL-0 sınıfındadır; diğer özelliklerde onlara yakın olan Reticulum ve NNCP LL-1 sınıfındadır. Nevod'un farkı başka yerde: bu ağlar arasından medya, aramalar ve iPhone uygulamasıyla sıradan insanlar için tam bir mesajlaşma uygulaması olarak tasarlanan tek sistem odur. Ama henüz genç: gerçek kullanıcısı yok, bağımsız denetimi yok, yalnızca iOS'ta çalışıyor. Altıda altıya giden yol: istek üzerine medya ve yavaş kanallar üzerinden internetsiz teslimat.</p>
+<h2>Kabul ettiklerimiz</h2>
+<ul>
+<li>Bir düğüm teknik olarak yalnızca teslimat verisini işler — hangi şifreli paketin kime gideceğini — ve içeriği asla görmez. Kimse kendi düğümünüzü çalıştırmanızı engellemez: o zaman bu teslimat verisi bile sizde kalır.</li>
+<li>Signal'in protokolü açık ve kapsamlı biçimde incelenmiştir — bunu bir güçlü yan olarak kabul ediyoruz. Nevod'un kodu şimdilik kapalıdır; açılması planlanmaktadır.</li>
+</ul>
+</div></main>
+
+<footer class="site"><div class="wrap">
+<div>© 2026 Nevod · Kolpakov Andrey</div>
+<div><a href="/tr/support/">Destek</a> · <a href="/tr/privacy/">Gizlilik</a> · <a href="/tr/terms/">Kullanım Koşulları</a> · <a href="/tr/node/">Kendi düğümün</a></div>
+</div></footer>
+</body>
+</html>

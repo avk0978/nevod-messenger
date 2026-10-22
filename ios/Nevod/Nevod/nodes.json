@@ -1,0 +1,47 @@
+[
+  {
+    "node_id": "0c69eee506cc5f897b65f231df37f0214130e9c3f461393983a6794a99f4f2cd",
+    "address": "node1.nevod.network/nevod-ws",
+    "tls_fingerprint": "",
+    "name": "Dev Planet",
+    "purpose": "informational",
+    "verified": true,
+    "verified_sig": "7175f7c11f738c315a9bad8e6743f92de962164266a124e62e863001c9d7951d917e959d32fb2c5d0e19be728aa90e56342aea409372ded6bf2efe31056cad01"
+  },
+  {
+    "node_id": "63a79b460f5922d341ccf324b3fb5b9b9b33d4c7887150545f01414b3f8e15b8",
+    "address": "home.nevod.network/nevod-ws",
+    "tls_fingerprint": "",
+    "name": "Nevod Home",
+    "purpose": "community",
+    "verified": true,
+    "verified_sig": "2275018c2e16c2230afb393acc0de5cc4b4f6773a73eaa9fd49c68ba3d959803d660f94929d619fb15a6295b3b2e1a0bab7bca8d237c696393a28b2e8a03810a"
+  },
+  {
+    "node_id": "2050f850823921b135e467fe27d59b7701327d3fdb3b4685f4bba9441de64504",
+    "address": "open.nevod.network/nevod-ws",
+    "tls_fingerprint": "",
+    "name": "Nevod Open",
+    "purpose": "community",
+    "verified": true,
+    "verified_sig": "37dd0cfc36c3015dfb2daf2e7222a60c918723a592f69f9eea5a31edada970998b81267d50798339eca41214b32faab33871ac7881f06cbffdc04ad7d2c2c50c"
+  },
+  {
+    "node_id": "1156066c50b9bc2a08c4a2f7c710c6d848c98c45a235f1d5cad5c272935671d8",
+    "address": "kitaevo.nevod.network/nevod-ws",
+    "tls_fingerprint": "",
+    "name": "Kitaevo",
+    "purpose": "community",
+    "verified": true,
+    "verified_sig": "b32537c20d7d317bd48c171996b4db0508150077e78c78a431fe3e448a2a228099206d6810d00f1ec59ecedecc4e3316f5f78ef0a01fed04622f67a378eb890a"
+  },
+  {
+    "node_id": "431546eec7def694df899e796019a23874d0bab2b71f70771cf9da4baa434f95",
+    "address": "avk.nevod.network/nevod-ws",
+    "tls_fingerprint": "",
+    "name": "avk",
+    "purpose": "community",
+    "verified": true,
+    "verified_sig": "7282d2a952594dcb7e6ce51d5f6a23f84b5ac454df3ef7d25040aee04f71db7e619aefb98ae0a4475c13dc612f8d716438cd9dc20b62ed6378ae7e8adac83f00"
+  }
+]

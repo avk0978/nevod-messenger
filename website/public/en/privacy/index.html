@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Privacy Policy — Nevod</title>
+<meta name="description" content="What data Nevod processes and how it is protected.">
+<link rel="canonical" href="https://nevod.network/en/privacy/">
+<link rel="alternate" hreflang="uk" href="https://nevod.network/uk/privacy/"><link rel="alternate" hreflang="en" href="https://nevod.network/en/privacy/"><link rel="alternate" hreflang="de" href="https://nevod.network/de/privacy/"><link rel="alternate" hreflang="tr" href="https://nevod.network/tr/privacy/"><link rel="alternate" hreflang="es" href="https://nevod.network/es/privacy/"><link rel="alternate" hreflang="it" href="https://nevod.network/it/privacy/"><link rel="alternate" hreflang="fr" href="https://nevod.network/fr/privacy/">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik:wght@500..700&family=IBM+Plex+Sans:wght@400;600&display=swap">
+<style>
+:root { --ink:#14213D; --paper:#F7F6F1; --card:#FFFFFF; --line:#DCDFE6; --muted:#4A5568;
+        --accent:#F2C230; --accent-ink:#8A6A00; --dark2:#1E2F55; --soft:#C9D3E6; }
+* { box-sizing:border-box; }
+html { -webkit-text-size-adjust:100%; }
+body { margin:0; background:var(--paper); color:var(--ink); font:17px/1.6 'IBM Plex Sans', Arial, sans-serif; }
+a { color:#1F4E9E; }
+h1,h2,h3 { font-family:'Rubik', Arial, sans-serif; line-height:1.15; margin:0 0 .5em;
+  overflow-wrap:break-word; hyphens:auto; }
+main, .hero { overflow-wrap:break-word; }
+h1 { font-size:clamp(28px,5vw,56px); } h2 { font-size:clamp(24px,3.2vw,34px); margin-top:1.4em; } h3 { font-size:20px; }
+[id] { scroll-margin-top:76px; }  /* sticky header must not cover an anchor target */
+main.article h2 { margin-top:1.6em; } main.article h1 { font-size:clamp(26px,4vw,44px); }
+main.article hr { border:0; border-top:1px solid var(--line); margin:28px 0; }
+main.article code { font-size:.9em; background:var(--card); border:1px solid var(--line); border-radius:4px; padding:0 4px; }
+main.article ol li, main.article ul li { margin-bottom:.35em; overflow-wrap:anywhere; }
+.pub { margin:16px 0; } .pub h3 a { text-decoration:none; } .pub-date { font-size:14px; color:var(--muted); }
+.pub-back { font-size:15px; }
+p, ul, ol, table { margin:0 0 1em; }
+.wrap { max-width:1080px; margin:0 auto; padding:0 16px; }
+header.top { background:var(--ink); color:var(--paper); position:sticky; top:0; z-index:10; }
+header.top .wrap { display:flex; align-items:center; gap:16px; min-height:60px; }
+header.top a { color:var(--paper); text-decoration:none; }
+.brand { font-family:'Rubik', Arial, sans-serif; font-weight:700; font-size:20px; margin-right:auto; }
+.brand span { color:var(--accent); }
+nav.main { display:flex; gap:14px; font-size:15px; }
+nav.main a { opacity:.85; white-space:nowrap; } nav.main a[aria-current] { opacity:1; border-bottom:2px solid var(--accent); }
+details.menu { display:none; order:3; }
+details.menu summary { list-style:none; cursor:pointer; width:44px; height:44px; margin-right:-10px;
+  display:flex; align-items:center; justify-content:center; }
+details.menu summary::-webkit-details-marker { display:none; }
+.burger, .burger::before, .burger::after { display:block; width:22px; height:2px; background:var(--paper);
+  border-radius:2px; position:relative; transition:transform .2s, background .2s; }
+.burger::before, .burger::after { content:""; position:absolute; left:0; }
+.burger::before { top:-7px; } .burger::after { top:7px; }
+details.menu[open] .burger { background:transparent; }
+details.menu[open] .burger::before { transform:translateY(7px) rotate(45deg); }
+details.menu[open] .burger::after { transform:translateY(-7px) rotate(-45deg); }
+details.menu nav { position:absolute; left:0; right:0; top:100%; background:var(--ink);
+  border-top:1px solid var(--dark2); box-shadow:0 12px 24px rgba(0,0,0,.25); padding:6px 0 12px; }
+details.menu nav a { display:block; padding:12px 16px; font-size:17px; opacity:.9; }
+details.menu nav a[aria-current] { opacity:1; color:var(--accent); }
+details.lang { position:relative; font-size:15px; }
+details.lang summary { list-style:none; cursor:pointer; border:1px solid var(--accent); color:var(--accent);
+  padding:3px 12px; border-radius:999px; }
+details.lang summary::-webkit-details-marker { display:none; }
+details.lang summary:empty { min-width:6em; height:calc(1.6em + 8px); box-sizing:border-box; }
+details.lang ul { position:absolute; right:0; top:34px; background:var(--card); color:var(--ink); list-style:none;
+  padding:8px 0; margin:0; border-radius:10px; box-shadow:0 8px 24px rgba(0,0,0,.2); min-width:160px; }
+details.lang li a { color:var(--ink); display:block; padding:6px 16px; }
+@media (max-width:960px) {
+  nav.main { display:none; }
+  details.menu { display:block; }
+  header.top .wrap { min-height:56px; gap:12px; }
+  details.lang li a { padding:10px 16px; }
+}
+.hero { background:var(--ink); color:var(--paper); padding:56px 0 64px; }
+.hero p.lead { font-size:clamp(18px,2.2vw,22px); color:var(--soft); max-width:760px; }
+.eyebrow { font-size:14px; letter-spacing:3px; text-transform:uppercase; color:var(--accent); margin-bottom:12px; }
+.btns { display:flex; gap:12px; flex-wrap:wrap; margin-top:24px; }
+.btn { display:inline-block; padding:12px 22px; border-radius:10px; text-decoration:none; font-weight:600; }
+.btn.primary { background:var(--accent); color:var(--ink); } .btn.ghost { border:1px solid var(--soft); color:var(--paper); }
+main { padding:40px 0 56px; }
+.grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:16px; margin:16px 0 8px; }
+.card { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:20px; }
+.card h3 { margin-bottom:6px; } .card p { margin:0; color:var(--muted); }
+.status td:first-child { font-weight:600; }
+.tbl { overflow-x:auto; }
+table { border-collapse:collapse; width:100%; background:var(--card); border:1px solid var(--line); border-radius:12px; }
+th, td { text-align:left; padding:10px 12px; border-bottom:1px solid var(--line); vertical-align:top; }
+th { background:var(--ink); color:var(--paper); font-weight:600; }
+.note { background:#FBF3D6; border-left:4px solid var(--accent); padding:14px 16px; border-radius:8px; }
+.legal h2 { font-size:22px; }
+.ncard { display:flex; gap:20px; align-items:flex-start; background:var(--card); border:1px solid var(--line);
+  border-radius:14px; padding:20px; margin:8px 0 16px; }
+.ncard-qr { flex:0 0 220px; } .ncard-qr svg { display:block; width:100%; height:auto; }
+.ncard-body { min-width:0; } .ncard-body h3 { margin-bottom:6px; } .ncard-body p { color:var(--muted); }
+.ncard code { display:block; font-size:12px; line-height:1.45; word-break:break-all; background:var(--paper);
+  border:1px solid var(--line); border-radius:8px; padding:8px 10px; margin:0 0 12px; user-select:all; }
+.ncard .btn { border:0; cursor:pointer; font:inherit; font-weight:600; }
+@media (max-width:640px) { .ncard { flex-direction:column; align-items:stretch; } .ncard-qr { flex-basis:auto; width:220px; margin:0 auto; } }
+footer.site { background:var(--ink); color:var(--soft); font-size:14px; padding:28px 0; }
+footer.site a { color:var(--soft); }
+footer.site .wrap { display:flex; flex-wrap:wrap; gap:8px 24px; justify-content:space-between; }
+@media (max-width:640px) {
+  body { font-size:16px; }
+  .hero { padding:36px 0 44px; }
+  main { padding:28px 0 40px; }
+  .btns .btn { flex:1 1 auto; text-align:center; }
+  .card { padding:16px; }
+  /* Wide tables (4+ columns) become one card per row: the first cell is the row title,
+     every other cell is prefixed with its column header (data-label, added by stack_tables). */
+  table.stack, table.stack tbody, table.stack tr, table.stack td { display:block; width:auto !important; }
+  table.stack { background:none; border:0; }
+  table.stack tr:first-child { display:none; }
+  table.stack tr { background:var(--card); border:1px solid var(--line); border-radius:12px; margin-bottom:12px; overflow:hidden; }
+  table.stack td { border-bottom:1px solid var(--line); padding:8px 14px; }
+  table.stack td:last-child { border-bottom:0; }
+  table.stack td:first-child { background:var(--ink); color:var(--paper); font-weight:600; }
+  table.stack td:not(:first-child)::before { content:attr(data-label); display:block; font-size:13px;
+    font-weight:600; color:var(--muted); text-transform:uppercase; letter-spacing:.5px; }
+  footer.site .wrap { flex-direction:column; }
+}
+</style>
+</head>
+<body>
+<header class="top"><div class="wrap">
+<a class="brand" href="/en/">Nevod<span>.</span></a>
+<nav class="main"><a href="/en/">Home</a><a href="/en/manifesto/">ZKI Manifesto</a><a href="/en/compare/">Compare</a><a href="/en/security/">Security</a><a href="/en/cities/">For cities</a><a href="/en/download/">Download</a><a href="/en/publications/">Publications</a><a href="/en/about/">About</a></nav>
+<details class="menu"><summary aria-label="Menu"><span class="burger"></span></summary><nav><a href="/en/">Home</a><a href="/en/manifesto/">ZKI Manifesto</a><a href="/en/compare/">Compare</a><a href="/en/security/">Security</a><a href="/en/cities/">For cities</a><a href="/en/download/">Download</a><a href="/en/publications/">Publications</a><a href="/en/about/">About</a></nav></details>
+<details class="lang"><summary>English</summary><ul><li><a href="/uk/privacy/" hreflang="uk" lang="uk">Українська</a></li><li><a href="/en/privacy/" hreflang="en" lang="en">English</a></li><li><a href="/de/privacy/" hreflang="de" lang="de">Deutsch</a></li><li><a href="/tr/privacy/" hreflang="tr" lang="tr">Türkçe</a></li><li><a href="/es/privacy/" hreflang="es" lang="es">Español</a></li><li><a href="/it/privacy/" hreflang="it" lang="it">Italiano</a></li><li><a href="/fr/privacy/" hreflang="fr" lang="fr">Français</a></li></ul></details>
+</div></header>
+
+<main class="legal"><div class="wrap">
+<h1>Privacy Policy</h1>
+<p>Version of 17 October 2026. Nevod is developed by Kolpakov Andrey. Questions about data: <a href="mailto:privacy@nevod.network">privacy@nevod.network</a>.</p>
+<h2>1. The essentials</h2>
+<p>Nevod is built on the principle of Zero Knowledge Infrastructure. The content of your messages, photos, videos, voice messages, files and calls is end-to-end encrypted, and keys never leave your device. Neither the network nodes nor the developer can read the content. The one exception is what you write to AI bots yourself, see section 5.</p>
+<h2>2. What's stored on your device</h2>
+<p>Your cryptographic identity (keys in the iOS secure storage), contacts, message history and media, settings, and a technical log for diagnostics. The log never leaves the device unless you send it yourself.</p>
+<p>This data is not included in iCloud or computer backups and is not transferred to other devices. If the device is lost or reset, or the app is deleted, the history cannot be restored: neither the nodes nor the developer have a copy.</p>
+<h2>3. What a node processes</h2>
+<ul>
+<li>Your identity's identifier (cell ID) and your public keys.</li>
+<li>The display name you chose.</li>
+<li>Device tokens for push notifications and calls.</li>
+<li>Encrypted messages until they're delivered: undelivered messages are deleted after 72 hours.</li>
+<li>Your notification settings and your list of blocked users.</li>
+<li>Delivery metadata (who sends packets to whom and when) and technical logs for diagnostics, kept for a limited time.</li>
+<li>Your messages to the administrator account (complaints and questions sent from the app). The node's operator reads them in order to reply: they are addressed to the operator. Your conversations with other people remain inaccessible to the operator.</li>
+</ul>
+<p>Nodes may belong to different independent operators. The operator of the node you connect to processes this data to run the network.</p>
+<h2>4. Notifications</h2>
+<p>Notifications on iPhone are delivered through the Apple Push Notification service. A notification carries the sender's name and the generic text "New message" — never the message content.</p>
+<h2>5. AI bots</h2>
+<p>A node may offer AI bots, for example an assistant or a translator. Such a bot answers through the AI provider you pick — Anthropic (Claude), OpenAI (ChatGPT) or Google (Gemini) — on your own API key. Nevod doesn't sell AI access and has no keys of its own. You don't need bots to use Nevod.</p>
+<ul>
+<li><b>Your key</b> is kept only on your device, in the iOS secure storage, and doesn't move to other devices. It travels to the bot end-to-end encrypted, together with each message. The bot uses it for that one request and doesn't save it.</li>
+<li><b>Your messages to a bot.</b> A bot is a separate network participant run by the operator of the node where it's published. On the way, messages to it are end-to-end encrypted like all others; the bot decrypts them to answer and passes the text to the provider you picked. Only write to a bot what you're willing to share with that provider.</li>
+<li><b>What the bot keeps:</b> only the last few messages of your conversation, in memory, so it can answer in context; they vanish when the bot restarts. The bot's log records that a request happened, its provider and its length — never the text or the key.</li>
+<li><b>The provider</b> receives your messages, the recent conversation and your key, and processes them under its own terms and privacy policy (<a href="https://www.anthropic.com/legal/privacy">Anthropic</a>, <a href="https://openai.com/policies/privacy-policy">OpenAI</a>, <a href="https://policies.google.com/privacy">Google</a>). The requests come from the bot's server, not from your device.</li>
+<li><b>Consent.</b> Before you add a key, the app asks you to agree that your messages to bots go to that provider. To withdraw: Profile → Security → AI keys → delete the key. "Reset identity" deletes all keys too.</li>
+<li>Bots only receive text: photos, files, voice messages and calls are never passed to them.</li>
+</ul>
+<h2>6. Third parties</h2>
+<p>We don't sell data or use it for advertising or tracking. We use: Apple (notifications, app distribution), node hosting, Cloudflare (DNS and domain e-mail). If you add an AI key: the provider you picked, for your messages to bots (section 5).</p>
+<h2>7. Deletion</h2>
+<p>Profile → "Reset identity" deletes your data on the device and your registration on the node.</p>
+<h2>8. Children</h2>
+<p>Nevod is not intended for children younger than the age at which your country allows consenting to data processing on one's own.</p>
+<h2>9. Changes</h2>
+<p>We'll announce significant changes to this policy on this page and in the app.</p>
+</div></main>
+
+<footer class="site"><div class="wrap">
+<div>© 2026 Nevod · Kolpakov Andrey</div>
+<div><a href="/en/support/">Support</a> · <a href="/en/privacy/">Privacy</a> · <a href="/en/terms/">Terms of Use</a> · <a href="/en/node/">Run a node</a></div>
+</div></footer>
+</body>
+</html>

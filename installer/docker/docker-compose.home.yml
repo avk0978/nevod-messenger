@@ -1,0 +1,26 @@
+services:
+  nevod_node:
+    build: ../..
+    container_name: nevod_home_node
+    restart: always
+    # Capped logs (privacy policy §3: technical logs "kept for a limited time").
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+    ports:
+      # Both published (unlike node1's compose) — this node's TLS-terminating
+      # reverse proxy (Caddy) runs on the HOST, not inside Docker, and reaches
+      # the container via localhost, same as it reached the old native exe.
+      - "8765:8765"
+      - "8766:8766"
+    volumes:
+      - ${NEVOD_DATA_DIR}:/app/data
+    environment:
+      - NEVOD_ADDRESS=${NEVOD_ADDRESS}
+      - NEVOD_BIND=0.0.0.0
+      - NEVOD_PUBLIC_CLIENT_ADDR=${NEVOD_PUBLIC_CLIENT_ADDR}
+      - NEVOD_ADMIN_PASSWORD=${NEVOD_ADMIN_PASSWORD:-}
+      - TURN_SECRET=${TURN_SECRET:-}
+      - NEVOD_ALIASES=/app/data/aliases.json

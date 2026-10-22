@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Zero Knowledge Infrastructure Manifestosu — Nevod</title>
+<meta name="description" content="ZKI manifestosu — Nevod&#x27;un geliştirilmesinin temeli. Yazar: Kolpakov Andrey.">
+<link rel="canonical" href="https://nevod.network/tr/manifesto/">
+<link rel="alternate" hreflang="uk" href="https://nevod.network/uk/manifesto/"><link rel="alternate" hreflang="en" href="https://nevod.network/en/manifesto/"><link rel="alternate" hreflang="de" href="https://nevod.network/de/manifesto/"><link rel="alternate" hreflang="tr" href="https://nevod.network/tr/manifesto/"><link rel="alternate" hreflang="es" href="https://nevod.network/es/manifesto/"><link rel="alternate" hreflang="it" href="https://nevod.network/it/manifesto/"><link rel="alternate" hreflang="fr" href="https://nevod.network/fr/manifesto/">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik:wght@500..700&family=IBM+Plex+Sans:wght@400;600&display=swap">
+<style>
+:root { --ink:#14213D; --paper:#F7F6F1; --card:#FFFFFF; --line:#DCDFE6; --muted:#4A5568;
+        --accent:#F2C230; --accent-ink:#8A6A00; --dark2:#1E2F55; --soft:#C9D3E6; }
+* { box-sizing:border-box; }
+html { -webkit-text-size-adjust:100%; }
+body { margin:0; background:var(--paper); color:var(--ink); font:17px/1.6 'IBM Plex Sans', Arial, sans-serif; }
+a { color:#1F4E9E; }
+h1,h2,h3 { font-family:'Rubik', Arial, sans-serif; line-height:1.15; margin:0 0 .5em;
+  overflow-wrap:break-word; hyphens:auto; }
+main, .hero { overflow-wrap:break-word; }
+h1 { font-size:clamp(28px,5vw,56px); } h2 { font-size:clamp(24px,3.2vw,34px); margin-top:1.4em; } h3 { font-size:20px; }
+[id] { scroll-margin-top:76px; }  /* sticky header must not cover an anchor target */
+main.article h2 { margin-top:1.6em; } main.article h1 { font-size:clamp(26px,4vw,44px); }
+main.article hr { border:0; border-top:1px solid var(--line); margin:28px 0; }
+main.article code { font-size:.9em; background:var(--card); border:1px solid var(--line); border-radius:4px; padding:0 4px; }
+main.article ol li, main.article ul li { margin-bottom:.35em; overflow-wrap:anywhere; }
+.pub { margin:16px 0; } .pub h3 a { text-decoration:none; } .pub-date { font-size:14px; color:var(--muted); }
+.pub-back { font-size:15px; }
+p, ul, ol, table { margin:0 0 1em; }
+.wrap { max-width:1080px; margin:0 auto; padding:0 16px; }
+header.top { background:var(--ink); color:var(--paper); position:sticky; top:0; z-index:10; }
+header.top .wrap { display:flex; align-items:center; gap:16px; min-height:60px; }
+header.top a { color:var(--paper); text-decoration:none; }
+.brand { font-family:'Rubik', Arial, sans-serif; font-weight:700; font-size:20px; margin-right:auto; }
+.brand span { color:var(--accent); }
+nav.main { display:flex; gap:14px; font-size:15px; }
+nav.main a { opacity:.85; white-space:nowrap; } nav.main a[aria-current] { opacity:1; border-bottom:2px solid var(--accent); }
+details.menu { display:none; order:3; }
+details.menu summary { list-style:none; cursor:pointer; width:44px; height:44px; margin-right:-10px;
+  display:flex; align-items:center; justify-content:center; }
+details.menu summary::-webkit-details-marker { display:none; }
+.burger, .burger::before, .burger::after { display:block; width:22px; height:2px; background:var(--paper);
+  border-radius:2px; position:relative; transition:transform .2s, background .2s; }
+.burger::before, .burger::after { content:""; position:absolute; left:0; }
+.burger::before { top:-7px; } .burger::after { top:7px; }
+details.menu[open] .burger { background:transparent; }
+details.menu[open] .burger::before { transform:translateY(7px) rotate(45deg); }
+details.menu[open] .burger::after { transform:translateY(-7px) rotate(-45deg); }
+details.menu nav { position:absolute; left:0; right:0; top:100%; background:var(--ink);
+  border-top:1px solid var(--dark2); box-shadow:0 12px 24px rgba(0,0,0,.25); padding:6px 0 12px; }
+details.menu nav a { display:block; padding:12px 16px; font-size:17px; opacity:.9; }
+details.menu nav a[aria-current] { opacity:1; color:var(--accent); }
+details.lang { position:relative; font-size:15px; }
+details.lang summary { list-style:none; cursor:pointer; border:1px solid var(--accent); color:var(--accent);
+  padding:3px 12px; border-radius:999px; }
+details.lang summary::-webkit-details-marker { display:none; }
+details.lang summary:empty { min-width:6em; height:calc(1.6em + 8px); box-sizing:border-box; }
+details.lang ul { position:absolute; right:0; top:34px; background:var(--card); color:var(--ink); list-style:none;
+  padding:8px 0; margin:0; border-radius:10px; box-shadow:0 8px 24px rgba(0,0,0,.2); min-width:160px; }
+details.lang li a { color:var(--ink); display:block; padding:6px 16px; }
+@media (max-width:960px) {
+  nav.main { display:none; }
+  details.menu { display:block; }
+  header.top .wrap { min-height:56px; gap:12px; }
+  details.lang li a { padding:10px 16px; }
+}
+.hero { background:var(--ink); color:var(--paper); padding:56px 0 64px; }
+.hero p.lead { font-size:clamp(18px,2.2vw,22px); color:var(--soft); max-width:760px; }
+.eyebrow { font-size:14px; letter-spacing:3px; text-transform:uppercase; color:var(--accent); margin-bottom:12px; }
+.btns { display:flex; gap:12px; flex-wrap:wrap; margin-top:24px; }
+.btn { display:inline-block; padding:12px 22px; border-radius:10px; text-decoration:none; font-weight:600; }
+.btn.primary { background:var(--accent); color:var(--ink); } .btn.ghost { border:1px solid var(--soft); color:var(--paper); }
+main { padding:40px 0 56px; }
+.grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:16px; margin:16px 0 8px; }
+.card { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:20px; }
+.card h3 { margin-bottom:6px; } .card p { margin:0; color:var(--muted); }
+.status td:first-child { font-weight:600; }
+.tbl { overflow-x:auto; }
+table { border-collapse:collapse; width:100%; background:var(--card); border:1px solid var(--line); border-radius:12px; }
+th, td { text-align:left; padding:10px 12px; border-bottom:1px solid var(--line); vertical-align:top; }
+th { background:var(--ink); color:var(--paper); font-weight:600; }
+.note { background:#FBF3D6; border-left:4px solid var(--accent); padding:14px 16px; border-radius:8px; }
+.legal h2 { font-size:22px; }
+.ncard { display:flex; gap:20px; align-items:flex-start; background:var(--card); border:1px solid var(--line);
+  border-radius:14px; padding:20px; margin:8px 0 16px; }
+.ncard-qr { flex:0 0 220px; } .ncard-qr svg { display:block; width:100%; height:auto; }
+.ncard-body { min-width:0; } .ncard-body h3 { margin-bottom:6px; } .ncard-body p { color:var(--muted); }
+.ncard code { display:block; font-size:12px; line-height:1.45; word-break:break-all; background:var(--paper);
+  border:1px solid var(--line); border-radius:8px; padding:8px 10px; margin:0 0 12px; user-select:all; }
+.ncard .btn { border:0; cursor:pointer; font:inherit; font-weight:600; }
+@media (max-width:640px) { .ncard { flex-direction:column; align-items:stretch; } .ncard-qr { flex-basis:auto; width:220px; margin:0 auto; } }
+footer.site { background:var(--ink); color:var(--soft); font-size:14px; padding:28px 0; }
+footer.site a { color:var(--soft); }
+footer.site .wrap { display:flex; flex-wrap:wrap; gap:8px 24px; justify-content:space-between; }
+@media (max-width:640px) {
+  body { font-size:16px; }
+  .hero { padding:36px 0 44px; }
+  main { padding:28px 0 40px; }
+  .btns .btn { flex:1 1 auto; text-align:center; }
+  .card { padding:16px; }
+  /* Wide tables (4+ columns) become one card per row: the first cell is the row title,
+     every other cell is prefixed with its column header (data-label, added by stack_tables). */
+  table.stack, table.stack tbody, table.stack tr, table.stack td { display:block; width:auto !important; }
+  table.stack { background:none; border:0; }
+  table.stack tr:first-child { display:none; }
+  table.stack tr { background:var(--card); border:1px solid var(--line); border-radius:12px; margin-bottom:12px; overflow:hidden; }
+  table.stack td { border-bottom:1px solid var(--line); padding:8px 14px; }
+  table.stack td:last-child { border-bottom:0; }
+  table.stack td:first-child { background:var(--ink); color:var(--paper); font-weight:600; }
+  table.stack td:not(:first-child)::before { content:attr(data-label); display:block; font-size:13px;
+    font-weight:600; color:var(--muted); text-transform:uppercase; letter-spacing:.5px; }
+  footer.site .wrap { flex-direction:column; }
+}
+</style>
+</head>
+<body>
+<header class="top"><div class="wrap">
+<a class="brand" href="/tr/">Nevod<span>.</span></a>
+<nav class="main"><a href="/tr/">Ana sayfa</a><a href="/tr/manifesto/" aria-current="page">ZKI Manifestosu</a><a href="/tr/compare/">Karşılaştırma</a><a href="/tr/security/">Güvenlik</a><a href="/tr/cities/">Şehirler için</a><a href="/tr/download/">İndir</a><a href="/tr/publications/">Yayınlar</a><a href="/tr/about/">Proje hakkında</a></nav>
+<details class="menu"><summary aria-label="Menü"><span class="burger"></span></summary><nav><a href="/tr/">Ana sayfa</a><a href="/tr/manifesto/" aria-current="page">ZKI Manifestosu</a><a href="/tr/compare/">Karşılaştırma</a><a href="/tr/security/">Güvenlik</a><a href="/tr/cities/">Şehirler için</a><a href="/tr/download/">İndir</a><a href="/tr/publications/">Yayınlar</a><a href="/tr/about/">Proje hakkında</a></nav></details>
+<details class="lang"><summary>Türkçe</summary><ul><li><a href="/uk/manifesto/" hreflang="uk" lang="uk">Українська</a></li><li><a href="/en/manifesto/" hreflang="en" lang="en">English</a></li><li><a href="/de/manifesto/" hreflang="de" lang="de">Deutsch</a></li><li><a href="/tr/manifesto/" hreflang="tr" lang="tr">Türkçe</a></li><li><a href="/es/manifesto/" hreflang="es" lang="es">Español</a></li><li><a href="/it/manifesto/" hreflang="it" lang="it">Italiano</a></li><li><a href="/fr/manifesto/" hreflang="fr" lang="fr">Français</a></li></ul></details>
+</div></header>
+
+<main><div class="wrap">
+<div class="eyebrow" style="color:#8A6A00">Manifesto</div>
+<h1>Zero Knowledge Infrastructure</h1>
+<p><b>Şu anda baktığınız ağ — Nevod — tek bir fikrin ilk eksiksiz uygulamasıdır: iletişim altyapısını kuranlar, içinden neyin geçtiğini teknik olarak görememelidir.</b></p>
+<h2>Duruş</h2>
+<p>Ben araçlar yapıyorum.<br>Nasıl kullanıldıklarını izlemiyorum.<br>Verilere erişimim yok.<br>Ve bu, yazılımın mimarisidir!</p>
+<p>Bu bir gizlilik politikası değil. Bu bir pazarlama vaadi değil. Bu, temele yerleştirilmiş teknik bir imkânsızlık.</p>
+<h2>Bıçak ilkesi</h2>
+<p>Bıçak üreticisi, bıçağın nasıl kullanıldığından sorumlu değildir. Bıçakla ekmek kesilebilir ya da kesilmez. Bu, bıçağı yapanın değil, tutanın seçimidir.</p>
+<p>Aynı mantık iletişim altyapısı için de geçerlidir.</p>
+<p>Ben kanalı kuruyorum. İçinden ne geçtiği benim işim değil.<br>Umursamadığım için değil. Benim işim <b>olmaması gerektiği</b> için.</p>
+<p>Özel iletişim hakkı temel bir insan hakkıdır. İletişim altyapısı bir gözetim noktası olmamalıdır.</p>
+<h2>Teknik olarak ne anlama geliyor</h2>
+<p>Şifreleme anahtarları kullanıcının cihazında oluşturulur.<br>O cihazı asla terk etmezler.<br>Anahtar tutan sunucularım yok.<br>Ana anahtarım yok.<br>Yedeğim yok.</p>
+<p>Biri bir yazışmayı istemeye gelirse, verecek hiçbir şeyim yok. Sakladığım için değil — <b>bende olmadığı için</b>.</p>
+<p>Bu bir vaat değil, mimari bir güvencedir.</p>
+<h2>Bir duruş olarak ne anlama geliyor</h2>
+<p>İnsanların kişisel verilerinden kazanç sağlamak istemiyorum. Ne konuştuklarını bilmek istemiyorum. Kendisine mahkeme celbi gönderilebilecek bir aracı olmak istemiyorum.</p>
+<p>Gelir, içerikten değil araçtan elde edilir. Ben çekici satarım, onunla inşa edileni değil.</p>
+<h2>Yapay zekâ ajanları ve bir sonraki sınır</h2>
+<p>Dünya otonom yapay zekâ ajanlarına doğru ilerliyor. Ajanlar birbirleriyle konuşacak — pazarlık edecek, birbirlerini görevlendirecek, veri alışverişi yapacak.</p>
+<p>Soru şu hâle geliyor: bu konuşmaları kim görüyor?</p>
+<p>Sektörün bugünkü cevabı platformdur. OpenAI, ajanların OpenAI'da ne yaptığını görür. Google, ajanların Google'da ne yaptığını görür. Orkestratör operatörü her şeyi görür.</p>
+<p>Benim cevabım: <b>hiç kimse</b>.</p>
+<p>Ajanlar ZKI altyapısı üzerinden iletişim kurarsa, yazışmaları uçtan uca şifrelidir. Platform operatörü yalnızca yönlendirmeyi görür. Pazarlığın içeriği ajanlar arasında kalır.</p>
+<div class="tbl"><table>
+<tr><th>Ajan A</th><th style="width:30%">⇄ uçtan uca şifreli ⇄</th><th>Ajan B</th></tr>
+<tr><td>Nevod düğümü — yalnızca şifreli metni görür</td><td></td><td>Nevod düğümü — yalnızca şifreli metni görür</td></tr>
+<tr><td>Operatör — hiçbir şey görmez</td><td></td><td>Operatör — hiçbir şey görmez</td></tr>
+</table></div>
+<p><i>"Yapay zekâ ajanlarının kullandığı bir hizmet işletiyorum. Sizin ajanınızla neyi kararlaştırdıklarını bilmiyorum."</i></p>
+<p>Bu, sorumluluktan kaçmak değil. Ajanların bağımsız aktörler olduğu bir dünya için bir mimaridir.</p>
+<h2>Bu neden tam şimdi önemli</h2>
+<p>2025–2026 yıllarında:</p>
+<ul><li>Yapay zekâ ajanları otonom hareket etmeye başlıyor</li><li>Farklı şirketlerin ajanları etkileşime girmeye başlıyor</li><li>Ajanlar arası pazarlıkları kimin göreceğine kimse karar vermedi</li><li>Bir ajanın "söylediklerinden" kimin sorumlu olduğuna kimse karar vermedi</li></ul>
+<p>ZKI bunun cevabını verir:</p>
+<ul><li>Pazarlıklar şifrelidir — operatör onları görmez</li><li>Bir ajanın eylemlerinin sorumluluğu onu çalıştırana aittir</li><li>İletişim altyapısı tarafsız kalır — bir telefon hattı gibi</li></ul>
+<h2>Emsaller</h2>
+<div class="tbl"><table>
+<tr><th style="width:30%">Araç</th><th>Duruş</th></tr>
+<tr><td>Tor Project</td><td>"Bir anonimlik aracı yaptık. Trafiği görmüyoruz."</td></tr>
+<tr><td>Signal Foundation</td><td>"Anahtarlar kullanıcılarda. Teslim edecek bir şeyimiz yok."</td></tr>
+<tr><td>ProtonMail</td><td>"Sıfır bilgili şifreleme. E-postanızı okuyamayız."</td></tr>
+<tr><td>VPN sağlayıcıları</td><td>"Tüneli biz sağlarız. İçerik bizim değil."</td></tr>
+<tr><td>Donanım cüzdanları</td><td>"Anahtarlar cihazda. Bizde kopyası yok."</td></tr>
+</table></div>
+<p>Bu duruşların hepsi demokratik ülkelerin çoğunda hukuki incelemeden geçmiştir. ZKI aynı duruştur; bir tasarım felsefesine kadar taşınmıştır.</p>
+<h2>Ne inşa ediyorum</h2>
+<p><b>Nevod</b>, ZKI ilkesinin eksiksiz bir ağ olarak ilk uygulamasıdır. Bir ürün değil. Bir protokol.</p>
+<p>Şunların temeli olabilir:</p>
+<ul><li>Mesajlaşma uygulamaları</li><li>Dosya depolama</li><li>Oylama sistemleri</li><li>Ölü adam anahtarları</li><li>Yapay zekâ ajanları için protokoller</li><li>Kurumsal altyapı</li></ul>
+<p>Her yerde tek bir ilke: <b>altyapının yaratıcısı, içeriğinden teknik olarak koparılmıştır</b>.</p>
+<p style="margin-top:2em"><i>Nisan 2026</i></p>
+<p><b>Kolpakov Andrey</b></p>
+<p class="note">© 2026. Bu manifestodan alıntı yaparken veya ona atıfta bulunurken lütfen <a href="https://nevod.network">nevod.network</a> adresine bağlantı verin. İngilizce orijinal: <a href="/manifesto/">nevod.network/manifesto</a>.</p>
+</div></main>
+
+<footer class="site"><div class="wrap">
+<div>© 2026 Nevod · Kolpakov Andrey</div>
+<div><a href="/tr/support/">Destek</a> · <a href="/tr/privacy/">Gizlilik</a> · <a href="/tr/terms/">Kullanım Koşulları</a> · <a href="/tr/node/">Kendi düğümün</a></div>
+</div></footer>
+</body>
+</html>

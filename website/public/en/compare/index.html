@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Compare — Nevod</title>
+<meta name="description" content="Nevod compared with Signal, Telegram and WhatsApp: why encryption alone isn&#x27;t ZKI.">
+<link rel="canonical" href="https://nevod.network/en/compare/">
+<link rel="alternate" hreflang="uk" href="https://nevod.network/uk/compare/"><link rel="alternate" hreflang="en" href="https://nevod.network/en/compare/"><link rel="alternate" hreflang="de" href="https://nevod.network/de/compare/"><link rel="alternate" hreflang="tr" href="https://nevod.network/tr/compare/"><link rel="alternate" hreflang="es" href="https://nevod.network/es/compare/"><link rel="alternate" hreflang="it" href="https://nevod.network/it/compare/"><link rel="alternate" hreflang="fr" href="https://nevod.network/fr/compare/">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik:wght@500..700&family=IBM+Plex+Sans:wght@400;600&display=swap">
+<style>
+:root { --ink:#14213D; --paper:#F7F6F1; --card:#FFFFFF; --line:#DCDFE6; --muted:#4A5568;
+        --accent:#F2C230; --accent-ink:#8A6A00; --dark2:#1E2F55; --soft:#C9D3E6; }
+* { box-sizing:border-box; }
+html { -webkit-text-size-adjust:100%; }
+body { margin:0; background:var(--paper); color:var(--ink); font:17px/1.6 'IBM Plex Sans', Arial, sans-serif; }
+a { color:#1F4E9E; }
+h1,h2,h3 { font-family:'Rubik', Arial, sans-serif; line-height:1.15; margin:0 0 .5em;
+  overflow-wrap:break-word; hyphens:auto; }
+main, .hero { overflow-wrap:break-word; }
+h1 { font-size:clamp(28px,5vw,56px); } h2 { font-size:clamp(24px,3.2vw,34px); margin-top:1.4em; } h3 { font-size:20px; }
+[id] { scroll-margin-top:76px; }  /* sticky header must not cover an anchor target */
+main.article h2 { margin-top:1.6em; } main.article h1 { font-size:clamp(26px,4vw,44px); }
+main.article hr { border:0; border-top:1px solid var(--line); margin:28px 0; }
+main.article code { font-size:.9em; background:var(--card); border:1px solid var(--line); border-radius:4px; padding:0 4px; }
+main.article ol li, main.article ul li { margin-bottom:.35em; overflow-wrap:anywhere; }
+.pub { margin:16px 0; } .pub h3 a { text-decoration:none; } .pub-date { font-size:14px; color:var(--muted); }
+.pub-back { font-size:15px; }
+p, ul, ol, table { margin:0 0 1em; }
+.wrap { max-width:1080px; margin:0 auto; padding:0 16px; }
+header.top { background:var(--ink); color:var(--paper); position:sticky; top:0; z-index:10; }
+header.top .wrap { display:flex; align-items:center; gap:16px; min-height:60px; }
+header.top a { color:var(--paper); text-decoration:none; }
+.brand { font-family:'Rubik', Arial, sans-serif; font-weight:700; font-size:20px; margin-right:auto; }
+.brand span { color:var(--accent); }
+nav.main { display:flex; gap:14px; font-size:15px; }
+nav.main a { opacity:.85; white-space:nowrap; } nav.main a[aria-current] { opacity:1; border-bottom:2px solid var(--accent); }
+details.menu { display:none; order:3; }
+details.menu summary { list-style:none; cursor:pointer; width:44px; height:44px; margin-right:-10px;
+  display:flex; align-items:center; justify-content:center; }
+details.menu summary::-webkit-details-marker { display:none; }
+.burger, .burger::before, .burger::after { display:block; width:22px; height:2px; background:var(--paper);
+  border-radius:2px; position:relative; transition:transform .2s, background .2s; }
+.burger::before, .burger::after { content:""; position:absolute; left:0; }
+.burger::before { top:-7px; } .burger::after { top:7px; }
+details.menu[open] .burger { background:transparent; }
+details.menu[open] .burger::before { transform:translateY(7px) rotate(45deg); }
+details.menu[open] .burger::after { transform:translateY(-7px) rotate(-45deg); }
+details.menu nav { position:absolute; left:0; right:0; top:100%; background:var(--ink);
+  border-top:1px solid var(--dark2); box-shadow:0 12px 24px rgba(0,0,0,.25); padding:6px 0 12px; }
+details.menu nav a { display:block; padding:12px 16px; font-size:17px; opacity:.9; }
+details.menu nav a[aria-current] { opacity:1; color:var(--accent); }
+details.lang { position:relative; font-size:15px; }
+details.lang summary { list-style:none; cursor:pointer; border:1px solid var(--accent); color:var(--accent);
+  padding:3px 12px; border-radius:999px; }
+details.lang summary::-webkit-details-marker { display:none; }
+details.lang summary:empty { min-width:6em; height:calc(1.6em + 8px); box-sizing:border-box; }
+details.lang ul { position:absolute; right:0; top:34px; background:var(--card); color:var(--ink); list-style:none;
+  padding:8px 0; margin:0; border-radius:10px; box-shadow:0 8px 24px rgba(0,0,0,.2); min-width:160px; }
+details.lang li a { color:var(--ink); display:block; padding:6px 16px; }
+@media (max-width:960px) {
+  nav.main { display:none; }
+  details.menu { display:block; }
+  header.top .wrap { min-height:56px; gap:12px; }
+  details.lang li a { padding:10px 16px; }
+}
+.hero { background:var(--ink); color:var(--paper); padding:56px 0 64px; }
+.hero p.lead { font-size:clamp(18px,2.2vw,22px); color:var(--soft); max-width:760px; }
+.eyebrow { font-size:14px; letter-spacing:3px; text-transform:uppercase; color:var(--accent); margin-bottom:12px; }
+.btns { display:flex; gap:12px; flex-wrap:wrap; margin-top:24px; }
+.btn { display:inline-block; padding:12px 22px; border-radius:10px; text-decoration:none; font-weight:600; }
+.btn.primary { background:var(--accent); color:var(--ink); } .btn.ghost { border:1px solid var(--soft); color:var(--paper); }
+main { padding:40px 0 56px; }
+.grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:16px; margin:16px 0 8px; }
+.card { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:20px; }
+.card h3 { margin-bottom:6px; } .card p { margin:0; color:var(--muted); }
+.status td:first-child { font-weight:600; }
+.tbl { overflow-x:auto; }
+table { border-collapse:collapse; width:100%; background:var(--card); border:1px solid var(--line); border-radius:12px; }
+th, td { text-align:left; padding:10px 12px; border-bottom:1px solid var(--line); vertical-align:top; }
+th { background:var(--ink); color:var(--paper); font-weight:600; }
+.note { background:#FBF3D6; border-left:4px solid var(--accent); padding:14px 16px; border-radius:8px; }
+.legal h2 { font-size:22px; }
+.ncard { display:flex; gap:20px; align-items:flex-start; background:var(--card); border:1px solid var(--line);
+  border-radius:14px; padding:20px; margin:8px 0 16px; }
+.ncard-qr { flex:0 0 220px; } .ncard-qr svg { display:block; width:100%; height:auto; }
+.ncard-body { min-width:0; } .ncard-body h3 { margin-bottom:6px; } .ncard-body p { color:var(--muted); }
+.ncard code { display:block; font-size:12px; line-height:1.45; word-break:break-all; background:var(--paper);
+  border:1px solid var(--line); border-radius:8px; padding:8px 10px; margin:0 0 12px; user-select:all; }
+.ncard .btn { border:0; cursor:pointer; font:inherit; font-weight:600; }
+@media (max-width:640px) { .ncard { flex-direction:column; align-items:stretch; } .ncard-qr { flex-basis:auto; width:220px; margin:0 auto; } }
+footer.site { background:var(--ink); color:var(--soft); font-size:14px; padding:28px 0; }
+footer.site a { color:var(--soft); }
+footer.site .wrap { display:flex; flex-wrap:wrap; gap:8px 24px; justify-content:space-between; }
+@media (max-width:640px) {
+  body { font-size:16px; }
+  .hero { padding:36px 0 44px; }
+  main { padding:28px 0 40px; }
+  .btns .btn { flex:1 1 auto; text-align:center; }
+  .card { padding:16px; }
+  /* Wide tables (4+ columns) become one card per row: the first cell is the row title,
+     every other cell is prefixed with its column header (data-label, added by stack_tables). */
+  table.stack, table.stack tbody, table.stack tr, table.stack td { display:block; width:auto !important; }
+  table.stack { background:none; border:0; }
+  table.stack tr:first-child { display:none; }
+  table.stack tr { background:var(--card); border:1px solid var(--line); border-radius:12px; margin-bottom:12px; overflow:hidden; }
+  table.stack td { border-bottom:1px solid var(--line); padding:8px 14px; }
+  table.stack td:last-child { border-bottom:0; }
+  table.stack td:first-child { background:var(--ink); color:var(--paper); font-weight:600; }
+  table.stack td:not(:first-child)::before { content:attr(data-label); display:block; font-size:13px;
+    font-weight:600; color:var(--muted); text-transform:uppercase; letter-spacing:.5px; }
+  footer.site .wrap { flex-direction:column; }
+}
+</style>
+</head>
+<body>
+<header class="top"><div class="wrap">
+<a class="brand" href="/en/">Nevod<span>.</span></a>
+<nav class="main"><a href="/en/">Home</a><a href="/en/manifesto/">ZKI Manifesto</a><a href="/en/compare/" aria-current="page">Compare</a><a href="/en/security/">Security</a><a href="/en/cities/">For cities</a><a href="/en/download/">Download</a><a href="/en/publications/">Publications</a><a href="/en/about/">About</a></nav>
+<details class="menu"><summary aria-label="Menu"><span class="burger"></span></summary><nav><a href="/en/">Home</a><a href="/en/manifesto/">ZKI Manifesto</a><a href="/en/compare/" aria-current="page">Compare</a><a href="/en/security/">Security</a><a href="/en/cities/">For cities</a><a href="/en/download/">Download</a><a href="/en/publications/">Publications</a><a href="/en/about/">About</a></nav></details>
+<details class="lang"><summary>English</summary><ul><li><a href="/uk/compare/" hreflang="uk" lang="uk">Українська</a></li><li><a href="/en/compare/" hreflang="en" lang="en">English</a></li><li><a href="/de/compare/" hreflang="de" lang="de">Deutsch</a></li><li><a href="/tr/compare/" hreflang="tr" lang="tr">Türkçe</a></li><li><a href="/es/compare/" hreflang="es" lang="es">Español</a></li><li><a href="/it/compare/" hreflang="it" lang="it">Italiano</a></li><li><a href="/fr/compare/" hreflang="fr" lang="fr">Français</a></li></ul></details>
+</div></header>
+
+<main><div class="wrap">
+<h1>Nevod and other messengers</h1>
+<p>Most modern messengers encrypt messages. The difference isn't whether there's encryption, but <b>what stays in the company's hands</b>: servers, the user database, phone numbers, the address book, metadata — and what of it can be demanded.</p>
+<p class="note">Nevod implements the principle of <a href="/en/manifesto/">Zero Knowledge Infrastructure</a>: the developer is cut off from users' data by <b>architecture</b>, not by encryption alone. Information about other messengers reflects their public descriptions as of 2026 and may change.</p>
+<div class="tbl"><table class="stack">
+<tr><th style="width:24%"></th><th>Nevod</th><th>Signal</th><th>Telegram</th><th>WhatsApp</th></tr>
+<tr><td data-label="">Who can technically read a regular chat</td><td data-label="Nevod">Only the participants</td><td data-label="Signal">Only the participants</td><td data-label="Telegram">Regular and group chats — Telegram's servers (end-to-end only in 1:1 "secret chats")</td><td data-label="WhatsApp">Only the participants</td></tr>
+<tr><td data-label="">The company's central servers</td><td data-label="Nevod">None — independent nodes anyone can run</td><td data-label="Signal">Yes</td><td data-label="Telegram">Yes</td><td data-label="WhatsApp">Yes, Meta's</td></tr>
+<tr><td data-label="">Tied to a phone number</td><td data-label="Nevod">No — identity is a key</td><td data-label="Signal">Yes (the number can be hidden behind a username)</td><td data-label="Telegram">Yes</td><td data-label="WhatsApp">Yes</td></tr>
+<tr><td data-label="">Address book upload</td><td data-label="Nevod">No — contacts are added by card or QR</td><td data-label="Signal">Private contact discovery</td><td data-label="Telegram">Yes, if allowed</td><td data-label="WhatsApp">Yes, if allowed</td></tr>
+<tr><td data-label="">User database held by the company</td><td data-label="Nevod">No central one — each node knows only its own</td><td data-label="Signal">Minimal</td><td data-label="Telegram">Yes</td><td data-label="WhatsApp">Yes</td></tr>
+<tr><td data-label="">What the company can hand over on request</td><td data-label="Nevod">The developer has nothing to hand over: no keys, no messages, no database</td><td data-label="Signal">Per its reports — account creation and last connection dates</td><td data-label="Telegram">Per its policy — IP address and phone number in some cases</td><td data-label="WhatsApp">Account metadata per its policy</td></tr>
+<tr><td data-label="">Cloud backups of chats</td><td data-label="Nevod">None — keys and history exist only on the device (lose the phone, lose the history)</td><td data-label="Signal">Optional; encrypted with a key only the user holds</td><td data-label="Telegram">Not needed — regular chats are already stored on Telegram's servers</td><td data-label="WhatsApp">To iCloud / Google Drive; not end-to-end encrypted by default (must be turned on manually)</td></tr>
+<tr><td data-label="">Single point of failure or blocking</td><td data-label="Nevod">None — nodes are independent</td><td data-label="Signal">Yes</td><td data-label="Telegram">Yes</td><td data-label="WhatsApp">Yes</td></tr>
+<tr><td data-label="">Works without internet within a city</td><td data-label="Nevod">Built into the architecture (city network, Wi-Fi mesh, radio)</td><td data-label="Signal">No</td><td data-label="Telegram">No</td><td data-label="WhatsApp">No</td></tr>
+<tr><td data-label="">Business model</td><td data-label="Nevod">Through the tool, not through data</td><td data-label="Signal">Donations (non-profit)</td><td data-label="Telegram">Ads and Premium</td><td data-label="WhatsApp">Meta's business services</td></tr>
+<tr><td data-label="">Open source</td><td data-label="Nevod">Not yet — closed until production release</td><td data-label="Signal">Yes</td><td data-label="Telegram">Partly (clients)</td><td data-label="WhatsApp">No</td></tr>
+</table></div>
+<h2>Why "just encryption" isn't enough</h2>
+<p>End-to-end encryption protects a message's content in transit. But if a company runs all the servers, keeps an account database keyed by phone numbers and sees who talks to whom and when, it keeps power over the system: it can be compelled, breached or blocked, and an app update can change the rules.</p>
+<p>ZKI asks a different question: <b>what could the infrastructure's creator get, even in theory?</b> In Nevod the answer is built into the architecture: keys never leave the device, there's no master key and no backups, no central server and no register of people by phone number.</p>
+<h2 id="low-load">Low-load distributed network: a comparison</h2>
+<p>We rate networks against six traits of a low-load distributed network: each node's load is bounded by its own circle of people, not by the size of the whole network. The traits come from Nevod's own principles, so the comparison naturally favors it.</p>
+<ol>
+<li>Own circle: a node's load grows with its circle (family, home, team), not with the whole network.</li>
+<li>Ordinary hardware: a home computer, mini-server or router; no data center needed.</li>
+<li>Economy: text and signals first, heavy data on request.</li>
+<li>Delay tolerance: with no connection, the message waits and goes later, including over a slow channel.</li>
+<li>No center: no single point of failure, blocking or seizure.</li>
+<li>Blind node: a node carries only ciphertext and cannot read it.</li>
+</ol>
+<p class="note">1: yes, ½: partly, 0: no. Year: first public release. Class: LL-0, a node's load is bounded by its circle; LL-1, plus bounded transit for others; LL-3, load grows with the whole network or depends on outside users. More: <a href="/en/publications/low-load-networks/">the article</a>.</p>
+<div class="tbl"><table class="stack">
+<tr><th>Network</th><th>Year</th><th>Own circle</th><th>Ordinary hardware</th><th>Economy</th><th>Delays</th><th>No center</th><th>Blind node</th><th>Class</th></tr>
+<tr><td data-label="Network">Secure Scuttlebutt</td><td data-label="Year">2014</td><td data-label="Own circle">1</td><td data-label="Ordinary hardware">1</td><td data-label="Economy">½</td><td data-label="Delays">1</td><td data-label="No center">1</td><td data-label="Blind node">0</td><td data-label="Class">LL-0</td></tr>
+<tr><td data-label="Network">Briar</td><td data-label="Year">2018</td><td data-label="Own circle">1</td><td data-label="Ordinary hardware">1</td><td data-label="Economy">½</td><td data-label="Delays">½</td><td data-label="No center">1</td><td data-label="Blind node">1</td><td data-label="Class">LL-0</td></tr>
+<tr><td data-label="Network"><b>Nevod</b></td><td data-label="Year">2026</td><td data-label="Own circle">1</td><td data-label="Ordinary hardware">1</td><td data-label="Economy">½</td><td data-label="Delays">½</td><td data-label="No center">1</td><td data-label="Blind node">1</td><td data-label="Class">LL-0</td></tr>
+<tr><td data-label="Network">FidoNet</td><td data-label="Year">1984</td><td data-label="Own circle">1</td><td data-label="Ordinary hardware">1</td><td data-label="Economy">1</td><td data-label="Delays">1</td><td data-label="No center">0</td><td data-label="Blind node">0</td><td data-label="Class">LL-1</td></tr>
+<tr><td data-label="Network">NNCP</td><td data-label="Year">2016</td><td data-label="Own circle">½</td><td data-label="Ordinary hardware">1</td><td data-label="Economy">1</td><td data-label="Delays">1</td><td data-label="No center">1</td><td data-label="Blind node">1</td><td data-label="Class">LL-1</td></tr>
+<tr><td data-label="Network">Reticulum / LXMF</td><td data-label="Year">2016</td><td data-label="Own circle">½</td><td data-label="Ordinary hardware">1</td><td data-label="Economy">1</td><td data-label="Delays">1</td><td data-label="No center">1</td><td data-label="Blind node">1</td><td data-label="Class">LL-1</td></tr>
+<tr><td data-label="Network">Meshtastic</td><td data-label="Year">2020</td><td data-label="Own circle">0</td><td data-label="Ordinary hardware">1</td><td data-label="Economy">1</td><td data-label="Delays">½</td><td data-label="No center">1</td><td data-label="Blind node">½</td><td data-label="Class">LL-1</td></tr>
+<tr><td data-label="Network">Tor</td><td data-label="Year">2002</td><td data-label="Own circle">0</td><td data-label="Ordinary hardware">½</td><td data-label="Economy">0</td><td data-label="Delays">0</td><td data-label="No center">1</td><td data-label="Blind node">1</td><td data-label="Class">LL-3</td></tr>
+<tr><td data-label="Network">WhatsApp</td><td data-label="Year">2009</td><td data-label="Own circle">0</td><td data-label="Ordinary hardware">0</td><td data-label="Economy">0</td><td data-label="Delays">0</td><td data-label="No center">0</td><td data-label="Blind node">½</td><td data-label="Class">LL-3</td></tr>
+<tr><td data-label="Network">Telegram</td><td data-label="Year">2013</td><td data-label="Own circle">0</td><td data-label="Ordinary hardware">0</td><td data-label="Economy">0</td><td data-label="Delays">0</td><td data-label="No center">0</td><td data-label="Blind node">0</td><td data-label="Class">LL-3</td></tr>
+<tr><td data-label="Network">Matrix</td><td data-label="Year">2014</td><td data-label="Own circle">0</td><td data-label="Ordinary hardware">½</td><td data-label="Economy">0</td><td data-label="Delays">0</td><td data-label="No center">½</td><td data-label="Blind node">½</td><td data-label="Class">LL-3</td></tr>
+<tr><td data-label="Network">Signal</td><td data-label="Year">2014</td><td data-label="Own circle">0</td><td data-label="Ordinary hardware">0</td><td data-label="Economy">0</td><td data-label="Delays">0</td><td data-label="No center">0</td><td data-label="Blind node">½</td><td data-label="Class">LL-3</td></tr>
+<tr><td data-label="Network">Mastodon</td><td data-label="Year">2016</td><td data-label="Own circle">0</td><td data-label="Ordinary hardware">½</td><td data-label="Economy">0</td><td data-label="Delays">0</td><td data-label="No center">½</td><td data-label="Blind node">0</td><td data-label="Class">LL-3</td></tr>
+<tr><td data-label="Network">Nostr</td><td data-label="Year">2020</td><td data-label="Own circle">0</td><td data-label="Ordinary hardware">½</td><td data-label="Economy">0</td><td data-label="Delays">0</td><td data-label="No center">1</td><td data-label="Blind node">½</td><td data-label="Class">LL-3</td></tr>
+<tr><td data-label="Network">Session</td><td data-label="Year">2020</td><td data-label="Own circle">0</td><td data-label="Ordinary hardware">½</td><td data-label="Economy">0</td><td data-label="Delays">½</td><td data-label="No center">1</td><td data-label="Blind node">1</td><td data-label="Class">LL-3</td></tr>
+</table></div>
+<p>Signal and WhatsApp get ½ for blindness: content is end-to-end encrypted, but the company sees metadata and runs the servers. In Reticulum and NNCP, intermediate nodes carry and store other people's packets. Nevod still sends media whole, keeps undelivered messages for 72 hours and works only over the internet.</p>
+<h3>Reality check</h3>
+<div class="tbl"><table class="stack">
+<tr><th>Network</th><th>Year</th><th>For ordinary people</th><th>Maturity</th><th>Independent audit</th></tr>
+<tr><td data-label="Network">Reticulum / LXMF</td><td data-label="Year">2016</td><td data-label="For ordinary people">no, for enthusiasts</td><td data-label="Maturity">active community</td><td data-label="Independent audit">no</td></tr>
+<tr><td data-label="Network">NNCP</td><td data-label="Year">2016</td><td data-label="For ordinary people">no, a command-line tool</td><td data-label="Maturity">niche</td><td data-label="Independent audit">no</td></tr>
+<tr><td data-label="Network"><b>Nevod</b></td><td data-label="Year">2026</td><td data-label="For ordinary people">yes: iPhone/iPad, messages, media, calls</td><td data-label="Maturity">in testing, no real users yet</td><td data-label="Independent audit">no</td></tr>
+<tr><td data-label="Network">Briar</td><td data-label="Year">2018</td><td data-label="For ordinary people">yes, but no calls; Android and desktop</td><td data-label="Maturity">mature</td><td data-label="Independent audit">yes (Cure53, 2017)</td></tr>
+<tr><td data-label="Network">Signal</td><td data-label="Year">2014</td><td data-label="For ordinary people">yes</td><td data-label="Maturity">very mature</td><td data-label="Independent audit">yes, repeatedly</td></tr>
+</table></div>
+<p>By the main trait, Nevod belongs to class LL-0 together with Briar and Secure Scuttlebutt; Reticulum and NNCP, close to them on the other traits, belong to LL-1. Nevod's difference lies elsewhere: of these networks it is the only one designed as a full messenger for ordinary people, with media, calls and an iPhone app. But it is young: no real users yet, no independent audit, iOS only. The path to six out of six: media on request and delivery without the internet over slow channels.</p>
+<h2>What we acknowledge</h2>
+<ul>
+<li>A node technically processes only delivery data — which encrypted packet goes to whom — and never sees the content. Nothing stops you from running your own node: then even that delivery data stays with you.</li>
+<li>Signal's protocol is open and thoroughly reviewed — a strength we acknowledge. Nevod's code is closed for now; opening it is planned.</li>
+</ul>
+</div></main>
+
+<footer class="site"><div class="wrap">
+<div>© 2026 Nevod · Kolpakov Andrey</div>
+<div><a href="/en/support/">Support</a> · <a href="/en/privacy/">Privacy</a> · <a href="/en/terms/">Terms of Use</a> · <a href="/en/node/">Run a node</a></div>
+</div></footer>
+</body>
+</html>

@@ -1,0 +1,56 @@
+CLAUDE.md
+.env
+__pycache__/
+*.pyc
+*.db
+*.db-shm
+*.db-wal
+venv/
+.venv/
+# identity files — contain private keys, never commit
+*.json
+data/
+!installer/data/
+!installer/data/**
+!android/app/src/main/java/network/nevod/data/
+!android/app/src/main/java/network/nevod/data/**
+# public, signed release manifest — not a secret, must be committed (see
+# update_checker.py / nevod.py release sign). RELEASE.sig isn't matched by
+# *.json but listed for clarity.
+!RELEASE.json
+!RELEASE.sig
+# Xcode asset catalog manifests — structural (declares imageset/colorset
+# contents), not secrets. Without this, *.json above silently excluded the
+# whole Assets.xcassets folder from git (confirmed: 0 files tracked before
+# this line existed) — Contents.json missing breaks the asset catalog for
+# anyone else checking out the repo (Xcode, CI, ...). Was scoped to only
+# ios/Nevod/Nevod/Assets.xcassets at first — same gap silently caught
+# Preview Content/Preview Assets.xcassets (broke Xcode Cloud's first
+# archive: DEVELOPMENT_ASSET_PATHS pointed at an effectively-empty,
+# never-committed folder) and SLKey/Assets.xcassets (missing per-imageset
+# Contents.json → "has 3 unassigned children" warnings for every image
+# set) — both found 2026-08-29. Broadened to every .xcassets anywhere
+# under ios/, present or future, so this class of bug can't recur.
+!ios/**/*.xcassets/**/*.json
+# public, curator-signed bootstrap manifest bundled into the iOS app — not a
+# secret (only the curator's private key, kept offline, is). See
+# node/curator_sign.py and MD_Discuss/DISCUSS_NODE_ADMISSION.md.
+!ios/Nevod/Nevod/nodes.json
+# Curator-signed official accounts (public signatures, not secrets) — bundled resource,
+# referenced by the Xcode project; missing from git = Xcode Cloud build fails.
+!ios/Nevod/Nevod/official.json
+
+# PyInstaller build output — generated binaries, not source
+installer/build/
+installer/dist/
+/build/
+/dist/
+# generated PDFs and scripts
+*.pdf
+generate_*.py
+# macOS
+.DS_Store
+# Xcode user data
+xcuserdata/
+*.xcuserstate
+DerivedData/

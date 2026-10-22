@@ -1,0 +1,5 @@
+# Extra dependency for building the installer (wizard/node_headless), on
+# top of the main repo's requirements.txt. Not needed by the server (Docker
+# image) — miniupnpc is only used by installer/netcheck.py's best-effort
+# UPnP port forwarding, client-side only.
+miniupnpc>=2.2.2

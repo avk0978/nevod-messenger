@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nevod</title>
+<meta name="description" content="Nevod — an end-to-end encrypted messenger on a distributed network of nodes.">
+<script>
+  (function () {
+    var have = ["uk", "en", "ru", "de", "tr", "es", "it", "fr"], slug = {"ru": "xx"}, primaryOnly = ["ru"];
+    var want = (navigator.languages || [navigator.language || "en"]);
+    for (var i = 0; i < want.length; i++) {
+      var l = String(want[i]).toLowerCase().slice(0, 2);
+      if (primaryOnly.indexOf(l) >= 0 && i > 0) continue;
+      if (have.indexOf(l) >= 0) { location.replace("/" + (slug[l] || l) + "/"); return; }
+    }
+    location.replace("/en/");
+  })();
+</script>
+<style>body{font:18px/1.6 Arial,sans-serif;background:#14213D;color:#F7F6F1;display:flex;min-height:100vh;align-items:center;justify-content:center;margin:0}a{color:#F2C230;margin:0 10px}</style>
+</head>
+<body><p>Nevod — <a href="/uk/">Українська</a> <a href="/en/">English</a> <a href="/de/">Deutsch</a> <a href="/tr/">Türkçe</a> <a href="/es/">Español</a> <a href="/it/">Italiano</a> <a href="/fr/">Français</a></p></body>
+</html>

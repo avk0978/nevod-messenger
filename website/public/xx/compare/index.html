@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Сравнение — Nevod</title>
+<meta name="description" content="Nevod в сравнении с Signal, Telegram и WhatsApp: почему шифрование — это ещё не ZKI.">
+<link rel="canonical" href="https://nevod.network/xx/compare/">
+<link rel="alternate" hreflang="uk" href="https://nevod.network/uk/compare/"><link rel="alternate" hreflang="en" href="https://nevod.network/en/compare/"><link rel="alternate" hreflang="ru" href="https://nevod.network/xx/compare/"><link rel="alternate" hreflang="de" href="https://nevod.network/de/compare/"><link rel="alternate" hreflang="tr" href="https://nevod.network/tr/compare/"><link rel="alternate" hreflang="es" href="https://nevod.network/es/compare/"><link rel="alternate" hreflang="it" href="https://nevod.network/it/compare/"><link rel="alternate" hreflang="fr" href="https://nevod.network/fr/compare/">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik:wght@500..700&family=IBM+Plex+Sans:wght@400;600&display=swap">
+<style>
+:root { --ink:#14213D; --paper:#F7F6F1; --card:#FFFFFF; --line:#DCDFE6; --muted:#4A5568;
+        --accent:#F2C230; --accent-ink:#8A6A00; --dark2:#1E2F55; --soft:#C9D3E6; }
+* { box-sizing:border-box; }
+html { -webkit-text-size-adjust:100%; }
+body { margin:0; background:var(--paper); color:var(--ink); font:17px/1.6 'IBM Plex Sans', Arial, sans-serif; }
+a { color:#1F4E9E; }
+h1,h2,h3 { font-family:'Rubik', Arial, sans-serif; line-height:1.15; margin:0 0 .5em;
+  overflow-wrap:break-word; hyphens:auto; }
+main, .hero { overflow-wrap:break-word; }
+h1 { font-size:clamp(28px,5vw,56px); } h2 { font-size:clamp(24px,3.2vw,34px); margin-top:1.4em; } h3 { font-size:20px; }
+[id] { scroll-margin-top:76px; }  /* sticky header must not cover an anchor target */
+main.article h2 { margin-top:1.6em; } main.article h1 { font-size:clamp(26px,4vw,44px); }
+main.article hr { border:0; border-top:1px solid var(--line); margin:28px 0; }
+main.article code { font-size:.9em; background:var(--card); border:1px solid var(--line); border-radius:4px; padding:0 4px; }
+main.article ol li, main.article ul li { margin-bottom:.35em; overflow-wrap:anywhere; }
+.pub { margin:16px 0; } .pub h3 a { text-decoration:none; } .pub-date { font-size:14px; color:var(--muted); }
+.pub-back { font-size:15px; }
+p, ul, ol, table { margin:0 0 1em; }
+.wrap { max-width:1080px; margin:0 auto; padding:0 16px; }
+header.top { background:var(--ink); color:var(--paper); position:sticky; top:0; z-index:10; }
+header.top .wrap { display:flex; align-items:center; gap:16px; min-height:60px; }
+header.top a { color:var(--paper); text-decoration:none; }
+.brand { font-family:'Rubik', Arial, sans-serif; font-weight:700; font-size:20px; margin-right:auto; }
+.brand span { color:var(--accent); }
+nav.main { display:flex; gap:14px; font-size:15px; }
+nav.main a { opacity:.85; white-space:nowrap; } nav.main a[aria-current] { opacity:1; border-bottom:2px solid var(--accent); }
+details.menu { display:none; order:3; }
+details.menu summary { list-style:none; cursor:pointer; width:44px; height:44px; margin-right:-10px;
+  display:flex; align-items:center; justify-content:center; }
+details.menu summary::-webkit-details-marker { display:none; }
+.burger, .burger::before, .burger::after { display:block; width:22px; height:2px; background:var(--paper);
+  border-radius:2px; position:relative; transition:transform .2s, background .2s; }
+.burger::before, .burger::after { content:""; position:absolute; left:0; }
+.burger::before { top:-7px; } .burger::after { top:7px; }
+details.menu[open] .burger { background:transparent; }
+details.menu[open] .burger::before { transform:translateY(7px) rotate(45deg); }
+details.menu[open] .burger::after { transform:translateY(-7px) rotate(-45deg); }
+details.menu nav { position:absolute; left:0; right:0; top:100%; background:var(--ink);
+  border-top:1px solid var(--dark2); box-shadow:0 12px 24px rgba(0,0,0,.25); padding:6px 0 12px; }
+details.menu nav a { display:block; padding:12px 16px; font-size:17px; opacity:.9; }
+details.menu nav a[aria-current] { opacity:1; color:var(--accent); }
+details.lang { position:relative; font-size:15px; }
+details.lang summary { list-style:none; cursor:pointer; border:1px solid var(--accent); color:var(--accent);
+  padding:3px 12px; border-radius:999px; }
+details.lang summary::-webkit-details-marker { display:none; }
+details.lang summary:empty { min-width:6em; height:calc(1.6em + 8px); box-sizing:border-box; }
+details.lang ul { position:absolute; right:0; top:34px; background:var(--card); color:var(--ink); list-style:none;
+  padding:8px 0; margin:0; border-radius:10px; box-shadow:0 8px 24px rgba(0,0,0,.2); min-width:160px; }
+details.lang li a { color:var(--ink); display:block; padding:6px 16px; }
+@media (max-width:960px) {
+  nav.main { display:none; }
+  details.menu { display:block; }
+  header.top .wrap { min-height:56px; gap:12px; }
+  details.lang li a { padding:10px 16px; }
+}
+.hero { background:var(--ink); color:var(--paper); padding:56px 0 64px; }
+.hero p.lead { font-size:clamp(18px,2.2vw,22px); color:var(--soft); max-width:760px; }
+.eyebrow { font-size:14px; letter-spacing:3px; text-transform:uppercase; color:var(--accent); margin-bottom:12px; }
+.btns { display:flex; gap:12px; flex-wrap:wrap; margin-top:24px; }
+.btn { display:inline-block; padding:12px 22px; border-radius:10px; text-decoration:none; font-weight:600; }
+.btn.primary { background:var(--accent); color:var(--ink); } .btn.ghost { border:1px solid var(--soft); color:var(--paper); }
+main { padding:40px 0 56px; }
+.grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:16px; margin:16px 0 8px; }
+.card { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:20px; }
+.card h3 { margin-bottom:6px; } .card p { margin:0; color:var(--muted); }
+.status td:first-child { font-weight:600; }
+.tbl { overflow-x:auto; }
+table { border-collapse:collapse; width:100%; background:var(--card); border:1px solid var(--line); border-radius:12px; }
+th, td { text-align:left; padding:10px 12px; border-bottom:1px solid var(--line); vertical-align:top; }
+th { background:var(--ink); color:var(--paper); font-weight:600; }
+.note { background:#FBF3D6; border-left:4px solid var(--accent); padding:14px 16px; border-radius:8px; }
+.legal h2 { font-size:22px; }
+.ncard { display:flex; gap:20px; align-items:flex-start; background:var(--card); border:1px solid var(--line);
+  border-radius:14px; padding:20px; margin:8px 0 16px; }
+.ncard-qr { flex:0 0 220px; } .ncard-qr svg { display:block; width:100%; height:auto; }
+.ncard-body { min-width:0; } .ncard-body h3 { margin-bottom:6px; } .ncard-body p { color:var(--muted); }
+.ncard code { display:block; font-size:12px; line-height:1.45; word-break:break-all; background:var(--paper);
+  border:1px solid var(--line); border-radius:8px; padding:8px 10px; margin:0 0 12px; user-select:all; }
+.ncard .btn { border:0; cursor:pointer; font:inherit; font-weight:600; }
+@media (max-width:640px) { .ncard { flex-direction:column; align-items:stretch; } .ncard-qr { flex-basis:auto; width:220px; margin:0 auto; } }
+footer.site { background:var(--ink); color:var(--soft); font-size:14px; padding:28px 0; }
+footer.site a { color:var(--soft); }
+footer.site .wrap { display:flex; flex-wrap:wrap; gap:8px 24px; justify-content:space-between; }
+@media (max-width:640px) {
+  body { font-size:16px; }
+  .hero { padding:36px 0 44px; }
+  main { padding:28px 0 40px; }
+  .btns .btn { flex:1 1 auto; text-align:center; }
+  .card { padding:16px; }
+  /* Wide tables (4+ columns) become one card per row: the first cell is the row title,
+     every other cell is prefixed with its column header (data-label, added by stack_tables). */
+  table.stack, table.stack tbody, table.stack tr, table.stack td { display:block; width:auto !important; }
+  table.stack { background:none; border:0; }
+  table.stack tr:first-child { display:none; }
+  table.stack tr { background:var(--card); border:1px solid var(--line); border-radius:12px; margin-bottom:12px; overflow:hidden; }
+  table.stack td { border-bottom:1px solid var(--line); padding:8px 14px; }
+  table.stack td:last-child { border-bottom:0; }
+  table.stack td:first-child { background:var(--ink); color:var(--paper); font-weight:600; }
+  table.stack td:not(:first-child)::before { content:attr(data-label); display:block; font-size:13px;
+    font-weight:600; color:var(--muted); text-transform:uppercase; letter-spacing:.5px; }
+  footer.site .wrap { flex-direction:column; }
+}
+</style>
+</head>
+<body>
+<header class="top"><div class="wrap">
+<a class="brand" href="/xx/">Nevod<span>.</span></a>
+<nav class="main"><a href="/xx/">Главная</a><a href="/xx/manifesto/">Манифест ZKI</a><a href="/xx/compare/" aria-current="page">Сравнение</a><a href="/xx/security/">Безопасность</a><a href="/xx/cities/">Для городов</a><a href="/xx/download/">Скачать</a><a href="/xx/publications/">Публикации</a><a href="/xx/about/">О проекте</a></nav>
+<details class="menu"><summary aria-label="Меню"><span class="burger"></span></summary><nav><a href="/xx/">Главная</a><a href="/xx/manifesto/">Манифест ZKI</a><a href="/xx/compare/" aria-current="page">Сравнение</a><a href="/xx/security/">Безопасность</a><a href="/xx/cities/">Для городов</a><a href="/xx/download/">Скачать</a><a href="/xx/publications/">Публикации</a><a href="/xx/about/">О проекте</a></nav></details>
+<details class="lang"><summary></summary><ul><li><a href="/uk/compare/" hreflang="uk" lang="uk">Українська</a></li><li><a href="/en/compare/" hreflang="en" lang="en">English</a></li><li><a href="/de/compare/" hreflang="de" lang="de">Deutsch</a></li><li><a href="/tr/compare/" hreflang="tr" lang="tr">Türkçe</a></li><li><a href="/es/compare/" hreflang="es" lang="es">Español</a></li><li><a href="/it/compare/" hreflang="it" lang="it">Italiano</a></li><li><a href="/fr/compare/" hreflang="fr" lang="fr">Français</a></li></ul></details>
+</div></header>
+
+<main><div class="wrap">
+<h1>Nevod и другие мессенджеры</h1>
+<p>Большинство современных мессенджеров шифруют сообщения. Разница не в том, есть ли шифрование, а в том, <b>что остаётся в руках компании</b>: серверы, база пользователей, номера телефонов, записная книжка, метаданные — и что из этого можно потребовать.</p>
+<p class="note">Nevod реализует принцип <a href="/xx/manifesto/">Zero Knowledge Infrastructure</a>: разработчик отрезан от данных пользователей <b>архитектурой</b>, а не только шифрованием. Данные о других мессенджерах — по их публичным описаниям на 2026 год; они могут меняться.</p>
+<div class="tbl"><table class="stack">
+<tr><th style="width:24%"></th><th>Nevod</th><th>Signal</th><th>Telegram</th><th>WhatsApp</th></tr>
+<tr><td data-label="">Кто технически может прочитать обычный чат</td><td data-label="Nevod">Только участники</td><td data-label="Signal">Только участники</td><td data-label="Telegram">Обычные и групповые чаты — сервер Telegram (сквозное шифрование только в «секретных чатах» 1:1)</td><td data-label="WhatsApp">Только участники</td></tr>
+<tr><td data-label="">Центральные серверы компании</td><td data-label="Nevod">Нет — независимые узлы, их может запустить любой</td><td data-label="Signal">Да</td><td data-label="Telegram">Да</td><td data-label="WhatsApp">Да, Meta</td></tr>
+<tr><td data-label="">Привязка к номеру телефона</td><td data-label="Nevod">Нет — личность является ключом</td><td data-label="Signal">Да (номер можно скрыть именем пользователя)</td><td data-label="Telegram">Да</td><td data-label="WhatsApp">Да</td></tr>
+<tr><td data-label="">Загрузка записной книжки</td><td data-label="Nevod">Нет — контакты добавляются карточкой или QR</td><td data-label="Signal">Приватный поиск контактов</td><td data-label="Telegram">Да, если разрешить</td><td data-label="WhatsApp">Да, если разрешить</td></tr>
+<tr><td data-label="">База пользователей у компании</td><td data-label="Nevod">Нет центральной — каждый узел знает только своих</td><td data-label="Signal">Минимальная</td><td data-label="Telegram">Да</td><td data-label="WhatsApp">Да</td></tr>
+<tr><td data-label="">Что компания может выдать по запросу</td><td data-label="Nevod">Разработчику нечего выдать: ни ключей, ни переписки, ни базы</td><td data-label="Signal">По её отчётам — дата регистрации и последнего подключения</td><td data-label="Telegram">Согласно её политике — IP-адрес и номер телефона в некоторых случаях</td><td data-label="WhatsApp">Метаданные аккаунта согласно её политике</td></tr>
+<tr><td data-label="">Резервные копии чатов в облаке</td><td data-label="Nevod">Нет — ключи и история существуют только на устройстве (потерян телефон — потеряна история)</td><td data-label="Signal">Необязательные; шифруются ключом, который есть только у пользователя</td><td data-label="Telegram">Не нужны — обычные чаты и так хранятся на серверах Telegram</td><td data-label="WhatsApp">В iCloud / Google Drive; по умолчанию без сквозного шифрования (включается вручную)</td></tr>
+<tr><td data-label="">Единая точка отказа или блокировки</td><td data-label="Nevod">Нет — узлы независимы</td><td data-label="Signal">Да</td><td data-label="Telegram">Да</td><td data-label="WhatsApp">Да</td></tr>
+<tr><td data-label="">Работа без интернета в пределах города</td><td data-label="Nevod">Заложена в архитектуру (городская сеть, Wi-Fi mesh, радио)</td><td data-label="Signal">Нет</td><td data-label="Telegram">Нет</td><td data-label="WhatsApp">Нет</td></tr>
+<tr><td data-label="">Модель заработка</td><td data-label="Nevod">Через инструмент, а не через данные</td><td data-label="Signal">Пожертвования (некоммерческая организация)</td><td data-label="Telegram">Реклама и Premium</td><td data-label="WhatsApp">Бизнес-сервисы Meta</td></tr>
+<tr><td data-label="">Открытый код</td><td data-label="Nevod">Пока нет — код закрыт до выхода в продакшн</td><td data-label="Signal">Да</td><td data-label="Telegram">Частично (клиенты)</td><td data-label="WhatsApp">Нет</td></tr>
+</table></div>
+<h2>Почему одного шифрования мало</h2>
+<p>Сквозное шифрование защищает содержимое сообщения в пути. Но если компания управляет всеми серверами, ведёт базу аккаунтов по номерам телефонов и видит, кто с кем и когда общается, у неё остаётся власть над системой: её можно принудить, взломать, заблокировать, а обновление приложения может изменить правила игры.</p>
+<p>ZKI задаёт другой вопрос: <b>что создатель инфраструктуры может получить даже теоретически?</b> В Nevod ответ заложен в архитектуру: ключи не покидают устройство, нет мастер-ключа и резервных копий, нет центрального сервера и реестра людей по номерам.</p>
+<h2 id="low-load">Мало нагруженная распределённая сеть: сравнение</h2>
+<p>Мы оцениваем сети по шести признакам мало нагруженной распределённой сети: нагрузка каждого узла ограничена его собственным кругом участников, а не размером всей сети. Признаки выведены из принципов Nevod, поэтому сравнение ему заведомо благоприятно.</p>
+<ol>
+<li>Свой круг: нагрузка узла растёт с его кругом (семья, дом, команда), а не со всей сетью.</li>
+<li>Обычное железо: домашний компьютер, мини-сервер, роутер; дата-центр не нужен.</li>
+<li>Экономия: сначала текст и сигналы, тяжёлое по запросу.</li>
+<li>Задержки: нет связи, сообщение ждёт и уходит позже, в том числе по медленному каналу.</li>
+<li>Без центра: нет единой точки отказа, блокировки или изъятия.</li>
+<li>Слепой узел: узел переносит только шифротекст и не может его прочитать.</li>
+</ol>
+<p class="note">1: выполнено, ½: частично, 0: нет. Год: первый публичный выпуск. Класс: LL-0 — нагрузка узла ограничена его кругом; LL-1 — плюс ограниченный чужой транзит; LL-3 — нагрузка растёт со всей сетью или зависит от посторонних пользователей. Подробнее: <a href="/xx/publications/low-load-networks/">статья</a>.</p>
+<div class="tbl"><table class="stack">
+<tr><th>Сеть</th><th>Год</th><th>Свой круг</th><th>Обычное железо</th><th>Экономия</th><th>Задержки</th><th>Без центра</th><th>Слепой узел</th><th>Класс</th></tr>
+<tr><td data-label="Сеть">Secure Scuttlebutt</td><td data-label="Год">2014</td><td data-label="Свой круг">1</td><td data-label="Обычное железо">1</td><td data-label="Экономия">½</td><td data-label="Задержки">1</td><td data-label="Без центра">1</td><td data-label="Слепой узел">0</td><td data-label="Класс">LL-0</td></tr>
+<tr><td data-label="Сеть">Briar</td><td data-label="Год">2018</td><td data-label="Свой круг">1</td><td data-label="Обычное железо">1</td><td data-label="Экономия">½</td><td data-label="Задержки">½</td><td data-label="Без центра">1</td><td data-label="Слепой узел">1</td><td data-label="Класс">LL-0</td></tr>
+<tr><td data-label="Сеть"><b>Nevod</b></td><td data-label="Год">2026</td><td data-label="Свой круг">1</td><td data-label="Обычное железо">1</td><td data-label="Экономия">½</td><td data-label="Задержки">½</td><td data-label="Без центра">1</td><td data-label="Слепой узел">1</td><td data-label="Класс">LL-0</td></tr>
+<tr><td data-label="Сеть">FidoNet</td><td data-label="Год">1984</td><td data-label="Свой круг">1</td><td data-label="Обычное железо">1</td><td data-label="Экономия">1</td><td data-label="Задержки">1</td><td data-label="Без центра">0</td><td data-label="Слепой узел">0</td><td data-label="Класс">LL-1</td></tr>
+<tr><td data-label="Сеть">NNCP</td><td data-label="Год">2016</td><td data-label="Свой круг">½</td><td data-label="Обычное железо">1</td><td data-label="Экономия">1</td><td data-label="Задержки">1</td><td data-label="Без центра">1</td><td data-label="Слепой узел">1</td><td data-label="Класс">LL-1</td></tr>
+<tr><td data-label="Сеть">Reticulum / LXMF</td><td data-label="Год">2016</td><td data-label="Свой круг">½</td><td data-label="Обычное железо">1</td><td data-label="Экономия">1</td><td data-label="Задержки">1</td><td data-label="Без центра">1</td><td data-label="Слепой узел">1</td><td data-label="Класс">LL-1</td></tr>
+<tr><td data-label="Сеть">Meshtastic</td><td data-label="Год">2020</td><td data-label="Свой круг">0</td><td data-label="Обычное железо">1</td><td data-label="Экономия">1</td><td data-label="Задержки">½</td><td data-label="Без центра">1</td><td data-label="Слепой узел">½</td><td data-label="Класс">LL-1</td></tr>
+<tr><td data-label="Сеть">Tor</td><td data-label="Год">2002</td><td data-label="Свой круг">0</td><td data-label="Обычное железо">½</td><td data-label="Экономия">0</td><td data-label="Задержки">0</td><td data-label="Без центра">1</td><td data-label="Слепой узел">1</td><td data-label="Класс">LL-3</td></tr>
+<tr><td data-label="Сеть">WhatsApp</td><td data-label="Год">2009</td><td data-label="Свой круг">0</td><td data-label="Обычное железо">0</td><td data-label="Экономия">0</td><td data-label="Задержки">0</td><td data-label="Без центра">0</td><td data-label="Слепой узел">½</td><td data-label="Класс">LL-3</td></tr>
+<tr><td data-label="Сеть">Telegram</td><td data-label="Год">2013</td><td data-label="Свой круг">0</td><td data-label="Обычное железо">0</td><td data-label="Экономия">0</td><td data-label="Задержки">0</td><td data-label="Без центра">0</td><td data-label="Слепой узел">0</td><td data-label="Класс">LL-3</td></tr>
+<tr><td data-label="Сеть">Matrix</td><td data-label="Год">2014</td><td data-label="Свой круг">0</td><td data-label="Обычное железо">½</td><td data-label="Экономия">0</td><td data-label="Задержки">0</td><td data-label="Без центра">½</td><td data-label="Слепой узел">½</td><td data-label="Класс">LL-3</td></tr>
+<tr><td data-label="Сеть">Signal</td><td data-label="Год">2014</td><td data-label="Свой круг">0</td><td data-label="Обычное железо">0</td><td data-label="Экономия">0</td><td data-label="Задержки">0</td><td data-label="Без центра">0</td><td data-label="Слепой узел">½</td><td data-label="Класс">LL-3</td></tr>
+<tr><td data-label="Сеть">Mastodon</td><td data-label="Год">2016</td><td data-label="Свой круг">0</td><td data-label="Обычное железо">½</td><td data-label="Экономия">0</td><td data-label="Задержки">0</td><td data-label="Без центра">½</td><td data-label="Слепой узел">0</td><td data-label="Класс">LL-3</td></tr>
+<tr><td data-label="Сеть">Nostr</td><td data-label="Год">2020</td><td data-label="Свой круг">0</td><td data-label="Обычное железо">½</td><td data-label="Экономия">0</td><td data-label="Задержки">0</td><td data-label="Без центра">1</td><td data-label="Слепой узел">½</td><td data-label="Класс">LL-3</td></tr>
+<tr><td data-label="Сеть">Session</td><td data-label="Год">2020</td><td data-label="Свой круг">0</td><td data-label="Обычное железо">½</td><td data-label="Экономия">0</td><td data-label="Задержки">½</td><td data-label="Без центра">1</td><td data-label="Слепой узел">1</td><td data-label="Класс">LL-3</td></tr>
+</table></div>
+<p>Signal и WhatsApp получают ½ за слепоту: содержимое сквозь-шифровано, но компания видит метаданные и управляет серверами. У Reticulum и NNCP промежуточные узлы несут и хранят чужие пакеты. Nevod пока передаёт медиа целиком, хранит недоставленное 72 часа и работает только через интернет.</p>
+<h3>Проверка практикой</h3>
+<div class="tbl"><table class="stack">
+<tr><th>Сеть</th><th>Год</th><th>Для обычных людей</th><th>Зрелость</th><th>Независимый аудит</th></tr>
+<tr><td data-label="Сеть">Reticulum / LXMF</td><td data-label="Год">2016</td><td data-label="Для обычных людей">нет, для энтузиастов</td><td data-label="Зрелость">активное сообщество</td><td data-label="Независимый аудит">нет</td></tr>
+<tr><td data-label="Сеть">NNCP</td><td data-label="Год">2016</td><td data-label="Для обычных людей">нет, консольный инструмент</td><td data-label="Зрелость">нишевый</td><td data-label="Независимый аудит">нет</td></tr>
+<tr><td data-label="Сеть"><b>Nevod</b></td><td data-label="Год">2026</td><td data-label="Для обычных людей">да: iPhone/iPad, сообщения, медиа, звонки</td><td data-label="Зрелость">тестирование, реальных пользователей пока нет</td><td data-label="Независимый аудит">нет</td></tr>
+<tr><td data-label="Сеть">Briar</td><td data-label="Год">2018</td><td data-label="Для обычных людей">да, но без звонков; Android и ПК</td><td data-label="Зрелость">зрелый</td><td data-label="Независимый аудит">да (Cure53, 2017)</td></tr>
+<tr><td data-label="Сеть">Signal</td><td data-label="Год">2014</td><td data-label="Для обычных людей">да</td><td data-label="Зрелость">очень зрелый</td><td data-label="Независимый аудит">да, неоднократно</td></tr>
+</table></div>
+<p>По главному признаку Nevod относится к классу LL-0 вместе с Briar и Secure Scuttlebutt; близкие к ним по остальным признакам Reticulum и NNCP относятся к LL-1. Отличие Nevod в другом: из этих сетей он единственный задуман как полноценный мессенджер для обычных людей, с медиа, звонками и приложением для iPhone. Но он молод: реальных пользователей пока нет, независимого аудита нет, работает только на iOS. Путь к шести из шести: медиа по запросу и доставка без интернета по медленным каналам.</p>
+<h2>Что мы признаём</h2>
+<ul>
+<li>Узел технически обрабатывает только данные доставки, какой зашифрованный пакет кому передать и никогда не видит содержимого. Никто не запрещает запустить собственный узел: тогда и эти данные доставки остаются только у вас.</li>
+<li>У Signal открытый и тщательно проверенный протокол — это сильная сторона, которую мы признаём. Код Nevod пока закрыт; его открытие запланировано.</li>
+</ul>
+</div></main>
+
+<footer class="site"><div class="wrap">
+<div>© 2026 Nevod · Колпаков Андрей Валериевич</div>
+<div><a href="/xx/support/">Поддержка</a> · <a href="/xx/privacy/">Конфиденциальность</a> · <a href="/xx/terms/">Условия использования</a> · <a href="/xx/node/">Свой узел</a></div>
+</div></footer>
+</body>
+</html>

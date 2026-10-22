@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>remote-notification</string>
+		<string>audio</string>
+		<string>voip</string>
+	</array>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Nevod uses the microphone for voice messages and calls.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Nevod uses the camera to scan invite QR codes and for video calls.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>Nevod saves received photos and videos to your photo library.</string>
+	<key>UIAppFonts</key>
+	<array>
+		<string>Ponomar-Regular.ttf</string>
+	</array>
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLName</key>
+			<string>com.avk.Nevod.invite</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>nevod</string>
+			</array>
+		</dict>
+	</array>
+</dict>
+</plist>

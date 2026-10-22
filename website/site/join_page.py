@@ -1,0 +1,158 @@
+"""nevod.network/join/ — landing page for cell invite links (https://nevod.network/join/#t=TOKEN).
+
+The admin panel's invite QR (node/protocol.py make_cell_invite_link) points here, so a phone's
+own camera can open it. The token ("ADDRESS|FINGERPRINT|CODE") lives in the #fragment and never
+reaches this web server; the page only hands it to the app via nevod://join?t=TOKEN. One page
+for all 8 languages — picked from the browser, since a language redirect would drop the fragment.
+App labels below are copied from the app's Localizable.xcstrings so the steps match the screen.
+"""
+import json
+
+TEXT = {
+    "en": {"title": "Invitation to Nevod", "lead": "You have been invited to the node", "open": "Open in Nevod",
+           "code": "Invite code", "once": "The code works once and for a limited time.",
+           "noapp": "Don't have Nevod yet? Install the app, then come back to this link and tap “Open in Nevod”.",
+           "download": "Download Nevod",
+           "manual": "If the button does nothing: in Nevod tap “Start messaging”, enter your name, tap “Have an invite code?” and paste this link into the code field.",
+           "copy": "Copy link", "copied": "Link copied",
+           "bad": "This invitation link is damaged or incomplete. Ask for a new one."},
+    "ru": {"title": "Приглашение в Nevod", "lead": "Вас пригласили на узел", "open": "Открыть в Nevod",
+           "code": "Код приглашения", "once": "Код одноразовый и действует ограниченное время.",
+           "noapp": "Ещё нет Nevod? Установите приложение, затем вернитесь к этой ссылке и нажмите «Открыть в Nevod».",
+           "download": "Скачать Nevod",
+           "manual": "Если кнопка не сработала: в Nevod нажмите «Начать переписку», введите имя, нажмите «Есть код приглашения?» и вставьте эту ссылку в поле кода.",
+           "copy": "Скопировать ссылку", "copied": "Ссылка скопирована",
+           "bad": "Ссылка приглашения повреждена или неполная. Попросите новую."},
+    "uk": {"title": "Запрошення до Nevod", "lead": "Вас запросили на вузол", "open": "Відкрити в Nevod",
+           "code": "Код запрошення", "once": "Код одноразовий і діє обмежений час.",
+           "noapp": "Ще немає Nevod? Встановіть застосунок, потім поверніться до цього посилання й натисніть «Відкрити в Nevod».",
+           "download": "Завантажити Nevod",
+           "manual": "Якщо кнопка не спрацювала: у Nevod натисніть «Почати листування», введіть ім'я, натисніть «Маєте код запрошення?» і вставте це посилання в поле коду.",
+           "copy": "Скопіювати посилання", "copied": "Посилання скопійовано",
+           "bad": "Посилання запрошення пошкоджене або неповне. Попросіть нове."},
+    "de": {"title": "Einladung zu Nevod", "lead": "Du wurdest auf den Knoten eingeladen", "open": "In Nevod öffnen",
+           "code": "Einladungscode", "once": "Der Code gilt einmalig und nur für begrenzte Zeit.",
+           "noapp": "Noch kein Nevod? Installiere die App, kehre dann zu diesem Link zurück und tippe auf „In Nevod öffnen“.",
+           "download": "Nevod herunterladen",
+           "manual": "Wenn der Button nichts tut: Tippe in Nevod auf „Chatten beginnen“, gib deinen Namen ein, tippe auf „Hast du einen Einladungscode?“ und füge diesen Link in das Code-Feld ein.",
+           "copy": "Link kopieren", "copied": "Link kopiert",
+           "bad": "Dieser Einladungslink ist beschädigt oder unvollständig. Bitte um einen neuen."},
+    "tr": {"title": "Nevod daveti", "lead": "Şu düğüme davet edildiniz", "open": "Nevod'da aç",
+           "code": "Davet kodu", "once": "Kod tek kullanımlıktır ve sınırlı bir süre geçerlidir.",
+           "noapp": "Henüz Nevod yok mu? Uygulamayı yükleyin, sonra bu bağlantıya dönüp “Nevod'da aç”a dokunun.",
+           "download": "Nevod'u indir",
+           "manual": "Düğme çalışmazsa: Nevod'da “Mesajlaşmaya başla”ya dokunun, adınızı girin, “Davet kodunuz var mı?”ya dokunun ve bu bağlantıyı kod alanına yapıştırın.",
+           "copy": "Bağlantıyı kopyala", "copied": "Bağlantı kopyalandı",
+           "bad": "Bu davet bağlantısı bozuk ya da eksik. Yeni bir tane isteyin."},
+    "es": {"title": "Invitación a Nevod", "lead": "Te han invitado al nodo", "open": "Abrir en Nevod",
+           "code": "Código de invitación", "once": "El código sirve una sola vez y durante un tiempo limitado.",
+           "noapp": "¿Aún no tienes Nevod? Instala la app, vuelve a este enlace y toca «Abrir en Nevod».",
+           "download": "Descargar Nevod",
+           "manual": "Si el botón no hace nada: en Nevod toca «Empezar a chatear», escribe tu nombre, toca «¿Tienes un código de invitación?» y pega este enlace en el campo del código.",
+           "copy": "Copiar enlace", "copied": "Enlace copiado",
+           "bad": "Este enlace de invitación está dañado o incompleto. Pide uno nuevo."},
+    "it": {"title": "Invito a Nevod", "lead": "Sei stato invitato sul nodo", "open": "Apri in Nevod",
+           "code": "Codice di invito", "once": "Il codice vale una sola volta e per un tempo limitato.",
+           "noapp": "Non hai ancora Nevod? Installa l'app, poi torna a questo link e tocca «Apri in Nevod».",
+           "download": "Scarica Nevod",
+           "manual": "Se il pulsante non fa nulla: in Nevod tocca «Inizia a scrivere», inserisci il tuo nome, tocca «Hai un codice di invito?» e incolla questo link nel campo del codice.",
+           "copy": "Copia link", "copied": "Link copiato",
+           "bad": "Questo link di invito è danneggiato o incompleto. Chiedine uno nuovo."},
+    "fr": {"title": "Invitation à Nevod", "lead": "Vous êtes invité sur le nœud", "open": "Ouvrir dans Nevod",
+           "code": "Code d'invitation", "once": "Le code ne sert qu'une fois et pour une durée limitée.",
+           "noapp": "Pas encore Nevod ? Installez l'application, revenez à ce lien et touchez « Ouvrir dans Nevod ».",
+           "download": "Télécharger Nevod",
+           "manual": "Si le bouton ne fait rien : dans Nevod, touchez « Commencer à discuter », saisissez votre nom, touchez « Vous avez un code d'invitation ? » et collez ce lien dans le champ du code.",
+           "copy": "Copier le lien", "copied": "Lien copié",
+           "bad": "Ce lien d'invitation est endommagé ou incomplet. Demandez-en un nouveau."},
+}
+
+PAGE = """<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<meta name="referrer" content="no-referrer">
+<title>Nevod</title>
+<style>
+:root { --ink:#14213D; --paper:#F7F6F1; --card:#FFFFFF; --line:#DCDFE6; --muted:#4A5568; --accent:#F2C230; }
+* { box-sizing:border-box; }
+body { margin:0; background:var(--paper); color:var(--ink); font:17px/1.6 Arial, sans-serif; }
+main { max-width:560px; margin:0 auto; padding:40px 16px; }
+.brand { font-weight:700; font-size:22px; color:var(--ink); text-decoration:none; }
+.brand span { color:var(--accent); }
+.card { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:24px; margin-top:24px; }
+h1 { font-size:26px; line-height:1.25; margin:0 0 8px; }
+.node { font-weight:700; word-break:break-all; }
+.code { font:700 26px/1.2 monospace; letter-spacing:2px; margin:6px 0 2px; }
+.muted { color:var(--muted); font-size:15px; }
+.btn { display:block; width:100%; text-align:center; padding:14px; border-radius:10px; font-size:18px;
+       font-weight:700; text-decoration:none; border:0; cursor:pointer; margin-top:18px; }
+.primary { background:var(--ink); color:#fff; }
+.secondary { background:transparent; color:var(--ink); border:1px solid var(--line); font-weight:400; font-size:16px; }
+a { color:#1F4E9E; }
+</style>
+</head>
+<body>
+<main>
+<a class="brand" href="/">Nevod<span>.</span></a>
+<div class="card" id="ok" hidden>
+  <h1 id="t-title"></h1>
+  <p><span id="t-lead"></span> <span class="node" id="node"></span></p>
+  <a class="btn primary" id="open" href="#"></a>
+  <p class="muted" style="margin-top:20px" id="t-code"></p>
+  <div class="code" id="code"></div>
+  <p class="muted" id="t-once"></p>
+  <p id="t-noapp"></p>
+  <p><a id="download" href="/en/download/"></a></p>
+  <p class="muted" id="t-manual"></p>
+  <button class="btn secondary" id="copy" type="button"></button>
+</div>
+<div class="card" id="bad" hidden><p id="t-bad"></p></div>
+</main>
+<script>
+(function () {
+  var TEXT = __TEXT__;
+  var lang = "en", want = navigator.languages || [navigator.language || "en"];
+  for (var i = 0; i < want.length; i++) {
+    var l = String(want[i]).toLowerCase().slice(0, 2);
+    if (l === "ru" && i > 0) continue;  // Russian only as the primary browser language (build.py HIDDEN_LANGS)
+    if (TEXT[l]) { lang = l; break; }
+  }
+  var t = TEXT[lang];
+  document.documentElement.lang = lang;
+  document.title = t.title;
+  function set(id, s) { document.getElementById(id).textContent = s; }
+  var token = "";
+  var m = /(?:^|&)t=([^&]*)/.exec(location.hash.replace(/^#/, ""));
+  try { token = m ? decodeURIComponent(m[1]) : ""; } catch (e) { token = ""; }
+  var parts = token.split("|");
+  if (parts.length !== 3 || !parts[0] || !parts[2]) {
+    set("t-bad", t.bad); document.getElementById("bad").hidden = false; return;
+  }
+  set("t-title", t.title); set("t-lead", t.lead);
+  set("node", parts[0].split("/")[0]);
+  var open = document.getElementById("open");
+  open.textContent = t.open;
+  open.href = "nevod://join?t=" + encodeURIComponent(token);
+  set("t-code", t.code); set("code", parts[2]); set("t-once", t.once);
+  set("t-noapp", t.noapp);
+  var dl = document.getElementById("download");
+  dl.textContent = t.download; dl.href = "/" + lang + "/download/";
+  set("t-manual", t.manual);
+  var copy = document.getElementById("copy");
+  copy.textContent = t.copy;
+  copy.onclick = function () {
+    navigator.clipboard.writeText(location.href).then(function () { copy.textContent = t.copied; });
+  };
+  document.getElementById("ok").hidden = false;
+})();
+</script>
+</body>
+</html>
+"""
+
+
+def render() -> str:
+    return PAGE.replace("__TEXT__", json.dumps(TEXT, ensure_ascii=False))

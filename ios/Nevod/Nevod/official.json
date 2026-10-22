@@ -1,0 +1,114 @@
+[
+  {
+    "cell_id": "04997d01e8659484dcaa3cba9cfdde36c6d5fc8aae43c25c4c9c1a33c3c22b33",
+    "role": "administrator",
+    "name": "administrator",
+    "enc_pub": "4cceb4c8ad48b2c89d08e117667c828d668082f92c04f43412aeafb5ecd11849",
+    "node_id": "63a79b460f5922d341ccf324b3fb5b9b9b33d4c7887150545f01414b3f8e15b8",
+    "sig": "a04744c29839cd44dfb405925c98d146a4228f27ac754075ca5d7e34ef834ac435ee132859dc45427df588a25b7dfd71a84da62b1c082b7074cde382f8f3950a"
+  },
+  {
+    "cell_id": "07b7bb9f2d32c21ab6078ed1ab958850c75ee77cbb03f4b0bc4e0c741978917a",
+    "role": "administrator",
+    "name": "administrator",
+    "enc_pub": "653aa4cb302825d075ad6cc8d1e34817b2cc21bd66ee0dab5eaa914243f3a93c",
+    "node_id": "0c69eee506cc5f897b65f231df37f0214130e9c3f461393983a6794a99f4f2cd",
+    "sig": "704f3d686b989deab4bedf0c04fe248738d3bbeb6672829b25c4abdcb6767efbede66c2da99420cae56ca3475ceb6bdca0c90cdcd4270e99b5e698f3aad7520d"
+  },
+  {
+    "cell_id": "14248f4391049d7b7bedd349fbdaae6573a266e273c9d851364b1d8db75dfb97",
+    "role": "service",
+    "name": "Node Registrar (Dev Planet)",
+    "enc_pub": "",
+    "node_id": "",
+    "sig": "3d0c7f4835e127d7a7d4695659bee109b93ed3f4934538df73bb69b4f736a7a4b36b43756ee15d5e0c2319da86c44764bfc909d52e8e284765e2ac266414590a"
+  },
+  {
+    "cell_id": "9b12574ca8d0413f1f31d0514bd7bec17f4ecf9c95dd247241588a20dfde87f3",
+    "role": "service",
+    "name": "TestBot3",
+    "enc_pub": "",
+    "node_id": "",
+    "sig": "f390d01188abf8e05f52a9a0a00cfc456850e52a03d1ccb0cdd75e2cc580feab4179ac735aa52d0966c457258b057bbbadfddb21bd6a20d14bc0be1866db7201"
+  },
+  {
+    "cell_id": "755c4cb9256ca7cdc4acfdc6cfeeda849017e5b9f9514e99191bd67e0b0d4276",
+    "role": "service",
+    "name": "AndroidPhase3-A",
+    "enc_pub": "",
+    "node_id": "",
+    "sig": "7ecaaa3ad4fd22d20afc16685dc9bbc6f9dbcfd5c6a27eb8e7c59a09e55f48cf5f165df64a7e4f497625a26a176a5787ad3a61f350cdc76f0eb953e8e03bd80a"
+  },
+  {
+    "cell_id": "9ca0da86726d8282ce4e0719df6d1f4db2902bdfe78632ac4890d0b9a8e38e27",
+    "role": "service",
+    "name": "AndroidPhase3-B",
+    "enc_pub": "",
+    "node_id": "",
+    "sig": "cdf649b4f0e8742092617760a386fdc2238f9917e87593701e356eddba43cb5b4a940517fe276276f533a689dc4e79aaef6dbecdbe045932eb298ae01cbe5700"
+  },
+  {
+    "cell_id": "d366c6d6697e0de1e8a644f0f7bf6c5a466bdafa956992771e4936b838bc158f",
+    "role": "service",
+    "name": "Node Registrar (Home)",
+    "enc_pub": "",
+    "node_id": "",
+    "sig": "0406823b0eec4a17249e0346fc1c257d4e1ba4f98b7d8a0540837009f383170a17f25b843fb8374b6378751eeb980df2216f7735d13fa19b2c59ddc511611e0d"
+  },
+  {
+    "cell_id": "a68371eaad80c3461af672c2aa49f70cb2fd0ab81e8a6202716bd47229bc7b36",
+    "role": "service",
+    "name": "TestBot",
+    "enc_pub": "",
+    "node_id": "",
+    "sig": "ea6f657ec51eb45a5feb83f9cd211617918192bd0963037b32fcb9ff74fe183a6001fec66f81cf6051e58f42c8f71da736a7f40c48a9da3e716489491dc8cc07"
+  },
+  {
+    "cell_id": "b926d03b3b943f89fcd63b9170a8f597ed601ff23627312a6c1a60aff4060272",
+    "role": "service",
+    "name": "TestBot2",
+    "enc_pub": "",
+    "node_id": "",
+    "sig": "432ec4c6025faf02de111c7ded55ed9613f7e54fa59c8f9d0306b4bb45404dc29ea61c5b03ee0607de00ebb6fef3b43daa7baad6391fc6d5e93a69a9271c540f"
+  },
+  {
+    "cell_id": "30b99553389ca8d39d520ac054e701916e73b0625eec9ac50b9f388b800ea262",
+    "role": "service",
+    "name": "Mirror",
+    "enc_pub": "",
+    "node_id": "",
+    "sig": "fbdf678e2416a373fac195ca3bcb4a429f41fe6144650f314ecaf4d41615ff0b8ad5927aa03f2f527f92456fdaef4b538620e93b4fd4592a76a745db7cb82b0f"
+  },
+  {
+    "cell_id": "47a1cfe62d854d82ff6c03e032348da51a07fb2189cbd554fb5e5d749c495f3a",
+    "role": "administrator",
+    "name": "administrator",
+    "enc_pub": "d71a20e61a9a3ce71f54964837bcb2b2284e45ff57149ec8ffd9512397250162",
+    "node_id": "2050f850823921b135e467fe27d59b7701327d3fdb3b4685f4bba9441de64504",
+    "sig": "655e09178273d41548c98c61b7fc5c513b8c359dce50d5eaf1d419d07c2cd9ab1b3efa481f10e0fab570d206f2a8144538c556221f98247164dac36528e3d10e"
+  },
+  {
+    "cell_id": "b3d0a5c7c20111fc57bd0508c07dcbcbbb072ff057a788b197b22b2695201bbf",
+    "role": "author",
+    "name": "Andrey",
+    "enc_pub": "",
+    "node_id": "",
+    "sig": "57707b33e7077dc4735ca1c33531035ae3eb25b4a615d50e8b9e6a94db1078f90661eaaf8a17ace0f18801df3cbfac65efe3d7b9ac8748ed13345a755614190b"
+  },
+  {
+    "cell_id": "bcd2bfed941a8c99ab33cb81dac63a963f27859e773d243ebf04722c86fc6db4",
+    "role": "administrator",
+    "name": "administrator",
+    "enc_pub": "c4fb1be9bf44f64a34fe217ea8b0bf1c7b18c15cee8c1ee9f785d17fcf1cf019",
+    "node_id": "1156066c50b9bc2a08c4a2f7c710c6d848c98c45a235f1d5cad5c272935671d8",
+    "sig": "7f97a8064e841ff726736405a044f1c09adf61c9ac0bb021d631378bcf73273ef8b571c766b88411f3127908513522b6104df965e27f7d5494a95f2f3ed0670c"
+  },
+  {
+    "cell_id": "64f40d6aa1995ea3d2c3bc44db9ccd1642a359cbef6ec828ee29e41e0bdca017",
+    "role": "administrator",
+    "name": "administrator",
+    "enc_pub": "69eff581955550621ea44b2b3d2cc550702f0c9845d099bef0538dbbfdaebb7e",
+    "node_id": "431546eec7def694df899e796019a23874d0bab2b71f70771cf9da4baa434f95",
+    "sig": "ff9769dba98b6243170519f240184b763a627988e45fc8c6b2c2f17a8703a6c8ff01b2440bb1523e3d1d6ef81c8a58c184a5a907b7bfe3668db3f917adb1e601"
+  }
+]

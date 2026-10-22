@@ -1,0 +1,11 @@
+.git
+__pycache__
+*.pyc
+*.pyo
+data/
+Books/
+Errors/
+MD_Discuss/
+debug*.py
+debug*.txt
+test_blocks.py

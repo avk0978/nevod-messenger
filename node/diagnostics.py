@@ -65,11 +65,11 @@ async def _check_identity_db_consistency(node: "Node") -> Check:
                       "Собственная запись отсутствует в node_table — появится после следующего старта.")
     mismatches = []
     if entry.access != node.identity.access:
-        mismatches.append(f"access: node.json={node.identity.access!r}, БД={entry.access!r}")
+        mismatches.append(f"access: node.json={node.identity.access!r}, DB={entry.access!r}")
     if entry.address != node.identity.address:
-        mismatches.append(f"address: node.json={node.identity.address!r}, БД={entry.address!r}")
+        mismatches.append(f"address: node.json={node.identity.address!r}, DB={entry.address!r}")
     if entry.name != node.identity.name:
-        mismatches.append(f"name: node.json={node.identity.name!r}, БД={entry.name!r}")
+        mismatches.append(f"name: node.json={node.identity.name!r}, DB={entry.name!r}")
     if mismatches:
         return Check(
             "identity_db", "Согласованность identity/DB", "fail",
@@ -110,9 +110,9 @@ async def _check_peer_reachability(node: "Node") -> Check:
             continue  # this peer itself unreachable/didn't answer — try the next one
         if result:
             return Check("reachability", "Внешняя доступность", "ok",
-                         f"{peer.node_id[:8]} подтвердил: {node.identity.address} доступен снаружи.")
+                         f"{peer.node_id[:8]} подтвердил доступность снаружи: {node.identity.address}")
         return Check("reachability", "Внешняя доступность", "fail",
-                     f"{peer.node_id[:8]} НЕ смог достучаться до {node.identity.address} — "
+                     f"{peer.node_id[:8]} НЕ смог достучаться до адреса: {node.identity.address} — "
                      f"проверьте проброс порта/файрвол.")
     return Check("reachability", "Внешняя доступность", "warn",
                  "Ни один известный пир не ответил на проверку (все офлайн?).")

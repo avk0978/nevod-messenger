@@ -12,6 +12,7 @@ Aliases: data/aliases.json  (cell_id → display name).
 import base64
 import hashlib
 import hmac
+import json
 import logging
 import os
 import time
@@ -20,6 +21,8 @@ from pathlib import Path
 from typing import TYPE_CHECKING
 
 from aiohttp import web
+
+from .admin_i18n import COOKIE, LANG_NAMES, LANGS, localize, pick_lang
 
 if TYPE_CHECKING:
     from .node import Node
@@ -115,7 +118,9 @@ header{background:#161b22;border-bottom:1px solid #30363d;padding:16px 24px;
 #node-title{font-size:24px;font-weight:bold;color:#58a6ff;letter-spacing:.3px;line-height:1.2}
 #node-sub{font-size:10px;color:#484f58;letter-spacing:1px;margin-top:2px}
 #node-detail{font-size:11px;color:#8b949e;margin-top:6px}
-#status-box{display:flex;gap:8px;flex-wrap:wrap}
+#status-box{display:flex;gap:8px;flex-wrap:wrap;align-items:flex-start}
+#lang-select{background:#0d1117;color:#8b949e;border:1px solid #30363d;border-radius:6px;
+  padding:6px 8px;font-family:monospace;font-size:11px;cursor:pointer}
 .status-pill{font-size:11px;padding:7px 14px;border-radius:6px;border:1px solid;
   white-space:nowrap;line-height:1.3}
 .status-pill b{display:block;font-size:12px}
@@ -200,6 +205,7 @@ _HEADER_HTML = """
   <div id="status-box">
     <span id="status-access" class="status-pill">—</span>
     <span id="status-visibility" class="status-pill">—</span>
+    <!--LANG-->
   </div>
 </header>
 """
@@ -220,7 +226,8 @@ _QR_HTML = """
 # pill (every page shows the same header, so it needs the same renderer).
 _SHARED_JS = """
 function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
-function ts(sec){return new Date(sec*1000).toLocaleString('ru-RU')}
+function ts(sec){return new Date(sec*1000).toLocaleString(document.documentElement.lang)}
+function setLang(l){document.cookie='nevod_admin_lang='+l+';path=/nevod-admin;max-age=31536000;samesite=lax';location.reload()}
 function shortId(id){return esc(id.slice(0,16))+'…'}
 
 // ── tiny QR encoder (data-URL via canvas) ────────────────────────────
@@ -269,7 +276,7 @@ function renderHeader(data){
     'node: ' + data.node_id.slice(0,16) + '…  |  ' + data.address +
     '  |  инвайт: ' + (data.invite_mode || 'open');
 
-  // Read-only status here — the actual controls live on the Настройки page now
+  // Read-only status here — the actual controls live on the settings page now
   // (2026-09-13: used to be a click-to-toggle pill, moved so every Node setting
   // has one home instead of some living only in the header).
   const accessOpen = data.access === 'open';
@@ -314,15 +321,29 @@ def _nav_html(active: str) -> str:
     return "<nav>" + "".join(links) + "</nav>"
 
 
-def _shell(active: str, body: str, script: str) -> str:
-    return (
-        "<!DOCTYPE html>\n<html lang=\"ru\">\n<head>\n"
+def _lang_select(lang: str) -> str:
+    options = "".join(
+        "<option value=\"" + code + "\"" + (" selected" if code == lang else "") + ">"
+        + LANG_NAMES[code] + "</option>" for code in LANGS)
+    return "<select id=\"lang-select\" onchange=\"setLang(this.value)\" aria-label=\"Language\">" + options + "</select>"
+
+
+def _request_lang(request: web.Request) -> str:
+    return pick_lang(request.cookies.get(COOKIE), request.headers.get("Accept-Language"))
+
+
+def _shell(active: str, body: str, script: str, lang: str) -> str:
+    # The templates are written in Russian; localize() turns the whole page into `lang`
+    # (node/admin_i18n.py). Pages carry no user data — that arrives later through the API.
+    page = (
+        "<!DOCTYPE html>\n<html lang=\"" + lang + "\">\n<head>\n"
         "<meta charset=\"UTF-8\">\n"
         "<meta name=\"viewport\" content=\"width=device-width,initial-scale=1\">\n"
         "<title>Nevod Admin</title>\n<style>" + _CSS + "</style>\n</head>\n<body>\n"
-        + _HEADER_HTML + _nav_html(active) + _QR_HTML
+        + _HEADER_HTML.replace("<!--LANG-->", _lang_select(lang)) + _nav_html(active) + _QR_HTML
         + "<main>\n" + body + "\n</main>\n<script>" + _SHARED_JS + "\n" + script + "\n</script>\n</body>\n</html>"
     )
+    return localize(page, lang)
 
 
 # ── Обзор ────────────────────────────────────────────────────────────────────
@@ -1261,7 +1282,7 @@ async function saveAIBot(){
   if(!data.ok){ errEl.textContent = 'Ошибка: ' + data.error; return; }
   resetForm();
   await loadAIBots();
-  setTimeout(loadAIBots, 2500);   // "подключается" -> "работает"
+  setTimeout(loadAIBots, 2500);   // "connecting" -> "online"
 }
 async function setEnabled(cell_id, enabled){
   const r = await fetch('/nevod-admin/api/ai-bots/' + encodeURIComponent(cell_id) + '/enabled', {
@@ -1466,25 +1487,39 @@ class AdminServer:
             )
         return await handler(request)
 
+    @web.middleware
+    async def _i18n_middleware(self, request: web.Request, handler):
+        """Puts the "error" text of a JSON reply into the admin's language."""
+        resp = await handler(request)
+        if isinstance(resp, web.Response) and resp.content_type == "application/json" and resp.text:
+            try:
+                data = json.loads(resp.text)
+            except ValueError:
+                return resp
+            if isinstance(data, dict) and isinstance(data.get("error"), str):
+                data["error"] = localize(data["error"], _request_lang(request))
+                return web.json_response(data, status=resp.status)
+        return resp
+
     async def _handle_page_overview(self, _req):
-        return web.Response(text=_shell("", _BODY_OVERVIEW, _SCRIPT_OVERVIEW),
+        return web.Response(text=_shell("", _BODY_OVERVIEW, _SCRIPT_OVERVIEW, _request_lang(_req)),
                              content_type="text/html")
 
     async def _handle_page_settings(self, _req):
-        return web.Response(text=_shell("settings", _BODY_SETTINGS, _SCRIPT_SETTINGS),
+        return web.Response(text=_shell("settings", _BODY_SETTINGS, _SCRIPT_SETTINGS, _request_lang(_req)),
                              content_type="text/html")
 
     async def _handle_page_security(self, _req):
-        return web.Response(text=_shell("security", _BODY_SECURITY, _SCRIPT_SECURITY),
+        return web.Response(text=_shell("security", _BODY_SECURITY, _SCRIPT_SECURITY, _request_lang(_req)),
                              content_type="text/html")
 
     async def _handle_page_join_requests(self, _req):
         return web.Response(
-            text=_shell("join-requests", _BODY_JOIN_REQUESTS, _SCRIPT_JOIN_REQUESTS),
+            text=_shell("join-requests", _BODY_JOIN_REQUESTS, _SCRIPT_JOIN_REQUESTS, _request_lang(_req)),
             content_type="text/html")
 
     async def _handle_page_appeals(self, _req):
-        return web.Response(text=_shell("appeals", _BODY_APPEALS, _SCRIPT_APPEALS),
+        return web.Response(text=_shell("appeals", _BODY_APPEALS, _SCRIPT_APPEALS, _request_lang(_req)),
                              content_type="text/html")
 
     async def _handle_list_appeals(self, _req):
@@ -1532,19 +1567,19 @@ class AdminServer:
         return web.json_response(self._node.administrator_info() or {})
 
     async def _handle_page_invites(self, _req):
-        return web.Response(text=_shell("invites", _BODY_INVITES, _SCRIPT_INVITES),
+        return web.Response(text=_shell("invites", _BODY_INVITES, _SCRIPT_INVITES, _request_lang(_req)),
                              content_type="text/html")
 
     async def _handle_page_nodes(self, _req):
-        return web.Response(text=_shell("nodes", _BODY_NODES, _SCRIPT_NODES),
+        return web.Response(text=_shell("nodes", _BODY_NODES, _SCRIPT_NODES, _request_lang(_req)),
                              content_type="text/html")
 
     async def _handle_page_published(self, _req):
-        return web.Response(text=_shell("published", _BODY_PUBLISHED, _SCRIPT_PUBLISHED),
+        return web.Response(text=_shell("published", _BODY_PUBLISHED, _SCRIPT_PUBLISHED, _request_lang(_req)),
                              content_type="text/html")
 
     async def _handle_page_ai_bots(self, _req):
-        return web.Response(text=_shell("ai-bots", _BODY_AI_BOTS, _SCRIPT_AI_BOTS),
+        return web.Response(text=_shell("ai-bots", _BODY_AI_BOTS, _SCRIPT_AI_BOTS, _request_lang(_req)),
                              content_type="text/html")
 
     # --- AI bots run inside the node (node/ai_bots.py) ---
@@ -1602,7 +1637,7 @@ class AdminServer:
         return await self._ai_bot_call(lambda m: m.delete(cell_id))
 
     async def _handle_page_diagnostics(self, _req):
-        return web.Response(text=_shell("diagnostics", _BODY_DIAGNOSTICS, _SCRIPT_DIAGNOSTICS),
+        return web.Response(text=_shell("diagnostics", _BODY_DIAGNOSTICS, _SCRIPT_DIAGNOSTICS, _request_lang(_req)),
                              content_type="text/html")
 
     async def _handle_cells(self, _req):
@@ -1971,6 +2006,9 @@ class AdminServer:
     async def _handle_diagnostics(self, _req):
         from .diagnostics import run_diagnostics
         checks = await run_diagnostics(self._node)
+        lang = _request_lang(_req)
+        for c in checks:
+            c["label"], c["detail"] = localize(c["label"], lang), localize(c["detail"], lang)
         return web.json_response({"checks": checks})
 
     async def _handle_join_node(self, request: web.Request):
@@ -2118,7 +2156,7 @@ class AdminServer:
         return web.Response(body=path.read_bytes(), content_type="text/plain")
 
     def _make_app(self) -> web.Application:
-        app = web.Application(middlewares=[self._auth_middleware])
+        app = web.Application(middlewares=[self._auth_middleware, self._i18n_middleware])
         app.router.add_get("/nevod-admin",                                          self._handle_page_overview)
         app.router.add_get("/nevod-admin/",                                         self._handle_page_overview)
         app.router.add_get("/nevod-admin/settings",                                 self._handle_page_settings)

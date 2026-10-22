@@ -82,7 +82,7 @@ cp .env.home.example .env        # fill in the values — see the comments insid
 docker compose -f docker-compose.home.yml up -d --build
 ```
 
-On first start the node creates its identity and database in `NEVOD_DATA_DIR`. The web admin panel listens on port 8766 (login with `NEVOD_ADMIN_PASSWORD`; its interface is in Russian for now): set the node's name, admission mode and invitation codes there. Details: [`installer/docker/README.md`](installer/docker/README.md).
+On first start the node creates its identity and database in `NEVOD_DATA_DIR`. The web admin panel listens on port 8766 (login with `NEVOD_ADMIN_PASSWORD`; interface in 8 languages): set the node's name, admission mode and invitation codes there. Details: [`installer/docker/README.md`](installer/docker/README.md).
 
 ## Development
 

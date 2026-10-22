@@ -181,7 +181,7 @@ async def test_update_restarts_with_new_prompt(tmp_path, fake_ai):
     ("Bot", "", ["openai"], "инструкцию"),
     ("Bot", "p", [], "провайдера"),
     ("Bot", "p", ["mistral"], "провайдера"),
-    ("Bot", "x" * 4001, ["openai"], "длиннее"),
+    ("Bot", "x" * 4001, ["openai"], "слишком длинная"),
 ])
 async def test_validation(tmp_path, name, prompt, providers, error):
     node = await _start(tmp_path, 12)
@@ -219,7 +219,7 @@ async def test_admin_api_round_trip(genesis_node, fake_ai):
         assert (await r.json()) == {"ok": True}
         r = await client.post("/nevod-admin/api/ai-bots", headers=h, json={
             "name": p["name"], "system_prompt": "x", "providers": ["anthropic"]})
-        assert r.status == 400 and "занято" in (await r.json())["error"]
+        assert r.status == 400 and "already taken" in (await r.json())["error"]   # no Accept-Language: English
 
         bots = (await (await client.get("/nevod-admin/api/ai-bots", headers=h)).json())["bots"]
         assert [(b["name"], b["providers"], b["enabled"]) for b in bots] == \

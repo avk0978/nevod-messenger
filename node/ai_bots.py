@@ -108,7 +108,7 @@ class AIBotManager:
                      providers: List[str]) -> AIBotEntry:
         storage = self._node.storage
         if len(await storage.list_ai_bots()) >= MAX_BOTS:
-            raise AIBotError(f"не больше {MAX_BOTS} ботов на ноде")
+            raise AIBotError(f"на ноде уже максимум ботов: {MAX_BOTS}")
         name, description, system_prompt, providers = await self._validate(
             None, name, description, system_prompt, providers)
         identity = CellIdentity.generate(name=name)
@@ -189,7 +189,7 @@ class AIBotManager:
         if not system_prompt:
             raise AIBotError("укажи инструкцию для бота")
         if len(system_prompt) > MAX_PROMPT_CHARS:
-            raise AIBotError(f"инструкция длиннее {MAX_PROMPT_CHARS} символов")
+            raise AIBotError(f"инструкция слишком длинная, максимум символов: {MAX_PROMPT_CHARS}")
         if not providers:
             raise AIBotError("отметь хотя бы одного провайдера")
         return name, description, system_prompt, providers

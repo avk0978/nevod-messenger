@@ -20,7 +20,7 @@
    ```bash
    docker compose -f docker-compose.home.yml up -d --build
    ```
-4. Open the admin panel on port **8766** (HTTP Basic Auth, the password from step 2; the panel's interface is in Russian for now) and set the node's name, admission mode (open / invitation code / administrator approval) and invitation codes.
+4. Open the admin panel on port **8766** (HTTP Basic Auth, the password from step 2; the interface is available in 8 languages — switch it in the header) and set the node's name, admission mode (open / invitation code / administrator approval) and invitation codes.
 
 The node listens for clients on port **8765** (WebSocket over TLS, self-signed certificate pinned by fingerprint). To reach it from the internet, forward the port or put it behind a reverse proxy such as Caddy or nginx under your domain.
 

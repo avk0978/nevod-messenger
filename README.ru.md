@@ -82,7 +82,7 @@ cp .env.home.example .env        # заполните значения — по�
 docker compose -f docker-compose.home.yml up -d --build
 ```
 
-При первом запуске узел создаёт свою идентичность и базу в `NEVOD_DATA_DIR`. Веб-панель администратора — на порту 8766 (вход по паролю `NEVOD_ADMIN_PASSWORD`): там задаются имя узла, режим приёма и коды приглашения. Подробнее: [`installer/docker/README.md`](installer/docker/README.md).
+При первом запуске узел создаёт свою идентичность и базу в `NEVOD_DATA_DIR`. Веб-панель администратора — на порту 8766 (вход по паролю `NEVOD_ADMIN_PASSWORD`; интерфейс на 8 языках): там задаются имя узла, режим приёма и коды приглашения. Подробнее: [`installer/docker/README.md`](installer/docker/README.md).
 
 ## Разработка
 

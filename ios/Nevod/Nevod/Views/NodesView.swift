@@ -29,7 +29,19 @@ struct NodesView: View {
               client.status != "invite required", client.status != "invite invalid" else {
             return nil
         }
-        return ExploreNode(nodeId: client.nodeId, name: "Home", address: client.activeAddr, isHome: true)
+        return ExploreNode(nodeId: client.nodeId, name: homeNodeName(client), address: client.activeAddr, isHome: true)
+    }
+
+    /// The home planet's own name (a project node's comes from the manifest in the card
+    /// itself): the node list if the node is open, else the node-signed administrator record
+    /// (a closed node isn't in that list), else the domain. Was a hardcoded "Home" (VPS test
+    /// 2026-10-30: the iPad showed "Home" where the iPhone showed "Test VPS").
+    private func homeNodeName(_ client: NevdClient) -> String {
+        let listed = store.publicNodes.first { $0.nodeId == client.nodeId }?.name ?? ""
+        if !listed.isEmpty { return listed }
+        let admin = store.nodeAdministrators.values.first { $0.nodeId == client.nodeId }?.nodeName ?? ""
+        if !admin.isEmpty { return admin }
+        return String(client.activeAddr.split(whereSeparator: { $0 == "/" || $0 == ":" }).first ?? "")
     }
 
     private var allNodes: [ExploreNode] {

@@ -102,7 +102,7 @@ private struct SidebarLayout: View {
                     Circle()
                         .fill(store.client?.isConnected == true ? Color.green : Color.red)
                         .frame(width: 8, height: 8)
-                    Text(store.connectionStatus)
+                    Text(store.connectionStatusText)
                         .font(.caption).foregroundStyle(.secondary)
                     Spacer()
                 }

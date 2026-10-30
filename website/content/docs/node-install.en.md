@@ -12,6 +12,13 @@ If the provider has its own network firewall in the control panel (for example, 
 
 ## 2. Point the domain at the server
 
+The node needs a domain or subdomain of its own, for example `node.example.org`. There are two reasons it can't do without one:
+
+- **Phones connect to the node at `https://domain/nevod-ws`.** Caddy gets the HTTPS certificate that an iPhone trusts without any setup from Let's Encrypt, for a domain name.
+- **The node's address is stored everywhere:** on users' phones, in their contact cards, on other nodes in the network. If you move to another server or your provider changes the IP address, you fix one DNS record and users notice nothing. With a bare IP address, a move would cut everyone off, and you would have to send out invitations again.
+
+If you don't have a domain yet, you can buy one from any registrar (Cloudflare, Namecheap, Porkbun, Gandi and others) — usually a few dollars or euros a year. One subdomain is enough for the node, and the domain itself can serve other purposes too.
+
 In your domain's control panel, create an **A record**: name — for example `node` (giving `node.example.org`), value — the server's IP address.
 
 Wait a few minutes and check from any computer:

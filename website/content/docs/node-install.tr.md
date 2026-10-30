@@ -12,6 +12,13 @@ Sağlayıcının kontrol panelinde kendi ağ güvenlik duvarı varsa (örneğin 
 
 ## 2. Alan adını sunucuya yönlendirin
 
+Düğümün kendine ait bir alan adı veya alt alan adı olmalıdır, örneğin `node.example.org`. İki nedenle onsuz olmaz:
+
+- **Telefonlar düğüme `https://alanadı/nevod-ws` adresinden bağlanır.** iPhone'un hiçbir ayar gerektirmeden güvendiği HTTPS sertifikasını Caddy, Let's Encrypt'ten bir alan adı için alır.
+- **Düğümün adresi her yerde kayıtlıdır:** kullanıcıların telefonlarında, kişi kartlarında, ağdaki diğer düğümlerde. Başka bir sunucuya taşınırsanız veya sağlayıcınız IP adresini değiştirirse tek bir DNS kaydını düzeltmeniz yeterlidir; kullanıcılar hiçbir şey fark etmez. Çıplak bir IP adresiyle taşınma herkesin bağlantısını keser ve davetleri yeniden göndermeniz gerekir.
+
+Henüz alan adınız yoksa herhangi bir kayıt kuruluşundan (Cloudflare, Namecheap, Porkbun, Gandi ve diğerleri) satın alabilirsiniz — genellikle yılda birkaç dolar veya avro. Düğüm için tek bir alt alan adı yeterlidir; alan adının kendisini başka amaçlar için de kullanabilirsiniz.
+
 Alan adınızın yönetim panelinde bir **A kaydı** oluşturun: ad — örneğin `node` (`node.example.org` olur), değer — sunucunun IP adresi.
 
 Birkaç dakika bekleyin ve herhangi bir bilgisayardan kontrol edin:

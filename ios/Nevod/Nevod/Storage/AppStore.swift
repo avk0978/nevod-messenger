@@ -26,6 +26,16 @@ final class AppStore: ObservableObject {
     @Published var pendingCard: String? = nil
     @Published var pendingCardName: String? = nil  // sender's display name, when known — see contactAddNoticePrefix
     @Published var connectionStatus: String = "disconnected"
+    /// connectionStatus is NevdClient's internal code ("connected", "reconnecting…", "invite
+    /// required"…) — this is what the user sees (was shown raw: "connected" on the iPad
+    /// sidebar, VPS test 2026-10-30).
+    var connectionStatusText: String {
+        switch connectionStatus {
+        case "connected": String(localized: "Подключено")
+        case "connecting…", "authenticating…", "reconnecting…": String(localized: "Подключение…")
+        default: String(localized: "Нет соединения")
+        }
+    }
     @Published var nodeMembers: [NodeMember] = []
     @Published var publicNodes: [NevdClient.PublicNode] = []
     @Published var verifiedNodes: [String: VerifiedNodeInfo] = [:]

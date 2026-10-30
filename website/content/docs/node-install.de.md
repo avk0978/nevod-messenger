@@ -12,6 +12,13 @@ Hat der Anbieter eine eigene Netzwerk-Firewall im Kundenpanel (zum Beispiel Fire
 
 ## 2. Lass die Domain auf den Server zeigen
 
+Der Node braucht eine eigene Domain oder Subdomain, zum Beispiel `node.example.org`. Ohne geht es aus zwei Gründen nicht:
+
+- **Telefone verbinden sich mit dem Node über `https://Domain/nevod-ws`.** Das HTTPS-Zertifikat, dem ein iPhone ohne jede Einstellung vertraut, holt Caddy bei Let's Encrypt für einen Domainnamen.
+- **Die Adresse des Nodes ist überall gespeichert:** auf den Telefonen der Nutzer, in ihren Kontaktkarten, bei anderen Nodes im Netz. Ziehst du auf einen anderen Server um oder ändert der Provider die IP-Adresse, korrigierst du einen DNS-Eintrag, und die Nutzer merken nichts. Mit einer nackten IP-Adresse wären nach einem Umzug alle getrennt, und du müsstest die Einladungen neu verschicken.
+
+Hast du noch keine Domain, kannst du sie bei jedem Registrar kaufen (Cloudflare, Namecheap, Porkbun, Gandi und andere) — meist ein paar Dollar oder Euro im Jahr. Für den Node genügt eine Subdomain, die Domain selbst kannst du auch für anderes nutzen.
+
 Lege in der Verwaltung deiner Domain einen **A-Eintrag** an: Name — zum Beispiel `node` (ergibt `node.example.org`), Wert — die IP-Adresse des Servers.
 
 Warte ein paar Minuten und prüfe von einem beliebigen Computer:

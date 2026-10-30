@@ -1574,11 +1574,15 @@ class Node:
         joinable) nodes this node knows about via gossip. Unlike _handle_group_members_request,
         deliberately NOT gated behind admission: "open" access is the whole point of these
         nodes advertising themselves, so there's nothing to protect by hiding the list."""
+        # Only nodes on the air: an offline one stays in node_table for 72 h (it may just be
+        # restarting) but showed up as a planet nobody could open (VPS test 2026-10-30).
         all_nodes = await self.storage.get_all_nodes()
+        me = self.identity.node_id
         nodes = [
             {"node_id": n.node_id, "name": n.name, "address": n.address,
              "tls_fingerprint": n.tls_fingerprint}
-            for n in all_nodes if n.access == "open"
+            for n in all_nodes
+            if n.access == "open" and (n.status != "offline" or n.node_id == me)
         ]
         resp = make_node_list_response(
             from_node=self.identity.node_id,

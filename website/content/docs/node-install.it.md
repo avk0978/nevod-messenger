@@ -12,6 +12,13 @@ Se il provider ha un proprio firewall di rete nel pannello di controllo (per ese
 
 ## 2. Fai puntare il dominio al server
 
+Il nodo ha bisogno di un dominio o sottodominio proprio, per esempio `node.example.org`. Non può farne a meno per due motivi:
+
+- **I telefoni si collegano al nodo all'indirizzo `https://dominio/nevod-ws`.** Caddy ottiene da Let's Encrypt, per un nome di dominio, il certificato HTTPS di cui un iPhone si fida senza alcuna configurazione.
+- **L'indirizzo del nodo è salvato ovunque:** nei telefoni degli utenti, nelle loro schede contatto, negli altri nodi della rete. Se ti sposti su un altro server o il provider cambia l'indirizzo IP, basta correggere un record DNS e gli utenti non si accorgono di nulla. Con un semplice indirizzo IP, un trasloco lascerebbe tutti senza collegamento e dovresti inviare di nuovo gli inviti.
+
+Se non hai ancora un dominio, puoi acquistarlo da un qualsiasi registrar (Cloudflare, Namecheap, Porkbun, Gandi e altri): di solito costa pochi dollari o euro all'anno. Per il nodo basta un sottodominio, e il dominio stesso può servirti anche per altro.
+
 Nel pannello di gestione del tuo dominio crea un **record A**: nome — per esempio `node` (diventa `node.example.org`) —, valore: l'indirizzo IP del server.
 
 Aspetta qualche minuto e verifica da un computer qualsiasi:

@@ -1,6 +1,6 @@
 """
-NODE_LIST_REQUEST ("Explore Network"): open nodes only, each with the fingerprint of its
-own certificate, so the app can pin a node that isn't in the curator's nodes.json (VPS test
+NODE_LIST_REQUEST ("Explore Network"): open nodes on the air only, each with the fingerprint
+of its own certificate, so the app can pin a node that isn't in the curator's nodes.json (VPS test
 2026-10-30: without it the app couldn't open a private operator's planet).
 """
 
@@ -18,10 +18,12 @@ async def test_open_nodes_with_fingerprint(tmp_path):
     NodeIdentity.generate("127.0.0.1:19840").save(id_path)
     node = await Node.create(id_path, str(tmp_path / "n.db"))
     now = int(time.time())
-    for nid, access, fp in (("aa" * 32, "open", "f1" * 32), ("bb" * 32, "closed", "f2" * 32)):
+    for nid, access, fp, status in (("aa" * 32, "open", "f1" * 32, "online"),
+                                    ("bb" * 32, "closed", "f2" * 32, "online"),
+                                    ("dd" * 32, "open", "f3" * 32, "offline")):
         await node.storage.upsert_node(NodeEntry(
             node_id=nid, address=f"{nid[:2]}.example:8765", access=access, name=nid[:2],
-            tls_fingerprint=fp, last_seen=now, added_at=now))
+            tls_fingerprint=fp, last_seen=now, added_at=now, status=status))
     sent = []
 
     async def send_via(conn, pkt):
@@ -34,3 +36,4 @@ async def test_open_nodes_with_fingerprint(tmp_path):
     assert resp.type == T.NODE_LIST_RESPONSE
     nodes = decode_payload(resp.payload)["nodes"]
     assert [(n["node_id"], n["tls_fingerprint"]) for n in nodes] == [("aa" * 32, "f1" * 32)]
+    await node.storage.close()

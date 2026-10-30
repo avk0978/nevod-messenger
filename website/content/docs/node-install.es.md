@@ -12,6 +12,13 @@ Si el proveedor tiene su propio cortafuegos de red en el panel de control (por e
 
 ## 2. Apunta el dominio al servidor
 
+El nodo necesita un dominio o subdominio propio, por ejemplo `node.example.org`. No puede prescindir de él por dos motivos:
+
+- **Los teléfonos se conectan al nodo en `https://dominio/nevod-ws`.** Caddy obtiene de Let's Encrypt, para un nombre de dominio, el certificado HTTPS en el que un iPhone confía sin ninguna configuración.
+- **La dirección del nodo está guardada en todas partes:** en los teléfonos de los usuarios, en sus tarjetas de contacto, en otros nodos de la red. Si te mudas a otro servidor o tu proveedor cambia la dirección IP, corriges un registro DNS y los usuarios no notan nada. Con una dirección IP sin más, una mudanza dejaría a todos sin conexión y tendrías que volver a enviar las invitaciones.
+
+Si todavía no tienes dominio, puedes comprarlo en cualquier registrador (Cloudflare, Namecheap, Porkbun, Gandi y otros): suele costar unos pocos dólares o euros al año. Para el nodo basta un subdominio, y el dominio en sí puede servirte también para otras cosas.
+
 En el panel de gestión de tu dominio, crea un **registro A**: nombre —por ejemplo `node` (queda `node.example.org`)—, valor: la dirección IP del servidor.
 
 Espera unos minutos y compruébalo desde cualquier ordenador:

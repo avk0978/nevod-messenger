@@ -12,6 +12,13 @@ Si l'hébergeur propose son propre pare-feu réseau dans l'espace client (par ex
 
 ## 2. Faites pointer le domaine vers le serveur
 
+Le nœud a besoin de son propre domaine ou sous-domaine, par exemple `node.example.org`. Il ne peut pas s'en passer, pour deux raisons :
+
+- **Les téléphones se connectent au nœud à l'adresse `https://domaine/nevod-ws`.** Caddy obtient de Let's Encrypt, pour un nom de domaine, le certificat HTTPS auquel un iPhone fait confiance sans aucun réglage.
+- **L'adresse du nœud est enregistrée partout :** sur les téléphones des utilisateurs, dans leurs cartes de contact, chez les autres nœuds du réseau. Si vous passez sur un autre serveur ou si votre hébergeur change l'adresse IP, il suffit de corriger un enregistrement DNS et les utilisateurs ne remarquent rien. Avec une simple adresse IP, un déménagement couperait tout le monde et il faudrait renvoyer les invitations.
+
+Si vous n'avez pas encore de domaine, vous pouvez en acheter un chez n'importe quel registraire (Cloudflare, Namecheap, Porkbun, Gandi et d'autres) — en général quelques dollars ou euros par an. Un seul sous-domaine suffit pour le nœud, et le domaine lui-même peut servir à autre chose.
+
 Dans l'interface de gestion de votre domaine, créez un **enregistrement A** : nom — par exemple `node` (ce qui donne `node.example.org`) —, valeur : l'adresse IP du serveur.
 
 Attendez quelques minutes et vérifiez depuis n'importe quel ordinateur :

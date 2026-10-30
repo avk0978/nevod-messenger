@@ -94,7 +94,7 @@ struct ProfileView: View {
                         HStack(spacing: 6) {
                             Circle().fill(store.client?.isConnected == true ? Color.green : Color.orange)
                                 .frame(width: 8, height: 8)
-                            Text(store.connectionStatus).foregroundStyle(.secondary)
+                            Text(store.connectionStatusText).foregroundStyle(.secondary)
                         }
                     }
                 } header: {

@@ -4733,6 +4733,58 @@
         }
       }
     },
+    "Couldn't reach this node" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Knoten nicht erreichbar"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Couldn't reach this node"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No se pudo contactar con este nodo"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Impossible de joindre ce nœud"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Impossibile raggiungere questo nodo"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Не удалось связаться с нодой"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bu düğüme ulaşılamadı"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Не вдалося зв’язатися з нодою"
+          }
+        }
+      }
+    },
     "Nothing published here yet" : {
       "localizations" : {
         "de" : {
@@ -4894,7 +4946,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Node öffnen"
+            "value" : "Offener Node"
           }
         },
         "en" : {
@@ -4906,19 +4958,19 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Abrir nodo"
+            "value" : "Nodo abierto"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ouvrir le nœud"
+            "value" : "Nœud ouvert"
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Apri nodo"
+            "value" : "Nodo aperto"
           }
         },
         "ru" : {
@@ -4930,7 +4982,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Düğümü aç"
+            "value" : "Açık düğüm"
           }
         },
         "uk" : {

@@ -87,7 +87,8 @@ struct NodePlanetDetailView: View {
                         ProgressView().tint(.white).padding(.top, 24)
                     } else if cells.isEmpty {
                         ContentUnavailableView(
-                            loadFailed ? "Couldn't reach this node" : "Nothing published here yet",
+                            loadFailed ? LocalizedStringKey("Couldn't reach this node")
+                                       : LocalizedStringKey("Nothing published here yet"),
                             systemImage: "circle.dashed"
                         )
                         .padding(.top, 8)
@@ -151,11 +152,15 @@ struct NodePlanetDetailView: View {
             return
         }
         guard let identity = store.identity else { return }
-        let fingerprint = manifestInfo?.tlsFingerprint
+        // The curator's pin for a project node; for any other node, the fingerprint the home
+        // node learned from the network. Without one, the node port's self-signed certificate
+        // fails the system trust check (VPS test 2026-10-30: "Couldn't reach this node").
+        let curated = manifestInfo?.tlsFingerprint ?? ""
+        let fingerprint = curated.isEmpty ? node.tlsFingerprint : curated
         do {
             cells = try await NodeCellsBrowser.fetch(
                 nodeAddr: node.address,
-                expectedFingerprint: (fingerprint?.isEmpty == false) ? fingerprint : nil,
+                expectedFingerprint: fingerprint.isEmpty ? nil : fingerprint,
                 identity: identity
             )
         } catch {

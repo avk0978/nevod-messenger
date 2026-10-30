@@ -360,7 +360,7 @@ def make_node_list_request(from_addr: str, to_node: str) -> Packet:
 
 
 def make_node_list_response(from_node: str, to_addr: str, nodes: list) -> Packet:
-    """nodes: list of {"node_id": str, "name": str, "address": str}"""
+    """nodes: list of {"node_id": str, "name": str, "address": str, "tls_fingerprint": str}"""
     return Packet(
         type=T.NODE_LIST_RESPONSE,
         payload=encode_payload({"nodes": nodes}),

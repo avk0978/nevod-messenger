@@ -677,7 +677,13 @@ final class NevdClient: NSObject, ObservableObject {
 
     // MARK: - Public node directory
 
-    struct PublicNode { let nodeId: String; let name: String; let address: String }
+    struct PublicNode {
+        let nodeId: String; let name: String; let address: String
+        /// SHA-256 of the node's own (self-signed) certificate on its node port, as the home
+        /// node learned it from the network. Lets NodeCellsBrowser pin a node that isn't in
+        /// the curator's nodes.json; empty from a node too old to send it.
+        var tlsFingerprint: String = ""
+    }
 
     func getPublicNodes() async throws -> [PublicNode] {
         guard let ws = webSocket, isConnected else { throw NevdError.notConnected }
@@ -705,7 +711,8 @@ final class NevdClient: NSObject, ObservableObject {
         let nodes = arr.compactMap { n -> PublicNode? in
             guard let nid = n["node_id"].string else { return nil }
             return PublicNode(nodeId: nid, name: n["name"].string ?? "",
-                              address: n["address"].string ?? "")
+                              address: n["address"].string ?? "",
+                              tlsFingerprint: n["tls_fingerprint"].string ?? "")
         }
         pendingNodeList?.resume(returning: nodes)
         pendingNodeList = nil

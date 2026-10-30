@@ -41,7 +41,8 @@ struct NodesView: View {
                 // reachable one — a node's own self-reported address can be an internal one
                 // nothing outside can dial (e.g. behind a reverse proxy), see NodeManifest.swift.
                 let address = store.verifiedNodes[node.nodeId]?.address ?? node.address
-                return ExploreNode(nodeId: node.nodeId, name: node.name, address: address, isHome: false)
+                return ExploreNode(nodeId: node.nodeId, name: node.name, address: address, isHome: false,
+                                   tlsFingerprint: node.tlsFingerprint)
             }
         let discoveredIds = Set(discovered.map { $0.nodeId })
         // Curated manifest nodes not already surfaced via gossip. This is what makes the open
@@ -133,6 +134,7 @@ struct ExploreNode: Identifiable, Hashable {
     let name: String
     let address: String
     let isHome: Bool
+    var tlsFingerprint: String = ""
     var id: String { nodeId }
 }
 

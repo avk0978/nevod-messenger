@@ -1576,7 +1576,8 @@ class Node:
         nodes advertising themselves, so there's nothing to protect by hiding the list."""
         all_nodes = await self.storage.get_all_nodes()
         nodes = [
-            {"node_id": n.node_id, "name": n.name, "address": n.address}
+            {"node_id": n.node_id, "name": n.name, "address": n.address,
+             "tls_fingerprint": n.tls_fingerprint}
             for n in all_nodes if n.access == "open"
         ]
         resp = make_node_list_response(
@@ -1594,15 +1595,19 @@ class Node:
         registered user, not just published ones)."""
         visibility = self.identity.cells_visibility
         log.info("node_cells_request from=%s visibility=%s", conn.peer_node_id[:8], visibility)
+        # A withheld list is answered as an empty one, not with silence: empty is what a
+        # node with nothing published sends too, so it reveals nothing, while silence made
+        # the app time out and call the node unreachable (VPS test 2026-10-30).
+        withheld = ""
         if visibility == "off":
-            log.info("node_cells_request %s — withheld (visibility=off)", conn.peer_node_id[:8])
+            withheld = "visibility=off"
+        elif visibility == "members" and await self.storage.get_cell(conn.peer_node_id) is None:
+            withheld = "not a registered member"
+        if withheld:
+            log.info("node_cells_request %s — withheld (%s)", conn.peer_node_id[:8], withheld)
+            await self.transport.send_via(conn, make_node_cells_response(
+                from_node=self.identity.node_id, to_addr=pkt.from_addr, cells=[]))
             return
-        if visibility == "members":
-            is_member = await self.storage.get_cell(conn.peer_node_id) is not None
-            if not is_member:
-                log.info("node_cells_request %s — withheld (not a registered member)",
-                         conn.peer_node_id[:8])
-                return  # not a member — silently withhold, same as group members
 
         published = await self.storage.get_published_cells()
         cells = []

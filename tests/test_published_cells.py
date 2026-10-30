@@ -153,13 +153,16 @@ class TestWireVisibility:
             class FakeConn:
                 peer_node_id = "ff" * 32  # never registered on this node
 
-            from node.protocol import Packet, T
+            from node.protocol import Packet, T, decode_payload
             outsider_id = "ff" * 32
             req = Packet(type=T.NODE_CELLS_REQUEST, payload=b"",
                         from_addr=f"{outsider_id}@{node.identity.node_id}",
                         to_addr=node.identity.node_id)
             await node._handle_node_cells_request(req, FakeConn())
-            assert sent == [], "non-member must get no response at all when cells_visibility='members'"
+            # an empty list, same as a node with nothing published — never the real one
+            [resp] = sent
+            assert resp.type == T.NODE_CELLS_RESPONSE
+            assert decode_payload(resp.payload)["cells"] == []
         finally:
             await node.stop()
 

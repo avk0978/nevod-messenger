@@ -54,7 +54,7 @@ Ogni codice vale una sola volta. Creane uno per ogni persona; di più in [Invita
 **Impostazioni → Visibilità in «Esplora la rete»**:
 
 - `closed` (predefinita): il nodo non compare in «Esplora la rete» per gli utenti di altri nodi. Adatta a una famiglia, a un'organizzazione, a qualsiasi gruppo chiuso.
-- `open`: il nodo compare in «Esplora la rete» e gli utenti di altri nodi possono trovarlo. Adatta a una comunità aperta.
+- `open`: il nodo compare in «Esplora la rete» e gli utenti di altri nodi possono trovarlo. Adatta a una comunità aperta. Il nodo è visibile finché è collegato alla rete, e solo a chi è già registrato su un nodo: prima della registrazione l'app mostra solo i nodi del progetto.
 
 Questa scelta non apre la registrazione: chi ammettere lo decide sempre la modalità di ammissione delle celle (passo 2). L'anello dorato di nodo verificato in «Esplora la rete» per ora ce l'hanno solo i nodi del progetto Nevod.
 

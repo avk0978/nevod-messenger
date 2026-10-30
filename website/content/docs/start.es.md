@@ -17,7 +17,7 @@ Puedes escribir a personas de cualquier nodo de la red, no solo del tuyo.
 
 1. Abre Nevod. La app pide permiso para enviar notificaciones: concédelo, o no sabrás de mensajes y llamadas mientras Nevod esté cerrado.
 2. Lee lo principal de las Condiciones de uso, activa **Acepto las Condiciones de uso** y toca **Continuar**.
-3. Se abre **Explorar la red**, una lista de nodos abiertos. Puedes echar un vistazo: los nodos, sus bots y sus páginas están disponibles sin registrarse.
+3. Se abre **Explorar la red**, una lista de nodos abiertos. Puedes echar un vistazo: los nodos, sus bots y sus páginas están disponibles sin registrarse. Mientras no estés registrado en ningún nodo, la lista solo muestra los nodos del proyecto Nevod; los demás nodos abiertos de la red aparecen al registrarte, porque la app recibe su lista de tu nodo.
 4. Toca **Empezar a chatear** (arriba a la derecha).
 5. Escribe **Tu nombre visible**: así te verán los demás. Toca **Empezar**.
 

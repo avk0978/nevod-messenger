@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>El panel de administración: todas las páginas y ajustes — Nevod</title>
+<meta name="description" content="Una referencia del panel de administración del nodo: qué hay en cada página y qué hace cada ajuste. Si acabas de instalar el nodo, empieza por Primera configuración en el panel de administración: ahí está lo imprescindible, paso a paso.">
+<link rel="canonical" href="https://nevod.network/es/docs/node-admin/">
+<link rel="alternate" hreflang="uk" href="https://nevod.network/uk/docs/node-admin/"><link rel="alternate" hreflang="en" href="https://nevod.network/en/docs/node-admin/"><link rel="alternate" hreflang="de" href="https://nevod.network/de/docs/node-admin/"><link rel="alternate" hreflang="tr" href="https://nevod.network/tr/docs/node-admin/"><link rel="alternate" hreflang="es" href="https://nevod.network/es/docs/node-admin/"><link rel="alternate" hreflang="it" href="https://nevod.network/it/docs/node-admin/"><link rel="alternate" hreflang="fr" href="https://nevod.network/fr/docs/node-admin/">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik:wght@500..700&family=IBM+Plex+Sans:wght@400;600&display=swap">
+<style>
+:root { --ink:#14213D; --paper:#F7F6F1; --card:#FFFFFF; --line:#DCDFE6; --muted:#4A5568;
+        --accent:#F2C230; --accent-ink:#8A6A00; --dark2:#1E2F55; --soft:#C9D3E6; }
+* { box-sizing:border-box; }
+html { -webkit-text-size-adjust:100%; }
+body { margin:0; background:var(--paper); color:var(--ink); font:17px/1.6 'IBM Plex Sans', Arial, sans-serif; }
+a { color:#1F4E9E; }
+h1,h2,h3 { font-family:'Rubik', Arial, sans-serif; line-height:1.15; margin:0 0 .5em;
+  overflow-wrap:break-word; hyphens:auto; }
+main, .hero { overflow-wrap:break-word; }
+h1 { font-size:clamp(28px,5vw,56px); } h2 { font-size:clamp(24px,3.2vw,34px); margin-top:1.4em; } h3 { font-size:20px; }
+[id] { scroll-margin-top:76px; }  /* sticky header must not cover an anchor target */
+main.article h2 { margin-top:1.6em; } main.article h1 { font-size:clamp(26px,4vw,44px); }
+main.article hr { border:0; border-top:1px solid var(--line); margin:28px 0; }
+main.article code { font-size:.9em; background:var(--card); border:1px solid var(--line); border-radius:4px; padding:0 4px; }
+main.article ol li, main.article ul li { margin-bottom:.35em; overflow-wrap:anywhere; }
+.pub { margin:16px 0; } .pub h3 a { text-decoration:none; } .pub-date { font-size:14px; color:var(--muted); }
+.pub-back { font-size:15px; }
+main.article pre { background:var(--ink); color:var(--paper); border-radius:8px; padding:12px 14px; overflow-x:auto;
+  font-size:14px; line-height:1.5; margin:0 0 1em; }
+main.article pre code { background:none; border:0; padding:0; font-size:inherit; color:inherit; }
+main.article .note { margin:0 0 1em; } main.article .note p:last-child { margin-bottom:0; }
+.toc li { margin-bottom:.35em; }
+.docs-layout { display:grid; grid-template-columns:250px minmax(0,1fr); gap:40px; align-items:start; }
+.docs-side { position:sticky; top:76px; max-height:calc(100vh - 92px); overflow-y:auto; font-size:15px;
+  line-height:1.4; padding-right:8px; border-right:1px solid var(--line); }
+.docs-side ol, .docs-toc ol { list-style:none; padding:0; margin:0 0 14px; }
+.docs-side li, .docs-toc li { margin:0; }
+.docs-side a, .docs-toc a { display:block; padding:4px 8px; border-radius:6px; text-decoration:none; color:var(--ink); }
+.docs-side a:hover, .docs-toc a:hover { background:var(--card); }
+.docs-side li.cur > a, .docs-toc li.cur > a { background:var(--card); font-weight:600; box-shadow:inset 3px 0 0 var(--accent); }
+.docs-side ul, .docs-toc ul { list-style:none; padding:2px 0 6px 12px; margin:0; }
+.docs-side ul a, .docs-toc ul a { font-size:14px; color:var(--muted); padding:3px 8px; }
+.docs-side .soon, .docs-toc .soon { padding:4px 8px; color:var(--muted); opacity:.7; }
+.docs-group { font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.6px; color:var(--muted);
+  margin:14px 8px 6px; }
+.docs-home { margin:0 0 4px; font-weight:600; } .docs-home a { padding:4px 8px; }
+.docs-toc { display:none; background:var(--card); border:1px solid var(--line); border-radius:10px; margin:0 0 20px; }
+.docs-toc summary { cursor:pointer; padding:10px 14px; font-weight:600; }
+.docs-toc[open] summary { border-bottom:1px solid var(--line); }
+.docs-toc > p, .docs-toc > ol { margin-left:8px; margin-right:8px; }
+@media (max-width:960px) {
+  .docs-layout { display:block; }
+  .docs-side { display:none; }
+  .docs-toc { display:block; }
+}
+.doc-nav { display:flex; flex-wrap:wrap; gap:8px 24px; justify-content:space-between; font-size:15px;
+  border-top:1px solid var(--line); padding-top:16px; margin-top:32px; }
+p, ul, ol, table { margin:0 0 1em; }
+.wrap { max-width:1080px; margin:0 auto; padding:0 16px; }
+header.top { background:var(--ink); color:var(--paper); position:sticky; top:0; z-index:10; }
+header.top .wrap { display:flex; align-items:center; gap:16px; min-height:60px; }
+header.top a { color:var(--paper); text-decoration:none; }
+.brand { font-family:'Rubik', Arial, sans-serif; font-weight:700; font-size:20px; margin-right:auto; }
+.brand span { color:var(--accent); }
+nav.main { display:flex; gap:14px; font-size:15px; }
+nav.main a { opacity:.85; white-space:nowrap; } nav.main a[aria-current] { opacity:1; border-bottom:2px solid var(--accent); }
+details.menu { display:none; order:3; }
+details.menu summary { list-style:none; cursor:pointer; width:44px; height:44px; margin-right:-10px;
+  display:flex; align-items:center; justify-content:center; }
+details.menu summary::-webkit-details-marker { display:none; }
+.burger, .burger::before, .burger::after { display:block; width:22px; height:2px; background:var(--paper);
+  border-radius:2px; position:relative; transition:transform .2s, background .2s; }
+.burger::before, .burger::after { content:""; position:absolute; left:0; }
+.burger::before { top:-7px; } .burger::after { top:7px; }
+details.menu[open] .burger { background:transparent; }
+details.menu[open] .burger::before { transform:translateY(7px) rotate(45deg); }
+details.menu[open] .burger::after { transform:translateY(-7px) rotate(-45deg); }
+details.menu nav { position:absolute; left:0; right:0; top:100%; background:var(--ink);
+  border-top:1px solid var(--dark2); box-shadow:0 12px 24px rgba(0,0,0,.25); padding:6px 0 12px; }
+details.menu nav a { display:block; padding:12px 16px; font-size:17px; opacity:.9; }
+details.menu nav a[aria-current] { opacity:1; color:var(--accent); }
+details.lang { position:relative; font-size:15px; }
+details.lang summary { list-style:none; cursor:pointer; border:1px solid var(--accent); color:var(--accent);
+  padding:3px 12px; border-radius:999px; }
+details.lang summary::-webkit-details-marker { display:none; }
+details.lang summary:empty { min-width:6em; height:calc(1.6em + 8px); box-sizing:border-box; }
+details.lang ul { position:absolute; right:0; top:34px; background:var(--card); color:var(--ink); list-style:none;
+  padding:8px 0; margin:0; border-radius:10px; box-shadow:0 8px 24px rgba(0,0,0,.2); min-width:160px; }
+details.lang li a { color:var(--ink); display:block; padding:6px 16px; }
+@media (max-width:960px) {
+  nav.main { display:none; }
+  details.menu { display:block; }
+  header.top .wrap { min-height:56px; gap:12px; }
+  details.lang li a { padding:10px 16px; }
+}
+.hero { background:var(--ink); color:var(--paper); padding:56px 0 64px; }
+.hero p.lead { font-size:clamp(18px,2.2vw,22px); color:var(--soft); max-width:760px; }
+.eyebrow { font-size:14px; letter-spacing:3px; text-transform:uppercase; color:var(--accent); margin-bottom:12px; }
+.btns { display:flex; gap:12px; flex-wrap:wrap; margin-top:24px; }
+.btn { display:inline-block; padding:12px 22px; border-radius:10px; text-decoration:none; font-weight:600; }
+.btn.primary { background:var(--accent); color:var(--ink); } .btn.ghost { border:1px solid var(--soft); color:var(--paper); }
+main { padding:40px 0 56px; }
+.grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:16px; margin:16px 0 8px; }
+.card { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:20px; }
+.card h3 { margin-bottom:6px; } .card p { margin:0; color:var(--muted); }
+.status td:first-child { font-weight:600; }
+.tbl { overflow-x:auto; }
+table { border-collapse:collapse; width:100%; background:var(--card); border:1px solid var(--line); border-radius:12px; }
+th, td { text-align:left; padding:10px 12px; border-bottom:1px solid var(--line); vertical-align:top; }
+th { background:var(--ink); color:var(--paper); font-weight:600; }
+.note { background:#FBF3D6; border-left:4px solid var(--accent); padding:14px 16px; border-radius:8px; }
+.legal h2 { font-size:22px; }
+.ncard { display:flex; gap:20px; align-items:flex-start; background:var(--card); border:1px solid var(--line);
+  border-radius:14px; padding:20px; margin:8px 0 16px; }
+.ncard-qr { flex:0 0 220px; } .ncard-qr svg { display:block; width:100%; height:auto; }
+.ncard-body { min-width:0; } .ncard-body h3 { margin-bottom:6px; } .ncard-body p { color:var(--muted); }
+.ncard code { display:block; font-size:12px; line-height:1.45; word-break:break-all; background:var(--paper);
+  border:1px solid var(--line); border-radius:8px; padding:8px 10px; margin:0 0 12px; user-select:all; }
+.ncard .btn { border:0; cursor:pointer; font:inherit; font-weight:600; }
+@media (max-width:640px) { .ncard { flex-direction:column; align-items:stretch; } .ncard-qr { flex-basis:auto; width:220px; margin:0 auto; } }
+footer.site { background:var(--ink); color:var(--soft); font-size:14px; padding:28px 0; }
+footer.site a { color:var(--soft); }
+footer.site .wrap { display:flex; flex-wrap:wrap; gap:8px 24px; justify-content:space-between; }
+@media (max-width:640px) {
+  body { font-size:16px; }
+  .hero { padding:36px 0 44px; }
+  main { padding:28px 0 40px; }
+  .btns .btn { flex:1 1 auto; text-align:center; }
+  .card { padding:16px; }
+  /* Wide tables (4+ columns) become one card per row: the first cell is the row title,
+     every other cell is prefixed with its column header (data-label, added by stack_tables). */
+  table.stack, table.stack tbody, table.stack tr, table.stack td { display:block; width:auto !important; }
+  table.stack { background:none; border:0; }
+  table.stack tr:first-child { display:none; }
+  table.stack tr { background:var(--card); border:1px solid var(--line); border-radius:12px; margin-bottom:12px; overflow:hidden; }
+  table.stack td { border-bottom:1px solid var(--line); padding:8px 14px; }
+  table.stack td:last-child { border-bottom:0; }
+  table.stack td:first-child { background:var(--ink); color:var(--paper); font-weight:600; }
+  table.stack td:not(:first-child)::before { content:attr(data-label); display:block; font-size:13px;
+    font-weight:600; color:var(--muted); text-transform:uppercase; letter-spacing:.5px; }
+  footer.site .wrap { flex-direction:column; }
+}
+</style>
+</head>
+<body>
+<header class="top"><div class="wrap">
+<a class="brand" href="/es/">Nevod<span>.</span></a>
+<nav class="main"><a href="/es/">Inicio</a><a href="/es/manifesto/">Manifiesto ZKI</a><a href="/es/compare/">Comparación</a><a href="/es/security/">Seguridad</a><a href="/es/docs/" aria-current="page">Documentación</a><a href="/es/download/">Descargar</a><a href="/es/publications/">Publicaciones</a><a href="/es/about/">Sobre el proyecto</a></nav>
+<details class="menu"><summary aria-label="Menú"><span class="burger"></span></summary><nav><a href="/es/">Inicio</a><a href="/es/manifesto/">Manifiesto ZKI</a><a href="/es/compare/">Comparación</a><a href="/es/security/">Seguridad</a><a href="/es/docs/" aria-current="page">Documentación</a><a href="/es/download/">Descargar</a><a href="/es/publications/">Publicaciones</a><a href="/es/about/">Sobre el proyecto</a></nav></details>
+<details class="lang"><summary>Español</summary><ul><li><a href="/uk/docs/node-admin/" hreflang="uk" lang="uk">Українська</a></li><li><a href="/en/docs/node-admin/" hreflang="en" lang="en">English</a></li><li><a href="/de/docs/node-admin/" hreflang="de" lang="de">Deutsch</a></li><li><a href="/tr/docs/node-admin/" hreflang="tr" lang="tr">Türkçe</a></li><li><a href="/es/docs/node-admin/" hreflang="es" lang="es">Español</a></li><li><a href="/it/docs/node-admin/" hreflang="it" lang="it">Italiano</a></li><li><a href="/fr/docs/node-admin/" hreflang="fr" lang="fr">Français</a></li></ul></details>
+</div></header>
+<main class="article"><div class="wrap docs-layout"><aside class="docs-side"><p class="docs-home"><a href="/es/docs/">Documentación</a></p><p class="docs-group">Para usuarios</p><ol><li><a href="/es/docs/start/">Primeros pasos</a></li><li><a href="/es/docs/contacts/">Contactos</a></li><li><a href="/es/docs/messages/">Mensajes y archivos</a></li><li><a href="/es/docs/calls/">Llamadas</a></li><li><a href="/es/docs/bots/">Bots y asistentes de IA</a></li><li><a href="/es/docs/security/">Seguridad y copias de seguridad</a></li><li><a href="/es/docs/faq/">Preguntas y problemas</a></li></ol><p class="docs-group">Para propietarios de nodos</p><ol><li><a href="/es/docs/node-how/">Cómo funciona un nodo</a></li><li><a href="/es/docs/node-install/">Instalación paso a paso</a></li><li><a href="/es/docs/node-panel/">Primera configuración en el panel de administración</a></li><li><a href="/es/docs/node-invite/">Invitar a personas</a></li><li><a href="/es/docs/node-network/">Conectarse a la red Nevod</a></li><li><a href="/es/docs/node-turn/">Llamadas a través de tu propio nodo</a></li><li><a href="/es/docs/node-maintenance/">Mantenimiento</a></li><li class="cur"><a href="/es/docs/node-admin/" aria-current="page">El panel de administración: todas las páginas y ajustes</a><ul><li><a href="#s1">Cabecera</a></li><li><a href="#s2">Resumen</a></li><li><a href="#s3">Ajustes</a></li><li><a href="#s4">Solicitudes de acceso</a></li><li><a href="#s5">Buzón</a></li><li><a href="#s6">Invitaciones</a></li><li><a href="#s7">Nodos</a></li><li><a href="#s8">Publicación</a></li><li><a href="#s9">Bots de IA</a></li><li><a href="#s10">Seguridad</a></li><li><a href="#s11">Diagnóstico</a></li></ul></li></ol></aside><div class="docs-main"><details class="docs-toc"><summary>Contenido</summary><p class="docs-home"><a href="/es/docs/">Documentación</a></p><p class="docs-group">Para usuarios</p><ol><li><a href="/es/docs/start/">Primeros pasos</a></li><li><a href="/es/docs/contacts/">Contactos</a></li><li><a href="/es/docs/messages/">Mensajes y archivos</a></li><li><a href="/es/docs/calls/">Llamadas</a></li><li><a href="/es/docs/bots/">Bots y asistentes de IA</a></li><li><a href="/es/docs/security/">Seguridad y copias de seguridad</a></li><li><a href="/es/docs/faq/">Preguntas y problemas</a></li></ol><p class="docs-group">Para propietarios de nodos</p><ol><li><a href="/es/docs/node-how/">Cómo funciona un nodo</a></li><li><a href="/es/docs/node-install/">Instalación paso a paso</a></li><li><a href="/es/docs/node-panel/">Primera configuración en el panel de administración</a></li><li><a href="/es/docs/node-invite/">Invitar a personas</a></li><li><a href="/es/docs/node-network/">Conectarse a la red Nevod</a></li><li><a href="/es/docs/node-turn/">Llamadas a través de tu propio nodo</a></li><li><a href="/es/docs/node-maintenance/">Mantenimiento</a></li><li class="cur"><a href="/es/docs/node-admin/" aria-current="page">El panel de administración: todas las páginas y ajustes</a><ul><li><a href="#s1">Cabecera</a></li><li><a href="#s2">Resumen</a></li><li><a href="#s3">Ajustes</a></li><li><a href="#s4">Solicitudes de acceso</a></li><li><a href="#s5">Buzón</a></li><li><a href="#s6">Invitaciones</a></li><li><a href="#s7">Nodos</a></li><li><a href="#s8">Publicación</a></li><li><a href="#s9">Bots de IA</a></li><li><a href="#s10">Seguridad</a></li><li><a href="#s11">Diagnóstico</a></li></ul></li></ol></details><h1>El panel de administración: todas las páginas y ajustes</h1>
+<p>Una referencia del panel de administración del nodo: qué hay en cada página y qué hace cada ajuste. Si acabas de instalar el nodo, empieza por <a href="../node-panel/">Primera configuración en el panel de administración</a>: ahí está lo imprescindible, paso a paso.</p>
+<p>El panel se abre en <code>https://tu-dominio/nevod-admin</code> (o por un túnel SSH si lo cerraste; consulta la <a href="../node-install/">instalación</a>, paso 10). Cualquier usuario; la contraseña es <code>NEVOD_ADMIN_PASSWORD</code> de <code>.env</code> o una personal creada en la página «Seguridad». El idioma se cambia en la cabecera.</p>
+<h2 id="s1">Cabecera</h2>
+<p>Arriba de cada página: el nombre del nodo, su identificador (<code>node_id</code>) y unas etiquetas con el estado actual: si el nodo es visible en «Explorar la red», el modo de admisión de celdas, quién ve las celdas publicadas.</p>
+<h2 id="s2">Resumen</h2>
+<p>La lista de todas las celdas (usuarios y bots) registradas en el nodo.</p>
+<div class="tbl"><table><tr><th>Columna</th><th>Qué muestra</th></tr><tr><td>Nombre</td><td>Tu propia etiqueta para esta celda: solo la ves tú, en el panel. Escríbela y pulsa ✓ o Enter. No cambia el nombre que eligió el usuario.</td></tr><tr><td><code>cell_id</code></td><td>El identificador de la celda. El completo, en la información emergente.</td></tr><tr><td>Estado</td><td>En línea o desconectado: si la app está conectada ahora.</td></tr><tr><td>Búfer</td><td>Cuántos mensajes esperan a que el usuario se conecte (se guardan hasta 72 horas).</td></tr><tr><td>Registro</td><td>Cuándo se registró la celda.</td></tr></table></div>
+<p>Botones:</p>
+<ul><li><b>✕</b> en una fila: eliminar la celda. Revoca por completo su admisión: se borran el registro, los mensajes no entregados y los tokens de notificación, y el nombre queda libre. Para volver, la persona necesitará un código de invitación nuevo o una nueva solicitud. El nodo nunca borra celdas por su cuenta: solo tú.</li><li><b>Restablecer registros</b>: todas las celdas se vuelven a registrar en su próxima conexión; no hace falta volver a introducir el código.</li><li><b>Restablecimiento total</b>: irreversible: todos los miembros tendrán que volver a entrar con un código de invitación. En la práctica solo hace falta en una mudanza o un cambio completo de miembros.</li></ul>
+<h2 id="s3">Ajustes</h2>
+<div class="tbl"><table><tr><th>Ajuste</th><th>Qué hace</th><th>Cuándo se aplica</th></tr><tr><td><b>Nombre del nodo</b></td><td>El nombre del nodo que ven los usuarios. No se pueden usar palabras de servicio (Nevod, admin, support, official y similares).</td><td>En el panel, al momento; para otros nodos, tras un reinicio.</td></tr><tr><td><b>Tipo de nodo</b> <i>(en desarrollo)</i></td><td><code>permanent</code>: un nodo normal. <code>temporary</code>: un nodo temporal, por ejemplo para la duración de un evento; la app aún no usa estos nodos. Deja <code>permanent</code>.</td><td>Tras un reinicio.</td></tr><tr><td><b>ID del nodo padre</b> <i>(en desarrollo)</i></td><td>Solo lo necesita un nodo temporal: a qué nodo permanente pertenece. Déjalo vacío.</td><td>Al momento.</td></tr><tr><td><b>Visibilidad en «Explorar la red»</b></td><td><code>closed</code>: el nodo no se muestra a los usuarios de otros nodos. <code>open</code>: el nodo aparece en su «Explorar la red». Esto no abre el registro.</td><td>Tras un reinicio.</td></tr><tr><td><b>Visibilidad de las celdas publicadas</b></td><td>Quién ve la lista de bots y páginas de la página «Publicación»: <code>off</code>, nadie; <code>members</code>, solo los usuarios de este nodo; <code>public</code>, todos.</td><td>Al momento.</td></tr><tr><td><b>Modo de admisión de celdas</b></td><td><code>delegated</code>: solo con código de invitación; <code>admin</code>: con código o por solicitud con tu aprobación; <code>open</code>: cualquiera que conozca la dirección.</td><td>Al momento.</td></tr><tr><td><b>Administradores</b></td><td>Los identificadores (<code>cell_id</code>) de tus propias celdas, separados por comas. En el modo <code>admin</code> reciben en Nevod un mensaje por cada solicitud nueva. Tu <code>cell_id</code> está en la página «Resumen».</td><td>Al momento.</td></tr></table></div>
+<p>Reiniciar el nodo, en el servidor, en la carpeta <code>/opt/nevod/installer/docker</code>:</p>
+<pre><code>docker compose restart nevod_node</code></pre>
+<h2 id="s4">Solicitudes de acceso</h2>
+<p>Funciona en el modo de admisión <code>admin</code>. Cuando alguien sin código intenta registrarse, la app envía una solicitud por sí sola, que aparece aquí con un nombre y una nota. <b>Aprobar</b>: la persona obtiene acceso al momento y una notificación en el teléfono. <b>Rechazar</b>: la app le muestra que la solicitud fue rechazada.</p>
+<h2 id="s5">Buzón</h2>
+<p>Los mensajes que los usuarios del nodo enviaron desde la app a su cuenta <b>administrator</b>: denuncias de mensajes, preguntas. Todo nodo tiene una cuenta administrator, que se crea sola en el primer arranque.</p>
+<p>Abre una conversación, escribe una respuesta y pulsa <b>Responder</b>: la respuesta llega al usuario en Nevod, cifrada, en nombre de administrator. A los mensajes de los usuarios se responde solo así, en la app, no por correo.</p>
+<p>Si el usuario adjuntó al mensaje el registro de la app (para investigar un problema), en la conversación aparece el enlace <b>descargar nevod.log</b>.</p>
+<p>Los usuarios ven la cuenta administrator de tu nodo con la marca <b>Administrador del nodo</b> y el nombre del nodo. La marca la confirma la clave de tu nodo, así que nadie más puede hacerse pasar por el administrador de tu nodo. La insignia azul ✓ es la señal de la administración del proyecto Nevod: la confirma la firma del curador del proyecto y solo la tienen los nodos del proyecto.</p>
+<h2 id="s6">Invitaciones</h2>
+<p><b>Crear un código:</b> elige la validez (1 hora, 24 horas, 7 días) → <b>+ Crear código</b>. Aparecen un código QR y un enlace: puedes mostrarlos en pantalla, reenviarlos o pulsar <b>Copiar enlace</b>. El enlace abre Nevod con la dirección del nodo y el código ya rellenados. El código corto, como <code>ABCD-EFGH</code>, solo sirve si la app de la persona ya tiene puesto tu nodo.</p>
+<p>Cada código sirve una sola vez. Debajo están todos los códigos con su validez y estado: activo, usado, por quién.</p>
+<p><b>Celdas admitidas</b>: quién entró y por invitación de quién. El interruptor <b>Puede invitar</b> permite a esa persona crear códigos desde la app (Perfil → Invitar a alguien); en el modo <code>delegated</code> así delegas las invitaciones en personas de confianza.</p>
+<p>Más en <a href="../node-invite/">Invitar a personas</a>.</p>
+<h2 id="s7">Nodos</h2>
+<p><b>Conexión a la red Nevod.</b> El estado («conectado · nodos en línea» o «no conectado») y el botón <b>Conectarse a la red Nevod</b>. Un nodo conectado recibe de los nodos del proyecto notificaciones push para los teléfonos y un repetidor de llamadas. El campo <b>Token del administrador de otro nodo</b> sirve para conectarse a través de otro nodo en lugar de Nevod Open. Más en <a href="../node-network/">Conectarse a la red Nevod</a>.</p>
+<p><b>Nodos conocidos</b>: todos los nodos de la red que conoce tu nodo: nombre, dirección, en línea o no, cuándo dio señales por última vez. Un nodo que lleva 72 horas sin dar señales se quita de la lista y vuelve solo cuando reaparece en la red.</p>
+<p><b>Invitaciones de nodos</b>: un token con el que otro nodo puede conectarse a través del tuyo. Vale 10 minutos; dáselo al administrador del otro nodo en persona, no en público.</p>
+<h2 id="s8">Publicación</h2>
+<p>Los bots y páginas que tu nodo muestra a los usuarios en la app, en el «planeta» del nodo en «Explorar la red». Elige una celda, pon un título, un tipo (<code>bot</code>: un bot; <code>page</code>: una página de texto) y una descripción → <b>Publicar</b>. Retirarla de la publicación la quita de la lista; la celda en sí se queda.</p>
+<p>Las casillas Claude, ChatGPT, Gemini son para un bot de IA externo que funciona con la clave del usuario: qué proveedores acepta. Para un bot normal, no marques ninguna.</p>
+<p>Quién ve esta lista se fija en «Ajustes» → «Visibilidad de las celdas publicadas».</p>
+<h2 id="s9">Bots de IA</h2>
+<p>Bots de IA que funcionan dentro del propio nodo y responden con Claude, ChatGPT o Gemini <b>con la clave del usuario</b>: la persona añade su clave en el chat con el bot, la clave llega con cada mensaje y el bot no la guarda. El nodo no tiene claves propias y no paga por la IA.</p>
+<p><b>Añadir un bot</b>: pon un nombre, una descripción, una instrucción para el modelo y los proveedores, o toma una plantilla ya hecha (AI Assistant, Tolmach el traductor) y ajústala. Un bot activado aparece a los usuarios del nodo en la lista «En este nodo». Uno desactivado queda detenido y oculto, y conserva su nombre. Eliminarlo es definitivo: se borran las claves y el nombre del bot; los usuarios conservan sus conversaciones.</p>
+<div class="note"><p>Las conversaciones con un bot de IA las descifra código de tu nodo y las pasa al proveedor elegido. Los usuarios están avisados en la <a href="../../privacy/">Política de privacidad</a> (sección 5). Si activas bots de IA, tú, como propietario del nodo, participas en esa transferencia.</p></div>
+<h2 id="s10">Seguridad</h2>
+<p>Cuentas personales de administrador: <b>Añadir / cambiar contraseña</b>: un usuario y una contraseña (guardada como hash). Una cuenta por administrador; si alguien se va, borra su cuenta sin cambiar la contraseña principal. La contraseña principal de <code>.env</code> siempre funciona como acceso de reserva.</p>
+<p>Cinco contraseñas incorrectas seguidas desde una misma dirección bloquean el acceso para esa dirección durante 15 minutos.</p>
+<h2 id="s11">Diagnóstico</h2>
+<p><b>Comprobar</b>: el autodiagnóstico del nodo (hasta 10 segundos):</p>
+<div class="tbl"><table><tr><th>Comprobación</th><th>Qué significa</th></tr><tr><td>Código actualizado</td><td>Si la versión instalada del nodo se ha quedado atrás respecto al protocolo; si es así, actualiza el nodo (consulta <a href="../node-maintenance/">Mantenimiento</a>).</td></tr><tr><td>Coherencia identity/DB</td><td>Si los ajustes de <code>node.json</code> coinciden con la base de datos.</td></tr><tr><td>Dependencias y configuración</td><td>Si hay errores en los ajustes (por ejemplo, un repetidor de llamadas sin <code>TURN_SECRET</code>).</td></tr><tr><td>Accesibilidad externa</td><td>Si otro nodo de la red puede llegar al tuyo desde fuera. Mientras el nodo no esté conectado a la red, muestra «No hay pares conocidos»: es lo esperado.</td></tr></table></div>
+<p><b>Registros</b>: las últimas entradas del registro del nodo. El texto de los mensajes nunca entra en el registro.</p><p class="doc-nav"><a href="/es/docs/node-maintenance/">← Mantenimiento</a><a href="/es/docs/">↑ Documentación</a></p></div></div></main>
+<footer class="site"><div class="wrap">
+<div>© 2026 Nevod · Kolpakov Andrey</div>
+<div><a href="/es/support/">Soporte</a> · <a href="/es/privacy/">Privacidad</a> · <a href="/es/terms/">Condiciones de uso</a> · <a href="/es/node/">Tu propio nodo</a> · <a href="https://github.com/avk0978/nevod-messenger">Código fuente</a></div>
+</div></footer>
+</body>
+</html>

@@ -54,7 +54,7 @@ Each code works once. Create a separate one for each person — more in [Invitin
 **Settings → Visibility in "Explore Network"**:
 
 - `closed` (default) — the node isn't shown in "Explore Network" to users of other nodes. Suits a family, an organization, any closed group.
-- `open` — the node appears in "Explore Network", and users of other nodes can find it. Suits an open community.
+- `open` — the node appears in "Explore Network", and users of other nodes can find it. Suits an open community. The node is visible while it's connected to the network, and only to people already registered on some node: before registering, the app shows only the project's nodes.
 
 This choice doesn't open registration: whom to admit is still decided by the cell admission mode (step 2). The gold ring of a verified node in "Explore Network" currently exists only on Nevod project nodes.
 

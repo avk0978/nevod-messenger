@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Панель администратора: все страницы и настройки — Nevod</title>
+<meta name="description" content="Справочник по панели администратора узла: что на каждой странице и что делает каждая настройка. Если вы только что установили узел, начните с раздела Первая настройка в панели администратора — там по шагам самое необходимое.">
+<link rel="canonical" href="https://nevod.network/xx/docs/node-admin/">
+<link rel="alternate" hreflang="uk" href="https://nevod.network/uk/docs/node-admin/"><link rel="alternate" hreflang="en" href="https://nevod.network/en/docs/node-admin/"><link rel="alternate" hreflang="ru" href="https://nevod.network/xx/docs/node-admin/"><link rel="alternate" hreflang="de" href="https://nevod.network/de/docs/node-admin/"><link rel="alternate" hreflang="tr" href="https://nevod.network/tr/docs/node-admin/"><link rel="alternate" hreflang="es" href="https://nevod.network/es/docs/node-admin/"><link rel="alternate" hreflang="it" href="https://nevod.network/it/docs/node-admin/"><link rel="alternate" hreflang="fr" href="https://nevod.network/fr/docs/node-admin/">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik:wght@500..700&family=IBM+Plex+Sans:wght@400;600&display=swap">
+<style>
+:root { --ink:#14213D; --paper:#F7F6F1; --card:#FFFFFF; --line:#DCDFE6; --muted:#4A5568;
+        --accent:#F2C230; --accent-ink:#8A6A00; --dark2:#1E2F55; --soft:#C9D3E6; }
+* { box-sizing:border-box; }
+html { -webkit-text-size-adjust:100%; }
+body { margin:0; background:var(--paper); color:var(--ink); font:17px/1.6 'IBM Plex Sans', Arial, sans-serif; }
+a { color:#1F4E9E; }
+h1,h2,h3 { font-family:'Rubik', Arial, sans-serif; line-height:1.15; margin:0 0 .5em;
+  overflow-wrap:break-word; hyphens:auto; }
+main, .hero { overflow-wrap:break-word; }
+h1 { font-size:clamp(28px,5vw,56px); } h2 { font-size:clamp(24px,3.2vw,34px); margin-top:1.4em; } h3 { font-size:20px; }
+[id] { scroll-margin-top:76px; }  /* sticky header must not cover an anchor target */
+main.article h2 { margin-top:1.6em; } main.article h1 { font-size:clamp(26px,4vw,44px); }
+main.article hr { border:0; border-top:1px solid var(--line); margin:28px 0; }
+main.article code { font-size:.9em; background:var(--card); border:1px solid var(--line); border-radius:4px; padding:0 4px; }
+main.article ol li, main.article ul li { margin-bottom:.35em; overflow-wrap:anywhere; }
+.pub { margin:16px 0; } .pub h3 a { text-decoration:none; } .pub-date { font-size:14px; color:var(--muted); }
+.pub-back { font-size:15px; }
+main.article pre { background:var(--ink); color:var(--paper); border-radius:8px; padding:12px 14px; overflow-x:auto;
+  font-size:14px; line-height:1.5; margin:0 0 1em; }
+main.article pre code { background:none; border:0; padding:0; font-size:inherit; color:inherit; }
+main.article .note { margin:0 0 1em; } main.article .note p:last-child { margin-bottom:0; }
+.toc li { margin-bottom:.35em; }
+.docs-layout { display:grid; grid-template-columns:250px minmax(0,1fr); gap:40px; align-items:start; }
+.docs-side { position:sticky; top:76px; max-height:calc(100vh - 92px); overflow-y:auto; font-size:15px;
+  line-height:1.4; padding-right:8px; border-right:1px solid var(--line); }
+.docs-side ol, .docs-toc ol { list-style:none; padding:0; margin:0 0 14px; }
+.docs-side li, .docs-toc li { margin:0; }
+.docs-side a, .docs-toc a { display:block; padding:4px 8px; border-radius:6px; text-decoration:none; color:var(--ink); }
+.docs-side a:hover, .docs-toc a:hover { background:var(--card); }
+.docs-side li.cur > a, .docs-toc li.cur > a { background:var(--card); font-weight:600; box-shadow:inset 3px 0 0 var(--accent); }
+.docs-side ul, .docs-toc ul { list-style:none; padding:2px 0 6px 12px; margin:0; }
+.docs-side ul a, .docs-toc ul a { font-size:14px; color:var(--muted); padding:3px 8px; }
+.docs-side .soon, .docs-toc .soon { padding:4px 8px; color:var(--muted); opacity:.7; }
+.docs-group { font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.6px; color:var(--muted);
+  margin:14px 8px 6px; }
+.docs-home { margin:0 0 4px; font-weight:600; } .docs-home a { padding:4px 8px; }
+.docs-toc { display:none; background:var(--card); border:1px solid var(--line); border-radius:10px; margin:0 0 20px; }
+.docs-toc summary { cursor:pointer; padding:10px 14px; font-weight:600; }
+.docs-toc[open] summary { border-bottom:1px solid var(--line); }
+.docs-toc > p, .docs-toc > ol { margin-left:8px; margin-right:8px; }
+@media (max-width:960px) {
+  .docs-layout { display:block; }
+  .docs-side { display:none; }
+  .docs-toc { display:block; }
+}
+.doc-nav { display:flex; flex-wrap:wrap; gap:8px 24px; justify-content:space-between; font-size:15px;
+  border-top:1px solid var(--line); padding-top:16px; margin-top:32px; }
+p, ul, ol, table { margin:0 0 1em; }
+.wrap { max-width:1080px; margin:0 auto; padding:0 16px; }
+header.top { background:var(--ink); color:var(--paper); position:sticky; top:0; z-index:10; }
+header.top .wrap { display:flex; align-items:center; gap:16px; min-height:60px; }
+header.top a { color:var(--paper); text-decoration:none; }
+.brand { font-family:'Rubik', Arial, sans-serif; font-weight:700; font-size:20px; margin-right:auto; }
+.brand span { color:var(--accent); }
+nav.main { display:flex; gap:14px; font-size:15px; }
+nav.main a { opacity:.85; white-space:nowrap; } nav.main a[aria-current] { opacity:1; border-bottom:2px solid var(--accent); }
+details.menu { display:none; order:3; }
+details.menu summary { list-style:none; cursor:pointer; width:44px; height:44px; margin-right:-10px;
+  display:flex; align-items:center; justify-content:center; }
+details.menu summary::-webkit-details-marker { display:none; }
+.burger, .burger::before, .burger::after { display:block; width:22px; height:2px; background:var(--paper);
+  border-radius:2px; position:relative; transition:transform .2s, background .2s; }
+.burger::before, .burger::after { content:""; position:absolute; left:0; }
+.burger::before { top:-7px; } .burger::after { top:7px; }
+details.menu[open] .burger { background:transparent; }
+details.menu[open] .burger::before { transform:translateY(7px) rotate(45deg); }
+details.menu[open] .burger::after { transform:translateY(-7px) rotate(-45deg); }
+details.menu nav { position:absolute; left:0; right:0; top:100%; background:var(--ink);
+  border-top:1px solid var(--dark2); box-shadow:0 12px 24px rgba(0,0,0,.25); padding:6px 0 12px; }
+details.menu nav a { display:block; padding:12px 16px; font-size:17px; opacity:.9; }
+details.menu nav a[aria-current] { opacity:1; color:var(--accent); }
+details.lang { position:relative; font-size:15px; }
+details.lang summary { list-style:none; cursor:pointer; border:1px solid var(--accent); color:var(--accent);
+  padding:3px 12px; border-radius:999px; }
+details.lang summary::-webkit-details-marker { display:none; }
+details.lang summary:empty { min-width:6em; height:calc(1.6em + 8px); box-sizing:border-box; }
+details.lang ul { position:absolute; right:0; top:34px; background:var(--card); color:var(--ink); list-style:none;
+  padding:8px 0; margin:0; border-radius:10px; box-shadow:0 8px 24px rgba(0,0,0,.2); min-width:160px; }
+details.lang li a { color:var(--ink); display:block; padding:6px 16px; }
+@media (max-width:960px) {
+  nav.main { display:none; }
+  details.menu { display:block; }
+  header.top .wrap { min-height:56px; gap:12px; }
+  details.lang li a { padding:10px 16px; }
+}
+.hero { background:var(--ink); color:var(--paper); padding:56px 0 64px; }
+.hero p.lead { font-size:clamp(18px,2.2vw,22px); color:var(--soft); max-width:760px; }
+.eyebrow { font-size:14px; letter-spacing:3px; text-transform:uppercase; color:var(--accent); margin-bottom:12px; }
+.btns { display:flex; gap:12px; flex-wrap:wrap; margin-top:24px; }
+.btn { display:inline-block; padding:12px 22px; border-radius:10px; text-decoration:none; font-weight:600; }
+.btn.primary { background:var(--accent); color:var(--ink); } .btn.ghost { border:1px solid var(--soft); color:var(--paper); }
+main { padding:40px 0 56px; }
+.grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:16px; margin:16px 0 8px; }
+.card { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:20px; }
+.card h3 { margin-bottom:6px; } .card p { margin:0; color:var(--muted); }
+.status td:first-child { font-weight:600; }
+.tbl { overflow-x:auto; }
+table { border-collapse:collapse; width:100%; background:var(--card); border:1px solid var(--line); border-radius:12px; }
+th, td { text-align:left; padding:10px 12px; border-bottom:1px solid var(--line); vertical-align:top; }
+th { background:var(--ink); color:var(--paper); font-weight:600; }
+.note { background:#FBF3D6; border-left:4px solid var(--accent); padding:14px 16px; border-radius:8px; }
+.legal h2 { font-size:22px; }
+.ncard { display:flex; gap:20px; align-items:flex-start; background:var(--card); border:1px solid var(--line);
+  border-radius:14px; padding:20px; margin:8px 0 16px; }
+.ncard-qr { flex:0 0 220px; } .ncard-qr svg { display:block; width:100%; height:auto; }
+.ncard-body { min-width:0; } .ncard-body h3 { margin-bottom:6px; } .ncard-body p { color:var(--muted); }
+.ncard code { display:block; font-size:12px; line-height:1.45; word-break:break-all; background:var(--paper);
+  border:1px solid var(--line); border-radius:8px; padding:8px 10px; margin:0 0 12px; user-select:all; }
+.ncard .btn { border:0; cursor:pointer; font:inherit; font-weight:600; }
+@media (max-width:640px) { .ncard { flex-direction:column; align-items:stretch; } .ncard-qr { flex-basis:auto; width:220px; margin:0 auto; } }
+footer.site { background:var(--ink); color:var(--soft); font-size:14px; padding:28px 0; }
+footer.site a { color:var(--soft); }
+footer.site .wrap { display:flex; flex-wrap:wrap; gap:8px 24px; justify-content:space-between; }
+@media (max-width:640px) {
+  body { font-size:16px; }
+  .hero { padding:36px 0 44px; }
+  main { padding:28px 0 40px; }
+  .btns .btn { flex:1 1 auto; text-align:center; }
+  .card { padding:16px; }
+  /* Wide tables (4+ columns) become one card per row: the first cell is the row title,
+     every other cell is prefixed with its column header (data-label, added by stack_tables). */
+  table.stack, table.stack tbody, table.stack tr, table.stack td { display:block; width:auto !important; }
+  table.stack { background:none; border:0; }
+  table.stack tr:first-child { display:none; }
+  table.stack tr { background:var(--card); border:1px solid var(--line); border-radius:12px; margin-bottom:12px; overflow:hidden; }
+  table.stack td { border-bottom:1px solid var(--line); padding:8px 14px; }
+  table.stack td:last-child { border-bottom:0; }
+  table.stack td:first-child { background:var(--ink); color:var(--paper); font-weight:600; }
+  table.stack td:not(:first-child)::before { content:attr(data-label); display:block; font-size:13px;
+    font-weight:600; color:var(--muted); text-transform:uppercase; letter-spacing:.5px; }
+  footer.site .wrap { flex-direction:column; }
+}
+</style>
+</head>
+<body>
+<header class="top"><div class="wrap">
+<a class="brand" href="/xx/">Nevod<span>.</span></a>
+<nav class="main"><a href="/xx/">Главная</a><a href="/xx/manifesto/">Манифест ZKI</a><a href="/xx/compare/">Сравнение</a><a href="/xx/security/">Безопасность</a><a href="/xx/docs/" aria-current="page">Документация</a><a href="/xx/download/">Скачать</a><a href="/xx/publications/">Публикации</a><a href="/xx/about/">О проекте</a></nav>
+<details class="menu"><summary aria-label="Меню"><span class="burger"></span></summary><nav><a href="/xx/">Главная</a><a href="/xx/manifesto/">Манифест ZKI</a><a href="/xx/compare/">Сравнение</a><a href="/xx/security/">Безопасность</a><a href="/xx/docs/" aria-current="page">Документация</a><a href="/xx/download/">Скачать</a><a href="/xx/publications/">Публикации</a><a href="/xx/about/">О проекте</a></nav></details>
+<details class="lang"><summary></summary><ul><li><a href="/uk/docs/node-admin/" hreflang="uk" lang="uk">Українська</a></li><li><a href="/en/docs/node-admin/" hreflang="en" lang="en">English</a></li><li><a href="/de/docs/node-admin/" hreflang="de" lang="de">Deutsch</a></li><li><a href="/tr/docs/node-admin/" hreflang="tr" lang="tr">Türkçe</a></li><li><a href="/es/docs/node-admin/" hreflang="es" lang="es">Español</a></li><li><a href="/it/docs/node-admin/" hreflang="it" lang="it">Italiano</a></li><li><a href="/fr/docs/node-admin/" hreflang="fr" lang="fr">Français</a></li></ul></details>
+</div></header>
+<main class="article"><div class="wrap docs-layout"><aside class="docs-side"><p class="docs-home"><a href="/xx/docs/">Документация</a></p><p class="docs-group">Для пользователей</p><ol><li><a href="/xx/docs/start/">Первые шаги</a></li><li><a href="/xx/docs/contacts/">Контакты</a></li><li><a href="/xx/docs/messages/">Сообщения и файлы</a></li><li><a href="/xx/docs/calls/">Звонки</a></li><li><a href="/xx/docs/bots/">Боты и AI-ассистенты</a></li><li><a href="/xx/docs/security/">Безопасность и резервные копии</a></li><li><a href="/xx/docs/faq/">Вопросы и проблемы</a></li></ol><p class="docs-group">Для владельцев узлов</p><ol><li><a href="/xx/docs/node-how/">Как устроен узел</a></li><li><a href="/xx/docs/node-install/">Установка шаг за шагом</a></li><li><a href="/xx/docs/node-panel/">Первая настройка в панели администратора</a></li><li><a href="/xx/docs/node-invite/">Как позвать людей</a></li><li><a href="/xx/docs/node-network/">Подключение к общей сети Nevod</a></li><li><a href="/xx/docs/node-turn/">Звонки через свой узел</a></li><li><a href="/xx/docs/node-maintenance/">Обслуживание</a></li><li class="cur"><a href="/xx/docs/node-admin/" aria-current="page">Панель администратора: все страницы и настройки</a><ul><li><a href="#s1">Шапка</a></li><li><a href="#s2">Обзор</a></li><li><a href="#s3">Настройки</a></li><li><a href="#s4">Заявки на подключение</a></li><li><a href="#s5">Обращения</a></li><li><a href="#s6">Приглашения</a></li><li><a href="#s7">Узлы</a></li><li><a href="#s8">Публикация</a></li><li><a href="#s9">AI-боты</a></li><li><a href="#s10">Безопасность</a></li><li><a href="#s11">Диагностика</a></li></ul></li></ol></aside><div class="docs-main"><details class="docs-toc"><summary>Содержание</summary><p class="docs-home"><a href="/xx/docs/">Документация</a></p><p class="docs-group">Для пользователей</p><ol><li><a href="/xx/docs/start/">Первые шаги</a></li><li><a href="/xx/docs/contacts/">Контакты</a></li><li><a href="/xx/docs/messages/">Сообщения и файлы</a></li><li><a href="/xx/docs/calls/">Звонки</a></li><li><a href="/xx/docs/bots/">Боты и AI-ассистенты</a></li><li><a href="/xx/docs/security/">Безопасность и резервные копии</a></li><li><a href="/xx/docs/faq/">Вопросы и проблемы</a></li></ol><p class="docs-group">Для владельцев узлов</p><ol><li><a href="/xx/docs/node-how/">Как устроен узел</a></li><li><a href="/xx/docs/node-install/">Установка шаг за шагом</a></li><li><a href="/xx/docs/node-panel/">Первая настройка в панели администратора</a></li><li><a href="/xx/docs/node-invite/">Как позвать людей</a></li><li><a href="/xx/docs/node-network/">Подключение к общей сети Nevod</a></li><li><a href="/xx/docs/node-turn/">Звонки через свой узел</a></li><li><a href="/xx/docs/node-maintenance/">Обслуживание</a></li><li class="cur"><a href="/xx/docs/node-admin/" aria-current="page">Панель администратора: все страницы и настройки</a><ul><li><a href="#s1">Шапка</a></li><li><a href="#s2">Обзор</a></li><li><a href="#s3">Настройки</a></li><li><a href="#s4">Заявки на подключение</a></li><li><a href="#s5">Обращения</a></li><li><a href="#s6">Приглашения</a></li><li><a href="#s7">Узлы</a></li><li><a href="#s8">Публикация</a></li><li><a href="#s9">AI-боты</a></li><li><a href="#s10">Безопасность</a></li><li><a href="#s11">Диагностика</a></li></ul></li></ol></details><h1>Панель администратора: все страницы и настройки</h1>
+<p>Справочник по панели администратора узла: что на каждой странице и что делает каждая настройка. Если вы только что установили узел, начните с раздела <a href="../node-panel/">Первая настройка в панели администратора</a> — там по шагам самое необходимое.</p>
+<p>Панель открывается по адресу <code>https://ваш-домен/nevod-admin</code> (или через SSH-туннель, если вы её закрыли, — см. <a href="../node-install/">установку</a>, шаг 10). Логин — любой, пароль — <code>NEVOD_ADMIN_PASSWORD</code> из <code>.env</code> или личный, заведённый на странице «Безопасность». Язык переключается в шапке.</p>
+<h2 id="s1">Шапка</h2>
+<p>Вверху каждой страницы — имя узла, его идентификатор (<code>node_id</code>) и плашки текущего состояния: виден ли узел в «Обзоре сети», режим допуска ячеек, кто видит опубликованные ячейки.</p>
+<h2 id="s2">Обзор</h2>
+<p>Список всех ячеек (пользователей и ботов), зарегистрированных на узле.</p>
+<div class="tbl"><table><tr><th>Столбец</th><th>Что показывает</th></tr><tr><td>Имя</td><td>Ваша пометка для этой ячейки — её видите только вы, в панели. Впишите и нажмите ✓ или Enter. Имя, которое выбрал сам пользователь, она не меняет.</td></tr><tr><td><code>cell_id</code></td><td>Идентификатор ячейки. Полный — во всплывающей подсказке.</td></tr><tr><td>Статус</td><td>Онлайн или офлайн — подключено ли сейчас приложение.</td></tr><tr><td>Буфер</td><td>Сколько сообщений ждут, пока пользователь выйдет на связь (хранятся до 72 часов).</td></tr><tr><td>Регистрация</td><td>Когда ячейка зарегистрировалась.</td></tr></table></div>
+<p>Кнопки:</p>
+<ul><li><b>✕</b> в строке — удалить ячейку. Это полностью отзывает её допуск: регистрация, недоставленные сообщения и токены уведомлений удаляются, имя освобождается. Чтобы вернуться, человеку понадобится новый код приглашения или новая заявка. Узел никогда не удаляет ячейки сам — только вы.</li><li><b>Сбросить регистрации</b> — все ячейки перерегистрируются при следующем подключении, код вводить заново не нужно.</li><li><b>Полный сброс</b> — необратимо: все участники должны будут заново войти с кодом приглашения. На практике нужен только при переезде или полной смене состава узла.</li></ul>
+<h2 id="s3">Настройки</h2>
+<div class="tbl"><table><tr><th>Настройка</th><th>Что делает</th><th>Когда применяется</th></tr><tr><td><b>Имя ноды</b></td><td>Название узла, которое видят пользователи. Нельзя использовать служебные слова (Nevod, admin, support, official и т. п.).</td><td>В панели — сразу; другим узлам — после перезапуска.</td></tr><tr><td><b>Тип ноды</b> <i>(в разработке)</i></td><td><code>permanent</code> — обычный узел. <code>temporary</code> — временный узел, например на время мероприятия; приложение такие узлы пока не использует. Оставьте <code>permanent</code>.</td><td>После перезапуска.</td></tr><tr><td><b>ID родительской ноды</b> <i>(в разработке)</i></td><td>Нужен только временному узлу: к какому постоянному узлу он относится. Оставьте пустым.</td><td>Сразу.</td></tr><tr><td><b>Видимость в «Обзоре сети»</b></td><td><code>closed</code> — узел не показывается пользователям других узлов. <code>open</code> — узел появляется в их «Обзоре сети». Регистрацию это не открывает.</td><td>После перезапуска.</td></tr><tr><td><b>Видимость опубликованных ячеек</b></td><td>Кто видит список ботов и страниц со страницы «Публикация»: <code>off</code> — никто, <code>members</code> — только пользователи этого узла, <code>public</code> — все.</td><td>Сразу.</td></tr><tr><td><b>Режим допуска ячеек</b></td><td><code>delegated</code> — только по коду приглашения; <code>admin</code> — по коду или по заявке с вашим одобрением; <code>open</code> — любой, кто знает адрес.</td><td>Сразу.</td></tr><tr><td><b>Администраторы</b></td><td>Идентификаторы (<code>cell_id</code>) ваших собственных ячеек через запятую. В режиме <code>admin</code> им приходит в Nevod сообщение о каждой новой заявке. Свой <code>cell_id</code> можно найти на странице «Обзор».</td><td>Сразу.</td></tr></table></div>
+<p>Перезапуск узла — на сервере, в папке <code>/opt/nevod/installer/docker</code>:</p>
+<pre><code>docker compose restart nevod_node</code></pre>
+<h2 id="s4">Заявки на подключение</h2>
+<p>Работает в режиме допуска <code>admin</code>. Когда человек без кода пытается зарегистрироваться, приложение само отправляет заявку — она появляется здесь с именем и заметкой. <b>Одобрить</b> — человек сразу получает доступ и уведомление на телефон. <b>Отклонить</b> — приложение покажет ему, что заявка отклонена.</p>
+<h2 id="s5">Обращения</h2>
+<p>Сообщения, которые пользователи узла отправили его аккаунту <b>administrator</b> из приложения: жалобы на сообщения, вопросы. Аккаунт administrator есть у каждого узла, он создаётся сам при первом запуске.</p>
+<p>Откройте переписку, напишите ответ и нажмите <b>Ответить</b> — ответ уйдёт пользователю в Nevod, зашифрованным, от имени administrator. Отвечать на обращения пользователей принято только так, в приложении, а не по электронной почте.</p>
+<p>Если пользователь приложил к обращению журнал приложения (для разбора проблемы), в переписке появится ссылка <b>скачать nevod.log</b>.</p>
+<p>Пользователи видят аккаунт administrator вашего узла с пометкой <b>Администратор узла</b> и названием узла. Пометку подтверждает ключ вашего узла, поэтому выдать себя за администратора вашего узла никто другой не может. Синий значок ✓ — знак администрации проекта Nevod: он подтверждается подписью куратора проекта и есть только у узлов проекта.</p>
+<h2 id="s6">Приглашения</h2>
+<p><b>Создать код:</b> выберите срок (1 час, 24 часа, 7 дней) → <b>+ Создать код</b>. Появятся QR-код и ссылка — их можно показать на экране, переслать или нажать <b>Скопировать ссылку</b>. Ссылка открывает Nevod с уже заполненными адресом узла и кодом. Короткий код вида <code>ABCD-EFGH</code> годится, только если в приложении человека уже указан ваш узел.</p>
+<p>Каждый код одноразовый. Ниже — все коды со сроком и статусом: активен, использован, кем.</p>
+<p><b>Допущенные ячейки</b> — кто и по чьему приглашению вошёл. Переключатель <b>Может приглашать</b> разрешает этому человеку создавать коды из приложения (Профиль → Пригласить) — в режиме <code>delegated</code> так можно поручить приглашения доверенным людям.</p>
+<p>Подробнее — в разделе <a href="../node-invite/">Как позвать людей</a>.</p>
+<h2 id="s7">Узлы</h2>
+<p><b>Подключение к сети Nevod.</b> Состояние («подключён · узлов на связи» или «не подключён») и кнопка <b>Подключиться к сети Nevod</b>. Подключённый узел получает от узлов проекта push-уведомления для телефонов и ретранслятор звонков. Поле <b>Токен от администратора другого узла</b> — для подключения через другой узел вместо Nevod Open. Подробнее — в разделе <a href="../node-network/">Подключение к общей сети Nevod</a>.</p>
+<p><b>Известные узлы</b> — все узлы сети, о которых знает ваш узел: название, адрес, онлайн или нет, когда были на связи. Узел, который не выходит на связь 72 часа, из списка убирается и возвращается сам, когда снова появится в сети.</p>
+<p><b>Приглашения нод</b> — токен, по которому другой узел может подключиться через ваш. Действует 10 минут; передавайте его администратору другого узла лично, а не публично.</p>
+<h2 id="s8">Публикация</h2>
+<p>Боты и страницы, которые ваш узел показывает пользователям в приложении — на «планете» узла в «Обзоре сети». Выберите ячейку, задайте название, тип (<code>bot</code> — бот, <code>page</code> — страница с текстом) и описание → <b>Опубликовать</b>. <b>Снять с публикации</b> убирает её из списка; сама ячейка остаётся.</p>
+<p>Галочки Claude, ChatGPT, Gemini — для внешнего AI-бота, который работает на ключе пользователя: какие провайдеры он принимает. Для обычного бота ничего не отмечайте.</p>
+<p>Кто видит этот список, задаётся в «Настройках» → «Видимость опубликованных ячеек».</p>
+<h2 id="s9">AI-боты</h2>
+<p>AI-боты, которые работают прямо внутри узла и отвечают через Claude, ChatGPT или Gemini <b>на ключе пользователя</b>: человек добавляет свой ключ в чате с ботом, ключ приходит с каждым сообщением и ботом не хранится. У узла своих ключей нет, платить за AI узлу не нужно.</p>
+<p><b>Добавить бота</b> — задайте имя, описание, инструкцию для модели и провайдеров, или возьмите готовый шаблон (AI Assistant, Tolmach-переводчик) и измените его. Включённый бот появляется у пользователей узла в списке «На этой ноде». Выключенный остановлен и скрыт, его имя остаётся за ним. Удаление — навсегда: ключи и имя бота удаляются, переписка у пользователей остаётся.</p>
+<div class="note"><p>Переписку с AI-ботом расшифровывает код на вашем узле и передаёт выбранному провайдеру. Пользователей об этом предупреждает <a href="../../privacy/">политика конфиденциальности</a> (раздел 5). Если вы включаете AI-ботов, вы как владелец узла участвуете в этой передаче.</p></div>
+<h2 id="s10">Безопасность</h2>
+<p>Личные учётные записи администраторов: <b>Добавить / сменить пароль</b> — логин и пароль (хранится в виде хэша). Каждому администратору — свою запись; уход человека — удалить его запись, не меняя главный пароль. Главный пароль из <code>.env</code> всегда работает как запасной вход.</p>
+<p>Пять неверных паролей подряд с одного адреса закрывают вход для этого адреса на 15 минут.</p>
+<h2 id="s11">Диагностика</h2>
+<p><b>Проверить</b> — самопроверка узла (до 10 секунд):</p>
+<div class="tbl"><table><tr><th>Проверка</th><th>Что значит</th></tr><tr><td>Актуальность кода</td><td>Не устарела ли установленная сборка узла относительно протокола — если устарела, обновите узел (см. <a href="../node-maintenance/">Обслуживание</a>).</td></tr><tr><td>Согласованность identity/DB</td><td>Совпадают ли настройки из <code>node.json</code> с базой данных.</td></tr><tr><td>Зависимости и конфигурация</td><td>Нет ли ошибок в настройках (например, ретранслятор звонков без <code>TURN_SECRET</code>).</td></tr><tr><td>Внешняя доступность</td><td>Может ли другой узел сети достучаться до вашего снаружи. Пока узел не подключён к сети, показывает «Нет известных пиров» — это ожидаемо.</td></tr></table></div>
+<p><b>Логи</b> — последние записи журнала узла. Тексты сообщений в журнал не попадают.</p><p class="doc-nav"><a href="/xx/docs/node-maintenance/">← Обслуживание</a><a href="/xx/docs/">↑ Документация</a></p></div></div></main>
+<footer class="site"><div class="wrap">
+<div>© 2026 Nevod · Колпаков Андрей Валериевич</div>
+<div><a href="/xx/support/">Поддержка</a> · <a href="/xx/privacy/">Конфиденциальность</a> · <a href="/xx/terms/">Условия использования</a> · <a href="/xx/node/">Свой узел</a> · <a href="https://github.com/avk0978/nevod-messenger">Исходный код</a></div>
+</div></footer>
+</body>
+</html>

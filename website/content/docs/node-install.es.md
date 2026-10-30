@@ -1,12 +1,12 @@
 # Instalación paso a paso
 
-Cómo instalar un nodo Nevod desde cero en un servidor alquilado: desde comprar el servidor hasta entrar por primera vez en el panel de administración. El ejemplo usa un servidor con Ubuntu 24.04 y el dominio `node.example.org`; pon el tuyo en su lugar en todas partes.
+Cómo instalar un nodo Nevod desde cero en un servidor alquilado: desde comprar el servidor hasta entrar por primera vez en el panel de administración. El ejemplo usa un servidor con Ubuntu 26.04 y el dominio `node.example.org`; pon el tuyo en su lugar en todas partes.
 
 Todos los comandos de abajo se escriben en la terminal del servidor; puedes copiarlos enteros. Qué es un nodo y qué guarda: en [Cómo funciona un nodo](../node-how/).
 
 ## 1. Alquila un servidor
 
-Sirve cualquier VPS de cualquier proveedor: 1 CPU, 1 GB de memoria, 10 GB de disco, **Ubuntu 24.04**. Al contratarlo, el proveedor te da la **dirección IP** del servidor y la contraseña del usuario `root` (o te pide subir una clave SSH).
+Sirve cualquier VPS de cualquier proveedor: 1 CPU, 1 GB de memoria, 10 GB de disco, **Ubuntu 24.04** o **26.04**. Al contratarlo, el proveedor te da la **dirección IP** del servidor y la contraseña del usuario `root` (o te pide subir una clave SSH).
 
 Si el proveedor tiene su propio cortafuegos de red en el panel de control (por ejemplo, Firewalls en Hetzner, Security groups en otros), abre en él los puertos de entrada **22, 80, 443 y 8765** (TCP).
 
@@ -55,7 +55,9 @@ El último comando es el instalador oficial de Docker. Comprueba que todo está 
 docker compose version
 ```
 
-Debería aparecer una línea como `Docker Compose version v2…`.
+Debería aparecer una línea como `Docker Compose version v…`.
+
+> Si tras la actualización aparece `*** System restart required ***` (en pantalla o al volver a entrar), reinicia el servidor con `reboot`, vuelve a conectarte al cabo de un minuto (paso 3) y continúa.
 
 ## 5. Activa el cortafuegos
 
@@ -72,6 +74,8 @@ Responde `y` a la pregunta. Los puertos 80 y 443 son para HTTPS (teléfonos y pa
 > Docker abre los puertos de sus contenedores por su cuenta, sin pasar por `ufw`. Por eso en nuestro kit el panel de administración (puerto 8766) solo está publicado para el propio servidor: no lo cambies en `docker-compose.yml`.
 
 ## 6. Descarga Nevod
+
+> Todos los comandos siguientes se escriben en el servidor: a la izquierda de la línea de comandos debe aparecer `root@…`. Si ves `PS C:\…>` o el nombre de tu ordenador, la conexión con el servidor se ha cerrado: vuelve a conectarte (paso 3).
 
 ```
 git clone https://github.com/avk0978/nevod-messenger.git /opt/nevod
@@ -92,7 +96,7 @@ Inventa una contraseña para el panel de administración. Lo más cómodo es gen
 openssl rand -base64 24
 ```
 
-Copia el resultado y guárdalo en tu gestor de contraseñas. Ahora abre el archivo de ajustes:
+Copia el resultado y guárdalo en un lugar seguro, por ejemplo en un gestor de contraseñas (Bitwarden, KeePass, Contraseñas en iPhone y Mac). Ahora abre el archivo de ajustes:
 
 ```
 nano .env
@@ -138,7 +142,7 @@ Ahora abre `https://node.example.org/nevod-admin`. El navegador pide usuario y c
 
 ## 10. Opcional: cierra el panel a internet
 
-Si no quieres que la dirección del panel se abra desde internet, añade a `.env` la línea `NEVOD_ADMIN_PUBLIC=false` y aplícala:
+Si no quieres que la dirección del panel se abra desde internet, cambia en `.env` la línea `NEVOD_ADMIN_PUBLIC=true` por `NEVOD_ADMIN_PUBLIC=false` y aplícala:
 
 ```
 docker compose up -d
@@ -152,6 +156,8 @@ ssh -L 8766:127.0.0.1:8766 root@node.example.org
 
 y, mientras esa ventana siga abierta, abre en el navegador `http://localhost:8766/nevod-admin`.
 
+Si en tu ordenador el puerto 8766 ya está ocupado (por ejemplo, porque funciona allí otro nodo Nevod), usa otro: `ssh -L 18766:127.0.0.1:8766 root@node.example.org` y `http://localhost:18766/nevod-admin`. El primer número es el puerto de tu ordenador; el segundo, el del panel en el servidor, que no debes cambiar.
+
 ## Si algo va mal
 
 | Qué ves | Causa habitual |
@@ -159,6 +165,7 @@ y, mientras esa ventana siga abierta, abre en el navegador `http://localhost:876
 | El navegador dice que el certificado no es válido, o la web no se abre | El dominio aún no apunta al servidor (paso 2) o el puerto 80/443 está cerrado (pasos 1 y 5). Mira el registro de Caddy: `docker compose logs caddy`. Cuando se corrige la causa, Caddy lo vuelve a intentar solo. |
 | `docker compose up` dice `address already in use` | En el servidor ya funciona otro servidor web (a menudo Apache o nginx del proveedor). Detenlo: `systemctl disable --now apache2` o `systemctl disable --now nginx`. |
 | El error `set NEVOD_ADMIN_PASSWORD in .env` o `set NEVOD_DOMAIN in .env` | Esa línea de `.env` no está rellenada (paso 7). |
+| Te equivocaste al escribir el dominio en `.env` (no se obtiene el certificado; en el registro de Caddy aparece `NXDOMAIN`) | Detén el nodo: `docker compose down`, corrige `NEVOD_DOMAIN` en `.env`, borra la carpeta de datos: `rm -rf data`, y vuelve a arrancarlo: `docker compose up -d`. Borra `data` solo mientras nadie se haya registrado en el nodo; si no, el nodo se queda con la dirección antigua y tendrías que corregirla a mano. |
 | El panel pide la contraseña una y otra vez | Contraseña incorrecta. Para ver cuál está puesta: `grep PASSWORD .env`. |
 | El panel responde «Too many failed logins» | Ha saltado la protección contra adivinar contraseñas: espera 15 minutos. |
 | `nevod_node` se reinicia sin parar | El registro del nodo muestra la causa: `docker compose logs --tail 50 nevod_node`. |

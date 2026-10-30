@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Adım adım kurulum — Nevod</title>
+<meta name="description" content="Kiralık bir sunucuya sıfırdan Nevod düğümü kurmak: sunucuyu satın almaktan yönetim paneline ilk girişe kadar. Örnekte Ubuntu 26.04 yüklü bir sunucu ve node.example.org alan adı kullanılıyor; her yerde kendi alan adınızı yazın.">
+<link rel="canonical" href="https://nevod.network/tr/docs/node-install/">
+<link rel="alternate" hreflang="uk" href="https://nevod.network/uk/docs/node-install/"><link rel="alternate" hreflang="en" href="https://nevod.network/en/docs/node-install/"><link rel="alternate" hreflang="de" href="https://nevod.network/de/docs/node-install/"><link rel="alternate" hreflang="tr" href="https://nevod.network/tr/docs/node-install/"><link rel="alternate" hreflang="es" href="https://nevod.network/es/docs/node-install/"><link rel="alternate" hreflang="it" href="https://nevod.network/it/docs/node-install/"><link rel="alternate" hreflang="fr" href="https://nevod.network/fr/docs/node-install/">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik:wght@500..700&family=IBM+Plex+Sans:wght@400;600&display=swap">
+<style>
+:root { --ink:#14213D; --paper:#F7F6F1; --card:#FFFFFF; --line:#DCDFE6; --muted:#4A5568;
+        --accent:#F2C230; --accent-ink:#8A6A00; --dark2:#1E2F55; --soft:#C9D3E6; }
+* { box-sizing:border-box; }
+html { -webkit-text-size-adjust:100%; }
+body { margin:0; background:var(--paper); color:var(--ink); font:17px/1.6 'IBM Plex Sans', Arial, sans-serif; }
+a { color:#1F4E9E; }
+h1,h2,h3 { font-family:'Rubik', Arial, sans-serif; line-height:1.15; margin:0 0 .5em;
+  overflow-wrap:break-word; hyphens:auto; }
+main, .hero { overflow-wrap:break-word; }
+h1 { font-size:clamp(28px,5vw,56px); } h2 { font-size:clamp(24px,3.2vw,34px); margin-top:1.4em; } h3 { font-size:20px; }
+[id] { scroll-margin-top:76px; }  /* sticky header must not cover an anchor target */
+main.article h2 { margin-top:1.6em; } main.article h1 { font-size:clamp(26px,4vw,44px); }
+main.article hr { border:0; border-top:1px solid var(--line); margin:28px 0; }
+main.article code { font-size:.9em; background:var(--card); border:1px solid var(--line); border-radius:4px; padding:0 4px; }
+main.article ol li, main.article ul li { margin-bottom:.35em; overflow-wrap:anywhere; }
+.pub { margin:16px 0; } .pub h3 a { text-decoration:none; } .pub-date { font-size:14px; color:var(--muted); }
+.pub-back { font-size:15px; }
+main.article pre { background:var(--ink); color:var(--paper); border-radius:8px; padding:12px 14px; overflow-x:auto;
+  font-size:14px; line-height:1.5; margin:0 0 1em; }
+main.article pre code { background:none; border:0; padding:0; font-size:inherit; color:inherit; }
+main.article .note { margin:0 0 1em; } main.article .note p:last-child { margin-bottom:0; }
+.toc li { margin-bottom:.35em; }
+.docs-layout { display:grid; grid-template-columns:250px minmax(0,1fr); gap:40px; align-items:start; }
+.docs-side { position:sticky; top:76px; max-height:calc(100vh - 92px); overflow-y:auto; font-size:15px;
+  line-height:1.4; padding-right:8px; border-right:1px solid var(--line); }
+.docs-side ol, .docs-toc ol { list-style:none; padding:0; margin:0 0 14px; }
+.docs-side li, .docs-toc li { margin:0; }
+.docs-side a, .docs-toc a { display:block; padding:4px 8px; border-radius:6px; text-decoration:none; color:var(--ink); }
+.docs-side a:hover, .docs-toc a:hover { background:var(--card); }
+.docs-side li.cur > a, .docs-toc li.cur > a { background:var(--card); font-weight:600; box-shadow:inset 3px 0 0 var(--accent); }
+.docs-side ul, .docs-toc ul { list-style:none; padding:2px 0 6px 12px; margin:0; }
+.docs-side ul a, .docs-toc ul a { font-size:14px; color:var(--muted); padding:3px 8px; }
+.docs-side .soon, .docs-toc .soon { padding:4px 8px; color:var(--muted); opacity:.7; }
+.docs-group { font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.6px; color:var(--muted);
+  margin:14px 8px 6px; }
+.docs-home { margin:0 0 4px; font-weight:600; } .docs-home a { padding:4px 8px; }
+.docs-toc { display:none; background:var(--card); border:1px solid var(--line); border-radius:10px; margin:0 0 20px; }
+.docs-toc summary { cursor:pointer; padding:10px 14px; font-weight:600; }
+.docs-toc[open] summary { border-bottom:1px solid var(--line); }
+.docs-toc > p, .docs-toc > ol { margin-left:8px; margin-right:8px; }
+@media (max-width:960px) {
+  .docs-layout { display:block; }
+  .docs-side { display:none; }
+  .docs-toc { display:block; }
+}
+.doc-nav { display:flex; flex-wrap:wrap; gap:8px 24px; justify-content:space-between; font-size:15px;
+  border-top:1px solid var(--line); padding-top:16px; margin-top:32px; }
+p, ul, ol, table { margin:0 0 1em; }
+.wrap { max-width:1080px; margin:0 auto; padding:0 16px; }
+header.top { background:var(--ink); color:var(--paper); position:sticky; top:0; z-index:10; }
+header.top .wrap { display:flex; align-items:center; gap:16px; min-height:60px; }
+header.top a { color:var(--paper); text-decoration:none; }
+.brand { font-family:'Rubik', Arial, sans-serif; font-weight:700; font-size:20px; margin-right:auto; }
+.brand span { color:var(--accent); }
+nav.main { display:flex; gap:14px; font-size:15px; }
+nav.main a { opacity:.85; white-space:nowrap; } nav.main a[aria-current] { opacity:1; border-bottom:2px solid var(--accent); }
+details.menu { display:none; order:3; }
+details.menu summary { list-style:none; cursor:pointer; width:44px; height:44px; margin-right:-10px;
+  display:flex; align-items:center; justify-content:center; }
+details.menu summary::-webkit-details-marker { display:none; }
+.burger, .burger::before, .burger::after { display:block; width:22px; height:2px; background:var(--paper);
+  border-radius:2px; position:relative; transition:transform .2s, background .2s; }
+.burger::before, .burger::after { content:""; position:absolute; left:0; }
+.burger::before { top:-7px; } .burger::after { top:7px; }
+details.menu[open] .burger { background:transparent; }
+details.menu[open] .burger::before { transform:translateY(7px) rotate(45deg); }
+details.menu[open] .burger::after { transform:translateY(-7px) rotate(-45deg); }
+details.menu nav { position:absolute; left:0; right:0; top:100%; background:var(--ink);
+  border-top:1px solid var(--dark2); box-shadow:0 12px 24px rgba(0,0,0,.25); padding:6px 0 12px; }
+details.menu nav a { display:block; padding:12px 16px; font-size:17px; opacity:.9; }
+details.menu nav a[aria-current] { opacity:1; color:var(--accent); }
+details.lang { position:relative; font-size:15px; }
+details.lang summary { list-style:none; cursor:pointer; border:1px solid var(--accent); color:var(--accent);
+  padding:3px 12px; border-radius:999px; }
+details.lang summary::-webkit-details-marker { display:none; }
+details.lang summary:empty { min-width:6em; height:calc(1.6em + 8px); box-sizing:border-box; }
+details.lang ul { position:absolute; right:0; top:34px; background:var(--card); color:var(--ink); list-style:none;
+  padding:8px 0; margin:0; border-radius:10px; box-shadow:0 8px 24px rgba(0,0,0,.2); min-width:160px; }
+details.lang li a { color:var(--ink); display:block; padding:6px 16px; }
+@media (max-width:960px) {
+  nav.main { display:none; }
+  details.menu { display:block; }
+  header.top .wrap { min-height:56px; gap:12px; }
+  details.lang li a { padding:10px 16px; }
+}
+.hero { background:var(--ink); color:var(--paper); padding:56px 0 64px; }
+.hero p.lead { font-size:clamp(18px,2.2vw,22px); color:var(--soft); max-width:760px; }
+.eyebrow { font-size:14px; letter-spacing:3px; text-transform:uppercase; color:var(--accent); margin-bottom:12px; }
+.btns { display:flex; gap:12px; flex-wrap:wrap; margin-top:24px; }
+.btn { display:inline-block; padding:12px 22px; border-radius:10px; text-decoration:none; font-weight:600; }
+.btn.primary { background:var(--accent); color:var(--ink); } .btn.ghost { border:1px solid var(--soft); color:var(--paper); }
+main { padding:40px 0 56px; }
+.grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:16px; margin:16px 0 8px; }
+.card { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:20px; }
+.card h3 { margin-bottom:6px; } .card p { margin:0; color:var(--muted); }
+.status td:first-child { font-weight:600; }
+.tbl { overflow-x:auto; }
+table { border-collapse:collapse; width:100%; background:var(--card); border:1px solid var(--line); border-radius:12px; }
+th, td { text-align:left; padding:10px 12px; border-bottom:1px solid var(--line); vertical-align:top; }
+th { background:var(--ink); color:var(--paper); font-weight:600; }
+.note { background:#FBF3D6; border-left:4px solid var(--accent); padding:14px 16px; border-radius:8px; }
+.legal h2 { font-size:22px; }
+.ncard { display:flex; gap:20px; align-items:flex-start; background:var(--card); border:1px solid var(--line);
+  border-radius:14px; padding:20px; margin:8px 0 16px; }
+.ncard-qr { flex:0 0 220px; } .ncard-qr svg { display:block; width:100%; height:auto; }
+.ncard-body { min-width:0; } .ncard-body h3 { margin-bottom:6px; } .ncard-body p { color:var(--muted); }
+.ncard code { display:block; font-size:12px; line-height:1.45; word-break:break-all; background:var(--paper);
+  border:1px solid var(--line); border-radius:8px; padding:8px 10px; margin:0 0 12px; user-select:all; }
+.ncard .btn { border:0; cursor:pointer; font:inherit; font-weight:600; }
+@media (max-width:640px) { .ncard { flex-direction:column; align-items:stretch; } .ncard-qr { flex-basis:auto; width:220px; margin:0 auto; } }
+footer.site { background:var(--ink); color:var(--soft); font-size:14px; padding:28px 0; }
+footer.site a { color:var(--soft); }
+footer.site .wrap { display:flex; flex-wrap:wrap; gap:8px 24px; justify-content:space-between; }
+@media (max-width:640px) {
+  body { font-size:16px; }
+  .hero { padding:36px 0 44px; }
+  main { padding:28px 0 40px; }
+  .btns .btn { flex:1 1 auto; text-align:center; }
+  .card { padding:16px; }
+  /* Wide tables (4+ columns) become one card per row: the first cell is the row title,
+     every other cell is prefixed with its column header (data-label, added by stack_tables). */
+  table.stack, table.stack tbody, table.stack tr, table.stack td { display:block; width:auto !important; }
+  table.stack { background:none; border:0; }
+  table.stack tr:first-child { display:none; }
+  table.stack tr { background:var(--card); border:1px solid var(--line); border-radius:12px; margin-bottom:12px; overflow:hidden; }
+  table.stack td { border-bottom:1px solid var(--line); padding:8px 14px; }
+  table.stack td:last-child { border-bottom:0; }
+  table.stack td:first-child { background:var(--ink); color:var(--paper); font-weight:600; }
+  table.stack td:not(:first-child)::before { content:attr(data-label); display:block; font-size:13px;
+    font-weight:600; color:var(--muted); text-transform:uppercase; letter-spacing:.5px; }
+  footer.site .wrap { flex-direction:column; }
+}
+</style>
+</head>
+<body>
+<header class="top"><div class="wrap">
+<a class="brand" href="/tr/">Nevod<span>.</span></a>
+<nav class="main"><a href="/tr/">Ana sayfa</a><a href="/tr/manifesto/">ZKI Manifestosu</a><a href="/tr/compare/">Karşılaştırma</a><a href="/tr/security/">Güvenlik</a><a href="/tr/docs/" aria-current="page">Belgeler</a><a href="/tr/download/">İndir</a><a href="/tr/publications/">Yayınlar</a><a href="/tr/about/">Proje hakkında</a></nav>
+<details class="menu"><summary aria-label="Menü"><span class="burger"></span></summary><nav><a href="/tr/">Ana sayfa</a><a href="/tr/manifesto/">ZKI Manifestosu</a><a href="/tr/compare/">Karşılaştırma</a><a href="/tr/security/">Güvenlik</a><a href="/tr/docs/" aria-current="page">Belgeler</a><a href="/tr/download/">İndir</a><a href="/tr/publications/">Yayınlar</a><a href="/tr/about/">Proje hakkında</a></nav></details>
+<details class="lang"><summary>Türkçe</summary><ul><li><a href="/uk/docs/node-install/" hreflang="uk" lang="uk">Українська</a></li><li><a href="/en/docs/node-install/" hreflang="en" lang="en">English</a></li><li><a href="/de/docs/node-install/" hreflang="de" lang="de">Deutsch</a></li><li><a href="/tr/docs/node-install/" hreflang="tr" lang="tr">Türkçe</a></li><li><a href="/es/docs/node-install/" hreflang="es" lang="es">Español</a></li><li><a href="/it/docs/node-install/" hreflang="it" lang="it">Italiano</a></li><li><a href="/fr/docs/node-install/" hreflang="fr" lang="fr">Français</a></li></ul></details>
+</div></header>
+<main class="article"><div class="wrap docs-layout"><aside class="docs-side"><p class="docs-home"><a href="/tr/docs/">Belgeler</a></p><p class="docs-group">Kullanıcılar için</p><ol><li><a href="/tr/docs/start/">İlk adımlar</a></li><li><a href="/tr/docs/contacts/">Kişiler</a></li><li><a href="/tr/docs/messages/">Mesajlar ve dosyalar</a></li><li><a href="/tr/docs/calls/">Aramalar</a></li><li><a href="/tr/docs/bots/">Botlar ve yapay zekâ asistanları</a></li><li><a href="/tr/docs/security/">Güvenlik ve yedekler</a></li><li><a href="/tr/docs/faq/">Sorular ve sorunlar</a></li></ol><p class="docs-group">Düğüm sahipleri için</p><ol><li><a href="/tr/docs/node-how/">Düğüm nasıl çalışır</a></li><li class="cur"><a href="/tr/docs/node-install/" aria-current="page">Adım adım kurulum</a><ul><li><a href="#s1">1. Bir sunucu kiralayın</a></li><li><a href="#s2">2. Alan adını sunucuya yönlendirin</a></li><li><a href="#s3">3. Sunucuya bağlanın</a></li><li><a href="#s4">4. Docker ve git'i kurun</a></li><li><a href="#s5">5. Güvenlik duvarını açın</a></li><li><a href="#s6">6. Nevod'u indirin</a></li><li><a href="#s7">7. Ayarları doldurun</a></li><li><a href="#s8">8. Düğümü başlatın</a></li><li><a href="#s9">9. Her şeyin çalıştığını kontrol edin</a></li><li><a href="#s10">10. İsteğe bağlı: paneli internete kapatın</a></li><li><a href="#s11">Bir şeyler ters giderse</a></li></ul></li><li><a href="/tr/docs/node-panel/">Yönetim panelinde ilk ayarlar</a></li><li><a href="/tr/docs/node-invite/">İnsanları davet etmek</a></li><li><a href="/tr/docs/node-network/">Nevod ağına katılmak</a></li><li><a href="/tr/docs/node-turn/">Kendi düğümünüz üzerinden aramalar</a></li><li><a href="/tr/docs/node-maintenance/">Bakım</a></li><li><a href="/tr/docs/node-admin/">Yönetim paneli: tüm sayfalar ve ayarlar</a></li></ol></aside><div class="docs-main"><details class="docs-toc"><summary>İçindekiler</summary><p class="docs-home"><a href="/tr/docs/">Belgeler</a></p><p class="docs-group">Kullanıcılar için</p><ol><li><a href="/tr/docs/start/">İlk adımlar</a></li><li><a href="/tr/docs/contacts/">Kişiler</a></li><li><a href="/tr/docs/messages/">Mesajlar ve dosyalar</a></li><li><a href="/tr/docs/calls/">Aramalar</a></li><li><a href="/tr/docs/bots/">Botlar ve yapay zekâ asistanları</a></li><li><a href="/tr/docs/security/">Güvenlik ve yedekler</a></li><li><a href="/tr/docs/faq/">Sorular ve sorunlar</a></li></ol><p class="docs-group">Düğüm sahipleri için</p><ol><li><a href="/tr/docs/node-how/">Düğüm nasıl çalışır</a></li><li class="cur"><a href="/tr/docs/node-install/" aria-current="page">Adım adım kurulum</a><ul><li><a href="#s1">1. Bir sunucu kiralayın</a></li><li><a href="#s2">2. Alan adını sunucuya yönlendirin</a></li><li><a href="#s3">3. Sunucuya bağlanın</a></li><li><a href="#s4">4. Docker ve git'i kurun</a></li><li><a href="#s5">5. Güvenlik duvarını açın</a></li><li><a href="#s6">6. Nevod'u indirin</a></li><li><a href="#s7">7. Ayarları doldurun</a></li><li><a href="#s8">8. Düğümü başlatın</a></li><li><a href="#s9">9. Her şeyin çalıştığını kontrol edin</a></li><li><a href="#s10">10. İsteğe bağlı: paneli internete kapatın</a></li><li><a href="#s11">Bir şeyler ters giderse</a></li></ul></li><li><a href="/tr/docs/node-panel/">Yönetim panelinde ilk ayarlar</a></li><li><a href="/tr/docs/node-invite/">İnsanları davet etmek</a></li><li><a href="/tr/docs/node-network/">Nevod ağına katılmak</a></li><li><a href="/tr/docs/node-turn/">Kendi düğümünüz üzerinden aramalar</a></li><li><a href="/tr/docs/node-maintenance/">Bakım</a></li><li><a href="/tr/docs/node-admin/">Yönetim paneli: tüm sayfalar ve ayarlar</a></li></ol></details><h1>Adım adım kurulum</h1>
+<p>Kiralık bir sunucuya sıfırdan Nevod düğümü kurmak: sunucuyu satın almaktan yönetim paneline ilk girişe kadar. Örnekte Ubuntu 26.04 yüklü bir sunucu ve <code>node.example.org</code> alan adı kullanılıyor; her yerde kendi alan adınızı yazın.</p>
+<p>Aşağıdaki tüm komutlar sunucunun terminaline girilir; tamamını kopyalayabilirsiniz. Düğümün ne olduğu ve neyi sakladığı — <a href="../node-how/">Düğüm nasıl çalışır</a> bölümünde.</p>
+<h2 id="s1">1. Bir sunucu kiralayın</h2>
+<p>Herhangi bir sağlayıcıdan herhangi bir VPS olur: 1 işlemci, 1 GB bellek, 10 GB disk, <b>Ubuntu 24.04</b> veya <b>26.04</b>. Sipariş verdiğinizde sağlayıcı size sunucunun <b>IP adresini</b> ve <code>root</code> kullanıcısının parolasını verir (veya bir SSH anahtarı yüklemenizi ister).</p>
+<p>Sağlayıcının kontrol panelinde kendi ağ güvenlik duvarı varsa (örneğin Hetzner'de Firewalls, başkalarında Security groups), orada gelen <b>22, 80, 443 ve 8765</b> (TCP) portlarını açın.</p>
+<h2 id="s2">2. Alan adını sunucuya yönlendirin</h2>
+<p>Düğümün kendine ait bir alan adı veya alt alan adı olmalıdır, örneğin <code>node.example.org</code>. İki nedenle onsuz olmaz:</p>
+<ul><li><b>Telefonlar düğüme <code>https://alanadı/nevod-ws</code> adresinden bağlanır.</b> iPhone'un hiçbir ayar gerektirmeden güvendiği HTTPS sertifikasını Caddy, Let's Encrypt'ten bir alan adı için alır.</li><li><b>Düğümün adresi her yerde kayıtlıdır:</b> kullanıcıların telefonlarında, kişi kartlarında, ağdaki diğer düğümlerde. Başka bir sunucuya taşınırsanız veya sağlayıcınız IP adresini değiştirirse tek bir DNS kaydını düzeltmeniz yeterlidir; kullanıcılar hiçbir şey fark etmez. Çıplak bir IP adresiyle taşınma herkesin bağlantısını keser ve davetleri yeniden göndermeniz gerekir.</li></ul>
+<p>Henüz alan adınız yoksa herhangi bir kayıt kuruluşundan (Cloudflare, Namecheap, Porkbun, Gandi ve diğerleri) satın alabilirsiniz — genellikle yılda birkaç dolar veya avro. Düğüm için tek bir alt alan adı yeterlidir; alan adının kendisini başka amaçlar için de kullanabilirsiniz.</p>
+<p>Alan adınızın yönetim panelinde bir <b>A kaydı</b> oluşturun: ad — örneğin <code>node</code> (<code>node.example.org</code> olur), değer — sunucunun IP adresi.</p>
+<p>Birkaç dakika bekleyin ve herhangi bir bilgisayardan kontrol edin:</p>
+<pre><code>ping node.example.org</code></pre>
+<p>Yanıtta sunucunuzun IP adresi görünmelidir. Görünmüyorsa devam etmenin anlamı yok: HTTPS sertifikası yalnızca zaten sunucuyu gösteren bir alan adına verilir.</p>
+<div class="note"><p>Alan adı Cloudflare tarafından sunuluyorsa bu kayıt için proxy'yi kapatın (gri bulut, "DNS only"). Yoksa telefonlar ve diğer düğümler sunucunuza değil Cloudflare'e bağlanır.</p></div>
+<h2 id="s3">3. Sunucuya bağlanın</h2>
+<p>Bilgisayarınızda bir terminal açın (Windows'ta PowerShell, Mac'te Terminal) ve şunu girin:</p>
+<pre><code>ssh root@node.example.org</code></pre>
+<p>İlk bağlantıda <code>yes</code> yanıtını verin ve sağlayıcıdan aldığınız parolayı girin.</p>
+<h2 id="s4">4. Docker ve git'i kurun</h2>
+<pre><code>apt update &amp;&amp; apt upgrade -y
+apt install -y git
+curl -fsSL https://get.docker.com | sh</code></pre>
+<p>Son komut resmi Docker kurulum betiğidir. Her şeyin yerinde olduğunu kontrol edin:</p>
+<pre><code>docker compose version</code></pre>
+<p><code>Docker Compose version v…</code> gibi bir satır görmelisiniz.</p>
+<div class="note"><p>Güncellemeden sonra ekranda veya bir sonraki girişte <code>*** System restart required ***</code> yazısı çıkarsa sunucuyu <code>reboot</code> komutuyla yeniden başlatın, bir dakika sonra yeniden bağlanın (3. adım) ve devam edin.</p></div>
+<h2 id="s5">5. Güvenlik duvarını açın</h2>
+<pre><code>ufw allow OpenSSH
+ufw allow 80/tcp
+ufw allow 443/tcp
+ufw allow 8765/tcp
+ufw enable</code></pre>
+<p>Soruya <code>y</code> yanıtını verin. 80 ve 443 portları HTTPS için (telefonlar ve panel), 8765 diğer düğümlerle iletişim için gereklidir.</p>
+<div class="note"><p>Docker, konteynerlerinin portlarını <code>ufw</code>'yi atlayarak kendisi açar. Bu yüzden paketimizde yönetim paneli (8766 portu) yalnızca sunucunun kendisine açıktır — bunu <code>docker-compose.yml</code> içinde değiştirmeyin.</p></div>
+<h2 id="s6">6. Nevod'u indirin</h2>
+<div class="note"><p>Bundan sonraki tüm komutlar sunucuda yazılır: giriş satırının solunda <code>root@…</code> görünmelidir. Orada <code>PS C:\…&gt;</code> veya bilgisayarınızın adı varsa sunucuyla bağlantı kapanmıştır — yeniden bağlanın (3. adım).</p></div>
+<pre><code>git clone https://github.com/avk0978/nevod-messenger.git /opt/nevod
+cd /opt/nevod/installer/docker</code></pre>
+<h2 id="s7">7. Ayarları doldurun</h2>
+<p>Şablondan ayar dosyasını oluşturun:</p>
+<pre><code>cp .env.example .env</code></pre>
+<p>Yönetim paneli için bir parola belirleyin. En kolayı uzun, rastgele bir parola üretmektir:</p>
+<pre><code>openssl rand -base64 24</code></pre>
+<p>Sonucu kopyalayın ve güvenli bir yere kaydedin — örneğin bir parola yöneticisine (Bitwarden, KeePass, iPhone ve Mac'teki Şifreler). Şimdi ayar dosyasını açın:</p>
+<pre><code>nano .env</code></pre>
+<p>İki satırı değiştirin:</p>
+<pre><code>NEVOD_DOMAIN=node.example.org
+NEVOD_ADMIN_PASSWORD=buraya-uretilen-parola</code></pre>
+<p>Gerisini olduğu gibi bırakın. Dosyayı kaydedin: <b>Ctrl+O</b>, sonra <b>Enter</b>; çıkmak için <b>Ctrl+X</b>.</p>
+<div class="tbl"><table><tr><th>Ayar</th><th>Anlamı</th></tr><tr><td><code>NEVOD_DOMAIN</code></td><td>Düğümün alan adı. Telefonlar <code>https://alanadi/nevod-ws</code> adresine, diğer düğümler <code>alanadi:8765</code> adresine bağlanır.</td></tr><tr><td><code>NEVOD_ADMIN_PASSWORD</code></td><td>Yönetim panelinin parolası. Bu olmadan düğüm başlamaz.</td></tr><tr><td><code>NEVOD_ADMIN_PUBLIC</code></td><td><code>true</code> — panel tarayıcıda <code>https://alanadi/nevod-admin</code> adresinde açılır; <code>false</code> — panel internete kapalıdır (bkz. 10. adım).</td></tr><tr><td><code>TURN_SECRET</code></td><td>Yalnızca kendi arama aktarıcınızı kuruyorsanız, bkz. <a href="../node-turn/">Kendi düğümünüz üzerinden aramalar</a>. Genellikle boştur.</td></tr></table></div>
+<h2 id="s8">8. Düğümü başlatın</h2>
+<pre><code>docker compose up -d --build</code></pre>
+<p>İlk başlatma birkaç dakika sürer: Docker düğüm imajını oluşturur ve Caddy'yi indirir. Komut bitince kontrol edin:</p>
+<pre><code>docker compose ps</code></pre>
+<p>Her iki konteyner — <code>nevod_node</code> ve <code>nevod_caddy</code> — <code>Up</code> (veya <code>running</code>) durumunda olmalıdır.</p>
+<h2 id="s9">9. Her şeyin çalıştığını kontrol edin</h2>
+<p>Tarayıcıda <code>https://node.example.org</code> adresini açın — "Nevod node — <a href="https://nevod.network"">https://nevod.network"</a> satırı görünmeli ve tarayıcı sertifika hakkında uyarı vermemelidir.</p>
+<p>Şimdi <code>https://node.example.org/nevod-admin</code> adresini açın. Tarayıcı kullanıcı adı ve parola sorar: kullanıcı adı herhangi bir şey olabilir, parola <code>.env</code>'ye yazdığınızdır. Yönetim paneli açılır. Orada önce ne yapılacağı — <a href="../node-panel/">Yönetim panelinde ilk ayarlar</a> bölümünde.</p>
+<div class="note"><p>Aynı adresten art arda beş yanlış parola, o adres için paneli 15 dakika kilitler. Bu olursa sadece bekleyin.</p></div>
+<h2 id="s10">10. İsteğe bağlı: paneli internete kapatın</h2>
+<p>Panel adresinin internetten hiç açılmamasını istiyorsanız <code>.env</code>'deki <code>NEVOD_ADMIN_PUBLIC=true</code> satırını <code>NEVOD_ADMIN_PUBLIC=false</code> olarak değiştirin ve uygulayın:</p>
+<pre><code>docker compose up -d</code></pre>
+<p>O zaman panele yalnızca bir SSH tüneli üzerinden erişilebilir. Bilgisayarınızda şunu çalıştırın</p>
+<pre><code>ssh -L 8766:127.0.0.1:8766 root@node.example.org</code></pre>
+<p>ve bu pencere açıkken tarayıcıda <code>http://localhost:8766/nevod-admin</code> adresini açın.</p>
+<p>Bilgisayarınızda 8766 portu zaten kullanılıyorsa (örneğin orada başka bir Nevod düğümü çalışıyorsa) başka bir port seçin: <code>ssh -L 18766:127.0.0.1:8766 root@node.example.org</code> ve <code>http://localhost:18766/nevod-admin</code>. İlk sayı bilgisayarınızdaki port, ikincisi sunucudaki panel portudur — onu değiştirmeyin.</p>
+<h2 id="s11">Bir şeyler ters giderse</h2>
+<div class="tbl"><table><tr><th>Ne görüyorsunuz</th><th>Genellikle sebep</th></tr><tr><td>Tarayıcı sertifikanın geçersiz olduğunu söylüyor veya site açılmıyor</td><td>Alan adı henüz sunucuyu göstermiyor (2. adım) ya da 80/443 portu kapalı (1. ve 5. adımlar). Caddy günlüğüne bakın: <code>docker compose logs caddy</code>. Sebep giderilince Caddy kendisi yeniden dener.</td></tr><tr><td><code>docker compose up</code>, <code>address already in use</code> diyor</td><td>Sunucuda zaten başka bir web sunucusu çalışıyor (çoğu zaman sağlayıcının Apache'si veya nginx'i). Durdurun: <code>systemctl disable --now apache2</code> veya <code>systemctl disable --now nginx</code>.</td></tr><tr><td><code>set NEVOD_ADMIN_PASSWORD in .env</code> veya <code>set NEVOD_DOMAIN in .env</code> hatası</td><td><code>.env</code>'deki o satır doldurulmamış (7. adım).</td></tr><tr><td><code>.env</code>'de alan adını yanlış yazdınız (sertifika alınamıyor, Caddy günlüğünde <code>NXDOMAIN</code>)</td><td>Düğümü durdurun: <code>docker compose down</code>, <code>.env</code>'deki <code>NEVOD_DOMAIN</code>'i düzeltin, veri klasörünü silin: <code>rm -rf data</code>, ve yeniden başlatın: <code>docker compose up -d</code>. <code>data</code> klasörünü yalnızca düğümde henüz kimse kayıtlı değilken silin — aksi halde düğüm eski adreste kalır ve bunu elle düzeltmeniz gerekir.</td></tr><tr><td>Panel durmadan parola soruyor</td><td>Parola yanlış. Hangisinin yazılı olduğunu görmek için: <code>grep PASSWORD .env</code>.</td></tr><tr><td>Panel "Too many failed logins" yanıtını veriyor</td><td>Parola tahminine karşı koruma devreye girdi — 15 dakika bekleyin.</td></tr><tr><td><code>nevod_node</code> sürekli yeniden başlıyor</td><td>Düğüm günlüğü sebebi gösterir: <code>docker compose logs --tail 50 nevod_node</code>.</td></tr></table></div>
+<p>Her iki konteynerin tam günlükleri: <code>docker compose logs</code>. Tüm <code>docker compose</code> komutları <code>/opt/nevod/installer/docker</code> klasöründen çalıştırılır.</p><p class="doc-nav"><a href="/tr/docs/node-how/">← Düğüm nasıl çalışır</a><a href="/tr/docs/">↑ Belgeler</a><a href="/tr/docs/node-panel/">Yönetim panelinde ilk ayarlar →</a></p></div></div></main>
+<footer class="site"><div class="wrap">
+<div>© 2026 Nevod · Kolpakov Andrey</div>
+<div><a href="/tr/support/">Destek</a> · <a href="/tr/privacy/">Gizlilik</a> · <a href="/tr/terms/">Kullanım Koşulları</a> · <a href="/tr/node/">Kendi düğümün</a> · <a href="https://github.com/avk0978/nevod-messenger">Kaynak kodu</a></div>
+</div></footer>
+</body>
+</html>

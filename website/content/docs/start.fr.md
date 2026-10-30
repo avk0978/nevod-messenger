@@ -17,7 +17,7 @@ Vous pouvez écrire aux personnes de n'importe quel nœud du réseau, pas seulem
 
 1. Ouvrez Nevod. L'app demande l'autorisation d'envoyer des notifications : acceptez, sinon vous ne saurez rien des messages et des appels tant que Nevod est fermé.
 2. Lisez l'essentiel des Conditions d'utilisation, activez **J'accepte les Conditions d'utilisation** et touchez **Continuer**.
-3. **Explorer le réseau** s'ouvre : une liste de nœuds ouverts. Vous pouvez y jeter un œil : les nœuds, leurs bots et leurs pages sont accessibles sans inscription.
+3. **Explorer le réseau** s'ouvre : une liste de nœuds ouverts. Vous pouvez y jeter un œil : les nœuds, leurs bots et leurs pages sont accessibles sans inscription. Tant que vous n'êtes inscrit sur aucun nœud, la liste ne montre que les nœuds du projet Nevod ; les autres nœuds ouverts du réseau apparaissent après l'inscription, car l'app reçoit leur liste de votre nœud.
 4. Touchez **Commencer à discuter** (en haut à droite).
 5. Saisissez **Votre nom affiché** : c'est ainsi que les autres vous verront. Touchez **Commencer**.
 

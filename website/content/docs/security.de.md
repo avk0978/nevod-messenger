@@ -1,6 +1,6 @@
 # Sicherheit und Backups
 
-Was Nevod selbst schützt, wie es dich vor Betrügern und Angriffen schützt, was du tun solltest, wie du dich vor Fremden abschirmst, wie du einen Chat mit einem Passwort sperrst, wie du blockierst und meldest — und warum es in Nevod keine Backups der Nachrichten gibt.
+Was Nevod selbst schützt, wie es dich vor Betrügern und Angriffen schützt, was du tun solltest, wie du einen Chat mit einem Passwort sperrst, wie du blockierst und meldest — und warum es in Nevod keine Backups der Nachrichten gibt.
 
 ## Was ohne dein Zutun geschützt ist
 
@@ -44,17 +44,6 @@ Du kannst einen einzelnen Chat mit einem Passwort sperren — dann kann selbst j
 3. Die Passwörter müssen verschieden sein. Ändern kannst du sie am selben Ort — **Passwörter ändern**.
 
 > Das Chat-Passwort wird nur auf diesem Telefon gespeichert, und zwar nicht das Passwort selbst, sondern sein Hash. **Ein vergessenes Passwort lässt sich nicht wiederherstellen** — weder von dir noch von den Entwicklern —, und der Chat lässt sich dann nicht mehr öffnen. Wähle ein Passwort, das du nicht vergisst. Das Notfallpasswort löscht die Unterhaltung nur bei dir: Der Gesprächspartner behält sie.
-
-## Schutz vor Fremden
-
-Nicht nur Menschen, denen du deine Karte gegeben hast, können dir schreiben und dich anrufen. Auf einem offenen Node wie Nevod Open kann sich jeder registrieren, und die Mitglieder des Nodes sehen sich unter **Kontakte → Auf diesem Node**. Außerdem kann jemand, mit dem du schreibst, deine Karte an andere weitergeben. Fremd ist hier, wer nicht in deinen Kontakten ist.
-
-Unter **Profil → Sicherheit** gibt es zwei Einstellungen. Ob du sie einschaltest, entscheidest du; anfangs sind beide aus:
-
-- **Anrufe nur von Kontakten** — ein Anruf von jemandem, der nicht in deinen Kontakten ist, wird still abgelehnt, das Telefon klingelt nicht. Der Anruf erscheint im Verlauf als verpasst.
-- **Bilder von Fremden — erst nach Antippen** — Fotos und Videos von jemandem, der nicht in deinen Kontakten ist, werden nicht sofort angezeigt: Der Chat zeigt einen Platzhalter **Anzeigen**, und die App öffnet die Datei erst, nachdem du darauf getippt hast. So kann selbst ein präpariertes Bild nicht von selbst losgehen.
-
-Auf einem geschlossenen Node, auf dem der Administrator alle Mitglieder kennt, braucht man diese Einstellungen meist nicht. Auf einem offenen Node lohnt es sich, sie einzuschalten.
 
 ## Blockieren und melden
 

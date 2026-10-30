@@ -1,12 +1,12 @@
 # Adım adım kurulum
 
-Kiralık bir sunucuya sıfırdan Nevod düğümü kurmak: sunucuyu satın almaktan yönetim paneline ilk girişe kadar. Örnekte Ubuntu 24.04 yüklü bir sunucu ve `node.example.org` alan adı kullanılıyor; her yerde kendi alan adınızı yazın.
+Kiralık bir sunucuya sıfırdan Nevod düğümü kurmak: sunucuyu satın almaktan yönetim paneline ilk girişe kadar. Örnekte Ubuntu 26.04 yüklü bir sunucu ve `node.example.org` alan adı kullanılıyor; her yerde kendi alan adınızı yazın.
 
 Aşağıdaki tüm komutlar sunucunun terminaline girilir; tamamını kopyalayabilirsiniz. Düğümün ne olduğu ve neyi sakladığı — [Düğüm nasıl çalışır](../node-how/) bölümünde.
 
 ## 1. Bir sunucu kiralayın
 
-Herhangi bir sağlayıcıdan herhangi bir VPS olur: 1 işlemci, 1 GB bellek, 10 GB disk, **Ubuntu 24.04**. Sipariş verdiğinizde sağlayıcı size sunucunun **IP adresini** ve `root` kullanıcısının parolasını verir (veya bir SSH anahtarı yüklemenizi ister).
+Herhangi bir sağlayıcıdan herhangi bir VPS olur: 1 işlemci, 1 GB bellek, 10 GB disk, **Ubuntu 24.04** veya **26.04**. Sipariş verdiğinizde sağlayıcı size sunucunun **IP adresini** ve `root` kullanıcısının parolasını verir (veya bir SSH anahtarı yüklemenizi ister).
 
 Sağlayıcının kontrol panelinde kendi ağ güvenlik duvarı varsa (örneğin Hetzner'de Firewalls, başkalarında Security groups), orada gelen **22, 80, 443 ve 8765** (TCP) portlarını açın.
 
@@ -55,7 +55,9 @@ Son komut resmi Docker kurulum betiğidir. Her şeyin yerinde olduğunu kontrol 
 docker compose version
 ```
 
-`Docker Compose version v2…` gibi bir satır görmelisiniz.
+`Docker Compose version v…` gibi bir satır görmelisiniz.
+
+> Güncellemeden sonra ekranda veya bir sonraki girişte `*** System restart required ***` yazısı çıkarsa sunucuyu `reboot` komutuyla yeniden başlatın, bir dakika sonra yeniden bağlanın (3. adım) ve devam edin.
 
 ## 5. Güvenlik duvarını açın
 
@@ -72,6 +74,8 @@ Soruya `y` yanıtını verin. 80 ve 443 portları HTTPS için (telefonlar ve pan
 > Docker, konteynerlerinin portlarını `ufw`'yi atlayarak kendisi açar. Bu yüzden paketimizde yönetim paneli (8766 portu) yalnızca sunucunun kendisine açıktır — bunu `docker-compose.yml` içinde değiştirmeyin.
 
 ## 6. Nevod'u indirin
+
+> Bundan sonraki tüm komutlar sunucuda yazılır: giriş satırının solunda `root@…` görünmelidir. Orada `PS C:\…>` veya bilgisayarınızın adı varsa sunucuyla bağlantı kapanmıştır — yeniden bağlanın (3. adım).
 
 ```
 git clone https://github.com/avk0978/nevod-messenger.git /opt/nevod
@@ -92,7 +96,7 @@ Yönetim paneli için bir parola belirleyin. En kolayı uzun, rastgele bir parol
 openssl rand -base64 24
 ```
 
-Sonucu kopyalayın ve parola yöneticinize kaydedin. Şimdi ayar dosyasını açın:
+Sonucu kopyalayın ve güvenli bir yere kaydedin — örneğin bir parola yöneticisine (Bitwarden, KeePass, iPhone ve Mac'teki Şifreler). Şimdi ayar dosyasını açın:
 
 ```
 nano .env
@@ -138,7 +142,7 @@ Tarayıcıda `https://node.example.org` adresini açın — "Nevod node — http
 
 ## 10. İsteğe bağlı: paneli internete kapatın
 
-Panel adresinin internetten hiç açılmamasını istiyorsanız `.env`'ye `NEVOD_ADMIN_PUBLIC=false` satırını ekleyin ve uygulayın:
+Panel adresinin internetten hiç açılmamasını istiyorsanız `.env`'deki `NEVOD_ADMIN_PUBLIC=true` satırını `NEVOD_ADMIN_PUBLIC=false` olarak değiştirin ve uygulayın:
 
 ```
 docker compose up -d
@@ -152,6 +156,8 @@ ssh -L 8766:127.0.0.1:8766 root@node.example.org
 
 ve bu pencere açıkken tarayıcıda `http://localhost:8766/nevod-admin` adresini açın.
 
+Bilgisayarınızda 8766 portu zaten kullanılıyorsa (örneğin orada başka bir Nevod düğümü çalışıyorsa) başka bir port seçin: `ssh -L 18766:127.0.0.1:8766 root@node.example.org` ve `http://localhost:18766/nevod-admin`. İlk sayı bilgisayarınızdaki port, ikincisi sunucudaki panel portudur — onu değiştirmeyin.
+
 ## Bir şeyler ters giderse
 
 | Ne görüyorsunuz | Genellikle sebep |
@@ -159,6 +165,7 @@ ve bu pencere açıkken tarayıcıda `http://localhost:8766/nevod-admin` adresin
 | Tarayıcı sertifikanın geçersiz olduğunu söylüyor veya site açılmıyor | Alan adı henüz sunucuyu göstermiyor (2. adım) ya da 80/443 portu kapalı (1. ve 5. adımlar). Caddy günlüğüne bakın: `docker compose logs caddy`. Sebep giderilince Caddy kendisi yeniden dener. |
 | `docker compose up`, `address already in use` diyor | Sunucuda zaten başka bir web sunucusu çalışıyor (çoğu zaman sağlayıcının Apache'si veya nginx'i). Durdurun: `systemctl disable --now apache2` veya `systemctl disable --now nginx`. |
 | `set NEVOD_ADMIN_PASSWORD in .env` veya `set NEVOD_DOMAIN in .env` hatası | `.env`'deki o satır doldurulmamış (7. adım). |
+| `.env`'de alan adını yanlış yazdınız (sertifika alınamıyor, Caddy günlüğünde `NXDOMAIN`) | Düğümü durdurun: `docker compose down`, `.env`'deki `NEVOD_DOMAIN`'i düzeltin, veri klasörünü silin: `rm -rf data`, ve yeniden başlatın: `docker compose up -d`. `data` klasörünü yalnızca düğümde henüz kimse kayıtlı değilken silin — aksi halde düğüm eski adreste kalır ve bunu elle düzeltmeniz gerekir. |
 | Panel durmadan parola soruyor | Parola yanlış. Hangisinin yazılı olduğunu görmek için: `grep PASSWORD .env`. |
 | Panel "Too many failed logins" yanıtını veriyor | Parola tahminine karşı koruma devreye girdi — 15 dakika bekleyin. |
 | `nevod_node` sürekli yeniden başlıyor | Düğüm günlüğü sebebi gösterir: `docker compose logs --tail 50 nevod_node`. |

@@ -474,8 +474,7 @@ DOCS = [
 ]
 DOC_SLUGS = [slug for _, slugs in DOCS for slug in slugs]
 # NEVOD_SITE_NO_DOCS=1 builds the site as deployed today: no /docs/, "For cities" in the menu.
-# The docs go public only after the real-VPS test that follows App Store approval (user,
-# 2026-10-24); until then every deploy is built with this flag.
+# Published 2026-10-30 (after the real-VPS test); the flag is kept for a build without docs.
 WITH_DOCS = os.environ.get("NEVOD_SITE_NO_DOCS") != "1"
 
 # nav label, page title, description, intro, group titles, "being written", ← prev, next →

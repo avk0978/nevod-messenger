@@ -54,7 +54,7 @@ Chaque code ne sert qu'une fois. Créez-en un par personne — plus de détails 
 **Paramètres → Visibilité dans « Explorer le réseau »** :
 
 - `closed` (par défaut) : le nœud n'apparaît pas dans « Explorer le réseau » pour les utilisateurs d'autres nœuds. Convient à une famille, une organisation, tout groupe fermé.
-- `open` : le nœud apparaît dans « Explorer le réseau », et les utilisateurs d'autres nœuds peuvent le trouver. Convient à une communauté ouverte.
+- `open` : le nœud apparaît dans « Explorer le réseau », et les utilisateurs d'autres nœuds peuvent le trouver. Convient à une communauté ouverte. Le nœud est visible tant qu'il est connecté au réseau, et seulement pour les personnes déjà inscrites sur un nœud : avant l'inscription, l'app ne montre que les nœuds du projet.
 
 Ce choix n'ouvre pas l'inscription : qui admettre reste décidé par le mode d'admission des cellules (étape 2). L'anneau doré de nœud vérifié dans « Explorer le réseau » n'existe pour l'instant que sur les nœuds du projet Nevod.
 

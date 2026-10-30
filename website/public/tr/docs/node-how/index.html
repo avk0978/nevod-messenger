@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Düğüm nasıl çalışır — Nevod</title>
+<meta name="description" content="Düğüm, telefonların mesaj alışverişi yaptığı ve arama kurduğu, bir sunucuda çalışan bir programdır. Burada kısaca bir düğümün ne yaptığı, neyi sakladığı ve neyi göremediği anlatılıyor — kurulumdan önce neyi üstlendiğinizi bilmeniz için.">
+<link rel="canonical" href="https://nevod.network/tr/docs/node-how/">
+<link rel="alternate" hreflang="uk" href="https://nevod.network/uk/docs/node-how/"><link rel="alternate" hreflang="en" href="https://nevod.network/en/docs/node-how/"><link rel="alternate" hreflang="de" href="https://nevod.network/de/docs/node-how/"><link rel="alternate" hreflang="tr" href="https://nevod.network/tr/docs/node-how/"><link rel="alternate" hreflang="es" href="https://nevod.network/es/docs/node-how/"><link rel="alternate" hreflang="it" href="https://nevod.network/it/docs/node-how/"><link rel="alternate" hreflang="fr" href="https://nevod.network/fr/docs/node-how/">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik:wght@500..700&family=IBM+Plex+Sans:wght@400;600&display=swap">
+<style>
+:root { --ink:#14213D; --paper:#F7F6F1; --card:#FFFFFF; --line:#DCDFE6; --muted:#4A5568;
+        --accent:#F2C230; --accent-ink:#8A6A00; --dark2:#1E2F55; --soft:#C9D3E6; }
+* { box-sizing:border-box; }
+html { -webkit-text-size-adjust:100%; }
+body { margin:0; background:var(--paper); color:var(--ink); font:17px/1.6 'IBM Plex Sans', Arial, sans-serif; }
+a { color:#1F4E9E; }
+h1,h2,h3 { font-family:'Rubik', Arial, sans-serif; line-height:1.15; margin:0 0 .5em;
+  overflow-wrap:break-word; hyphens:auto; }
+main, .hero { overflow-wrap:break-word; }
+h1 { font-size:clamp(28px,5vw,56px); } h2 { font-size:clamp(24px,3.2vw,34px); margin-top:1.4em; } h3 { font-size:20px; }
+[id] { scroll-margin-top:76px; }  /* sticky header must not cover an anchor target */
+main.article h2 { margin-top:1.6em; } main.article h1 { font-size:clamp(26px,4vw,44px); }
+main.article hr { border:0; border-top:1px solid var(--line); margin:28px 0; }
+main.article code { font-size:.9em; background:var(--card); border:1px solid var(--line); border-radius:4px; padding:0 4px; }
+main.article ol li, main.article ul li { margin-bottom:.35em; overflow-wrap:anywhere; }
+.pub { margin:16px 0; } .pub h3 a { text-decoration:none; } .pub-date { font-size:14px; color:var(--muted); }
+.pub-back { font-size:15px; }
+main.article pre { background:var(--ink); color:var(--paper); border-radius:8px; padding:12px 14px; overflow-x:auto;
+  font-size:14px; line-height:1.5; margin:0 0 1em; }
+main.article pre code { background:none; border:0; padding:0; font-size:inherit; color:inherit; }
+main.article .note { margin:0 0 1em; } main.article .note p:last-child { margin-bottom:0; }
+.toc li { margin-bottom:.35em; }
+.docs-layout { display:grid; grid-template-columns:250px minmax(0,1fr); gap:40px; align-items:start; }
+.docs-side { position:sticky; top:76px; max-height:calc(100vh - 92px); overflow-y:auto; font-size:15px;
+  line-height:1.4; padding-right:8px; border-right:1px solid var(--line); }
+.docs-side ol, .docs-toc ol { list-style:none; padding:0; margin:0 0 14px; }
+.docs-side li, .docs-toc li { margin:0; }
+.docs-side a, .docs-toc a { display:block; padding:4px 8px; border-radius:6px; text-decoration:none; color:var(--ink); }
+.docs-side a:hover, .docs-toc a:hover { background:var(--card); }
+.docs-side li.cur > a, .docs-toc li.cur > a { background:var(--card); font-weight:600; box-shadow:inset 3px 0 0 var(--accent); }
+.docs-side ul, .docs-toc ul { list-style:none; padding:2px 0 6px 12px; margin:0; }
+.docs-side ul a, .docs-toc ul a { font-size:14px; color:var(--muted); padding:3px 8px; }
+.docs-side .soon, .docs-toc .soon { padding:4px 8px; color:var(--muted); opacity:.7; }
+.docs-group { font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.6px; color:var(--muted);
+  margin:14px 8px 6px; }
+.docs-home { margin:0 0 4px; font-weight:600; } .docs-home a { padding:4px 8px; }
+.docs-toc { display:none; background:var(--card); border:1px solid var(--line); border-radius:10px; margin:0 0 20px; }
+.docs-toc summary { cursor:pointer; padding:10px 14px; font-weight:600; }
+.docs-toc[open] summary { border-bottom:1px solid var(--line); }
+.docs-toc > p, .docs-toc > ol { margin-left:8px; margin-right:8px; }
+@media (max-width:960px) {
+  .docs-layout { display:block; }
+  .docs-side { display:none; }
+  .docs-toc { display:block; }
+}
+.doc-nav { display:flex; flex-wrap:wrap; gap:8px 24px; justify-content:space-between; font-size:15px;
+  border-top:1px solid var(--line); padding-top:16px; margin-top:32px; }
+p, ul, ol, table { margin:0 0 1em; }
+.wrap { max-width:1080px; margin:0 auto; padding:0 16px; }
+header.top { background:var(--ink); color:var(--paper); position:sticky; top:0; z-index:10; }
+header.top .wrap { display:flex; align-items:center; gap:16px; min-height:60px; }
+header.top a { color:var(--paper); text-decoration:none; }
+.brand { font-family:'Rubik', Arial, sans-serif; font-weight:700; font-size:20px; margin-right:auto; }
+.brand span { color:var(--accent); }
+nav.main { display:flex; gap:14px; font-size:15px; }
+nav.main a { opacity:.85; white-space:nowrap; } nav.main a[aria-current] { opacity:1; border-bottom:2px solid var(--accent); }
+details.menu { display:none; order:3; }
+details.menu summary { list-style:none; cursor:pointer; width:44px; height:44px; margin-right:-10px;
+  display:flex; align-items:center; justify-content:center; }
+details.menu summary::-webkit-details-marker { display:none; }
+.burger, .burger::before, .burger::after { display:block; width:22px; height:2px; background:var(--paper);
+  border-radius:2px; position:relative; transition:transform .2s, background .2s; }
+.burger::before, .burger::after { content:""; position:absolute; left:0; }
+.burger::before { top:-7px; } .burger::after { top:7px; }
+details.menu[open] .burger { background:transparent; }
+details.menu[open] .burger::before { transform:translateY(7px) rotate(45deg); }
+details.menu[open] .burger::after { transform:translateY(-7px) rotate(-45deg); }
+details.menu nav { position:absolute; left:0; right:0; top:100%; background:var(--ink);
+  border-top:1px solid var(--dark2); box-shadow:0 12px 24px rgba(0,0,0,.25); padding:6px 0 12px; }
+details.menu nav a { display:block; padding:12px 16px; font-size:17px; opacity:.9; }
+details.menu nav a[aria-current] { opacity:1; color:var(--accent); }
+details.lang { position:relative; font-size:15px; }
+details.lang summary { list-style:none; cursor:pointer; border:1px solid var(--accent); color:var(--accent);
+  padding:3px 12px; border-radius:999px; }
+details.lang summary::-webkit-details-marker { display:none; }
+details.lang summary:empty { min-width:6em; height:calc(1.6em + 8px); box-sizing:border-box; }
+details.lang ul { position:absolute; right:0; top:34px; background:var(--card); color:var(--ink); list-style:none;
+  padding:8px 0; margin:0; border-radius:10px; box-shadow:0 8px 24px rgba(0,0,0,.2); min-width:160px; }
+details.lang li a { color:var(--ink); display:block; padding:6px 16px; }
+@media (max-width:960px) {
+  nav.main { display:none; }
+  details.menu { display:block; }
+  header.top .wrap { min-height:56px; gap:12px; }
+  details.lang li a { padding:10px 16px; }
+}
+.hero { background:var(--ink); color:var(--paper); padding:56px 0 64px; }
+.hero p.lead { font-size:clamp(18px,2.2vw,22px); color:var(--soft); max-width:760px; }
+.eyebrow { font-size:14px; letter-spacing:3px; text-transform:uppercase; color:var(--accent); margin-bottom:12px; }
+.btns { display:flex; gap:12px; flex-wrap:wrap; margin-top:24px; }
+.btn { display:inline-block; padding:12px 22px; border-radius:10px; text-decoration:none; font-weight:600; }
+.btn.primary { background:var(--accent); color:var(--ink); } .btn.ghost { border:1px solid var(--soft); color:var(--paper); }
+main { padding:40px 0 56px; }
+.grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:16px; margin:16px 0 8px; }
+.card { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:20px; }
+.card h3 { margin-bottom:6px; } .card p { margin:0; color:var(--muted); }
+.status td:first-child { font-weight:600; }
+.tbl { overflow-x:auto; }
+table { border-collapse:collapse; width:100%; background:var(--card); border:1px solid var(--line); border-radius:12px; }
+th, td { text-align:left; padding:10px 12px; border-bottom:1px solid var(--line); vertical-align:top; }
+th { background:var(--ink); color:var(--paper); font-weight:600; }
+.note { background:#FBF3D6; border-left:4px solid var(--accent); padding:14px 16px; border-radius:8px; }
+.legal h2 { font-size:22px; }
+.ncard { display:flex; gap:20px; align-items:flex-start; background:var(--card); border:1px solid var(--line);
+  border-radius:14px; padding:20px; margin:8px 0 16px; }
+.ncard-qr { flex:0 0 220px; } .ncard-qr svg { display:block; width:100%; height:auto; }
+.ncard-body { min-width:0; } .ncard-body h3 { margin-bottom:6px; } .ncard-body p { color:var(--muted); }
+.ncard code { display:block; font-size:12px; line-height:1.45; word-break:break-all; background:var(--paper);
+  border:1px solid var(--line); border-radius:8px; padding:8px 10px; margin:0 0 12px; user-select:all; }
+.ncard .btn { border:0; cursor:pointer; font:inherit; font-weight:600; }
+@media (max-width:640px) { .ncard { flex-direction:column; align-items:stretch; } .ncard-qr { flex-basis:auto; width:220px; margin:0 auto; } }
+footer.site { background:var(--ink); color:var(--soft); font-size:14px; padding:28px 0; }
+footer.site a { color:var(--soft); }
+footer.site .wrap { display:flex; flex-wrap:wrap; gap:8px 24px; justify-content:space-between; }
+@media (max-width:640px) {
+  body { font-size:16px; }
+  .hero { padding:36px 0 44px; }
+  main { padding:28px 0 40px; }
+  .btns .btn { flex:1 1 auto; text-align:center; }
+  .card { padding:16px; }
+  /* Wide tables (4+ columns) become one card per row: the first cell is the row title,
+     every other cell is prefixed with its column header (data-label, added by stack_tables). */
+  table.stack, table.stack tbody, table.stack tr, table.stack td { display:block; width:auto !important; }
+  table.stack { background:none; border:0; }
+  table.stack tr:first-child { display:none; }
+  table.stack tr { background:var(--card); border:1px solid var(--line); border-radius:12px; margin-bottom:12px; overflow:hidden; }
+  table.stack td { border-bottom:1px solid var(--line); padding:8px 14px; }
+  table.stack td:last-child { border-bottom:0; }
+  table.stack td:first-child { background:var(--ink); color:var(--paper); font-weight:600; }
+  table.stack td:not(:first-child)::before { content:attr(data-label); display:block; font-size:13px;
+    font-weight:600; color:var(--muted); text-transform:uppercase; letter-spacing:.5px; }
+  footer.site .wrap { flex-direction:column; }
+}
+</style>
+</head>
+<body>
+<header class="top"><div class="wrap">
+<a class="brand" href="/tr/">Nevod<span>.</span></a>
+<nav class="main"><a href="/tr/">Ana sayfa</a><a href="/tr/manifesto/">ZKI Manifestosu</a><a href="/tr/compare/">Karşılaştırma</a><a href="/tr/security/">Güvenlik</a><a href="/tr/docs/" aria-current="page">Belgeler</a><a href="/tr/download/">İndir</a><a href="/tr/publications/">Yayınlar</a><a href="/tr/about/">Proje hakkında</a></nav>
+<details class="menu"><summary aria-label="Menü"><span class="burger"></span></summary><nav><a href="/tr/">Ana sayfa</a><a href="/tr/manifesto/">ZKI Manifestosu</a><a href="/tr/compare/">Karşılaştırma</a><a href="/tr/security/">Güvenlik</a><a href="/tr/docs/" aria-current="page">Belgeler</a><a href="/tr/download/">İndir</a><a href="/tr/publications/">Yayınlar</a><a href="/tr/about/">Proje hakkında</a></nav></details>
+<details class="lang"><summary>Türkçe</summary><ul><li><a href="/uk/docs/node-how/" hreflang="uk" lang="uk">Українська</a></li><li><a href="/en/docs/node-how/" hreflang="en" lang="en">English</a></li><li><a href="/de/docs/node-how/" hreflang="de" lang="de">Deutsch</a></li><li><a href="/tr/docs/node-how/" hreflang="tr" lang="tr">Türkçe</a></li><li><a href="/es/docs/node-how/" hreflang="es" lang="es">Español</a></li><li><a href="/it/docs/node-how/" hreflang="it" lang="it">Italiano</a></li><li><a href="/fr/docs/node-how/" hreflang="fr" lang="fr">Français</a></li></ul></details>
+</div></header>
+<main class="article"><div class="wrap docs-layout"><aside class="docs-side"><p class="docs-home"><a href="/tr/docs/">Belgeler</a></p><p class="docs-group">Kullanıcılar için</p><ol><li><a href="/tr/docs/start/">İlk adımlar</a></li><li><a href="/tr/docs/contacts/">Kişiler</a></li><li><a href="/tr/docs/messages/">Mesajlar ve dosyalar</a></li><li><a href="/tr/docs/calls/">Aramalar</a></li><li><a href="/tr/docs/bots/">Botlar ve yapay zekâ asistanları</a></li><li><a href="/tr/docs/security/">Güvenlik ve yedekler</a></li><li><a href="/tr/docs/faq/">Sorular ve sorunlar</a></li></ol><p class="docs-group">Düğüm sahipleri için</p><ol><li class="cur"><a href="/tr/docs/node-how/" aria-current="page">Düğüm nasıl çalışır</a><ul><li><a href="#s1">Düğüm, hücre ve ev düğümü</a></li><li><a href="#s2">Düğüm türleri</a></li><li><a href="#s3">Düğüm neyi saklar</a></li><li><a href="#s4">Düğüm neyi göremez</a></li><li><a href="#s5">Proje düğümleri üzerinden bildirimler ve aramalar</a></li><li><a href="#s6">Kurulum nelerden oluşur</a></li><li><a href="#s7">Neye ihtiyacınız var</a></li></ul></li><li><a href="/tr/docs/node-install/">Adım adım kurulum</a></li><li><a href="/tr/docs/node-panel/">Yönetim panelinde ilk ayarlar</a></li><li><a href="/tr/docs/node-invite/">İnsanları davet etmek</a></li><li><a href="/tr/docs/node-network/">Nevod ağına katılmak</a></li><li><a href="/tr/docs/node-turn/">Kendi düğümünüz üzerinden aramalar</a></li><li><a href="/tr/docs/node-maintenance/">Bakım</a></li><li><a href="/tr/docs/node-admin/">Yönetim paneli: tüm sayfalar ve ayarlar</a></li></ol></aside><div class="docs-main"><details class="docs-toc"><summary>İçindekiler</summary><p class="docs-home"><a href="/tr/docs/">Belgeler</a></p><p class="docs-group">Kullanıcılar için</p><ol><li><a href="/tr/docs/start/">İlk adımlar</a></li><li><a href="/tr/docs/contacts/">Kişiler</a></li><li><a href="/tr/docs/messages/">Mesajlar ve dosyalar</a></li><li><a href="/tr/docs/calls/">Aramalar</a></li><li><a href="/tr/docs/bots/">Botlar ve yapay zekâ asistanları</a></li><li><a href="/tr/docs/security/">Güvenlik ve yedekler</a></li><li><a href="/tr/docs/faq/">Sorular ve sorunlar</a></li></ol><p class="docs-group">Düğüm sahipleri için</p><ol><li class="cur"><a href="/tr/docs/node-how/" aria-current="page">Düğüm nasıl çalışır</a><ul><li><a href="#s1">Düğüm, hücre ve ev düğümü</a></li><li><a href="#s2">Düğüm türleri</a></li><li><a href="#s3">Düğüm neyi saklar</a></li><li><a href="#s4">Düğüm neyi göremez</a></li><li><a href="#s5">Proje düğümleri üzerinden bildirimler ve aramalar</a></li><li><a href="#s6">Kurulum nelerden oluşur</a></li><li><a href="#s7">Neye ihtiyacınız var</a></li></ul></li><li><a href="/tr/docs/node-install/">Adım adım kurulum</a></li><li><a href="/tr/docs/node-panel/">Yönetim panelinde ilk ayarlar</a></li><li><a href="/tr/docs/node-invite/">İnsanları davet etmek</a></li><li><a href="/tr/docs/node-network/">Nevod ağına katılmak</a></li><li><a href="/tr/docs/node-turn/">Kendi düğümünüz üzerinden aramalar</a></li><li><a href="/tr/docs/node-maintenance/">Bakım</a></li><li><a href="/tr/docs/node-admin/">Yönetim paneli: tüm sayfalar ve ayarlar</a></li></ol></details><h1>Düğüm nasıl çalışır</h1>
+<p>Düğüm, telefonların mesaj alışverişi yaptığı ve arama kurduğu, bir sunucuda çalışan bir programdır. Burada kısaca bir düğümün ne yaptığı, neyi sakladığı ve neyi göremediği anlatılıyor — kurulumdan önce neyi üstlendiğinizi bilmeniz için.</p>
+<h2 id="s1">Düğüm, hücre ve ev düğümü</h2>
+<p>Her Nevod kullanıcısı bir <b>hücredir</b>: telefonda oluşturulan ve telefondan asla çıkmayan bir çift şifreleme anahtarı. Hücre tek bir düğüme kaydolur — bu onun <b>ev düğümüdür</b>. Telefon kapalıyken gönderilen mesajları telefon bu düğüm üzerinden alır.</p>
+<p>Düğümler ortak bir ağda birbirine bağlıdır. Başka bir düğümdeki birine yazdığınızda, düğümünüz şifreli mesajı onun düğümüne iletir. Merkezi bir sunucu yoktur: ağ, düğümlerin kendisidir.</p>
+<p>Bir düğümün yükü tüm ağın büyüklüğüne değil, yalnızca kendi çevresine — kendi kullanıcılarına ve botlarına — bağlıdır: düğüm başka düğümlerin mesajlarını ne iletir ne de saklar. Bu yüzden bir düğüme sıradan bir bilgisayar yeter ve başka düğümlerde Nevod'a ne kadar çok insan gelirse gelsin yükü artmaz. Bu tür ağlara <b>düşük yüklü</b> ağlar denir (LL-0 sınıfı) — ayrıntılar <a href="../../publications/low-load-networks/">"Low-Load Distributed Data Networks"</a> makalesinde (DOI 10.5281/zenodo.23621073).</p>
+<h2 id="s2">Düğüm türleri</h2>
+<p>Tüm düğümler aynı programı çalıştırır. Bir düğümün ne olacağına — kapalı bir aile düğümü, açık bir topluluk düğümü ya da bir kuruluşun düğümü — <a href="../node-admin/">yönetim panelindeki</a> üç ayar karar verir:</p>
+<ul><li><b>kimi kabul edeceği</b> — hücre kabul modu: yalnızca davet koduyla, kodla ya da sizin onayınızla başvuruyla, veya herkes (ayrıntılar <a href="../node-panel/">İlk ayarlar</a> bölümündeki tabloda, 2. adım);</li><li><b>düğümün diğer düğümlerin kullanıcılarına "Ağı keşfet"te görünüp görünmediği</b>;</li><li><b>düğümün kullanıcılarına ne gösterdiği</b> — üzerinde yayınlanan botlar ve sayfalar.</li></ul>
+<div class="tbl"><table class="stack"><tr><th>Hangi düğüm</th><th>Kimi kabul etmeli</th><th>"Ağı keşfet"te görünür</th><th>Örnek</th></tr><tr><td data-label="Hangi düğüm">Kapalı: aile, arkadaşlar, kuruluş</td><td data-label="Kimi kabul etmeli">davet koduyla</td><td data-label="&quot;Ağı keşfet&quot;te görünür">hayır</td><td data-label="Örnek">yöneticinin her çalışanı davet ettiği bir şirket düğümü</td></tr><tr><td data-label="Hangi düğüm">Seçimli topluluk</td><td data-label="Kimi kabul etmeli">kodla veya onaylı başvuruyla</td><td data-label="&quot;Ağı keşfet&quot;te görünür">evet</td><td data-label="Örnek">bir kulüp düğümü: herkes bulabilir ama üyeleri yönetici onaylar</td></tr><tr><td data-label="Hangi düğüm">Açık topluluk</td><td data-label="Kimi kabul etmeli">herkes</td><td data-label="&quot;Ağı keşfet&quot;te görünür">evet</td><td data-label="Örnek">Nevod Open gibi herkese açık bir düğüm</td></tr></table></div>
+<p><b>Düğümün nerede çalıştığı</b> — alan adlı kiralık bir sunucuda ya da evde kendi bilgisayarınızda — yeteneklerini değiştirmez. Ev düğümünün internetten erişilebilir olması gerekir: yönlendiricide port yönlendirme ve bir alan adı. Bu yüzden kiralık bir sunucuyla başlamak daha kolaydır — tüm belgeler onun için yazılmıştır.</p>
+<p><b>Ev düğümü için önemli: ev ağınızdan ona başka kurallarla bağlanılır.</b> Telefonlar düğüme alan adıyla bağlanır ve alan adı yönlendiricinizin dış adresini gösterir. Ev Wi-Fi'sindeki bir telefon bu dış adrese ağın içinden ulaşır ve birçok yönlendirici bu tür bağlantıları geçirmez. O zaman düğüm mobil veriyle çalışır, ama ev Wi-Fi'sinde uygulama "Bağlantı yok" der. Sunucunun yerel adresiyle (örneğin <code>192.168.1.10</code>) bağlanmak da işe yaramaz: sertifika adrese değil alan adına verilmiştir. Bu, yönlendiricide iki yoldan biriyle çözülür:</p>
+<ul><li>yönlendirici destekliyorsa <b>NAT loopback</b>'i açın (NAT hairpinning veya NAT reflection da denir);</li><li>ya da yönlendiricinin DNS'ine yerel bir kayıt ekleyin: alan adınız → sunucunun yerel adresi.</li></ul>
+<p>Bunu kurulumdan hemen sonra kontrol edin: düğüme bir telefondan hem ev Wi-Fi'siyle hem mobil veriyle bağlanın.</p>
+<p><b>Nevod projesinin düğümleri</b> — Nevod Open, Dev Planet ve birkaç diğeri — ötekilerden programlarıyla değil, üç şeyle ayrılır:</p>
+<ul><li>push bildirimleri için bir Apple anahtarları ve bir arama aktarıcıları vardır ve bunları ağın düğümleriyle paylaşırlar (aşağıya bakın);</li><li>"Ağı keşfet"te doğrulanmış bir düğümün <b>altın halkası</b> ve bir amaç etiketiyle işaretlidirler — "Topluluk", "Bilgilendirme", "Yapay zekâ ajanı". Halka proje küratörünün imzasıyla doğrulanır ve şu anda yalnızca proje düğümlerinde bulunur;</li><li><b>Nevod Open</b>, uygulamanın kullanıcıları varsayılan olarak kaydettiği düğüm ve yeni düğümler için ağa giriş noktasıdır: ona davetsiz bağlanılabilir.</li></ul>
+<div class="note"><p>Panel ayarlarında ayrıca "Düğüm türü" — <code>permanent</code> veya <code>temporary</code> — ve "Üst düğüm kimliği" vardır. Bunlar <b>geliştirme aşamasında</b>: geçici düğümler (örneğin bir etkinlik süresince). Uygulama bunları henüz kullanmıyor — <code>permanent</code> bırakın ve üst düğüm kimliğini boş bırakın.</p></div>
+<h2 id="s3">Düğüm neyi saklar</h2>
+<ul><li><b>Hücre kayıtları</b>: kimlik, açık anahtarlar ve kullanıcının seçtiği görünen ad.</li><li><b>Teslim edilmemiş mesajlar</b> — şifreli olarak, alıcı çevrimiçi olana kadar, ama en fazla 72 saat. Teslimden sonra mesaj silinir.</li><li>Telefonların <b>bildirim belirteçleri</b> — bir mesaj veya arama geldiğinde telefonu "uyandırmak" için.</li><li><b>Davet kodları</b>, katılım istekleri, kullanıcıların düğüm yöneticisine mesajları.</li><li><b>Ağdaki diğer düğümlerin listesi</b> ve kendi ayarları.</li><li><b>Teknik günlükler</b> — boyutu sınırlıdır (konteyner başına 10'ar MB'lık 3 dosya); eski kayıtların üzerine yazılır.</li></ul>
+<h2 id="s4">Düğüm neyi göremez</h2>
+<ul><li><b>Mesajların, fotoğrafların, videoların, sesli mesajların ve dosyaların içeriği.</b> Bunlar gönderenin telefonunda alıcının anahtarıyla şifrelenir. Düğüm onları açabilecek anahtara sahip olmadan iletir.</li><li><b>Aramaların içeriği.</b> Ses ve görüntü telefonlar arasında doğrudan ya da bir aktarıcı (TURN) üzerinden şifreli gider.</li><li><b>Telefondaki kişiler ve yazışmalar.</b> Yalnızca cihazda saklanırlar.</li></ul>
+<p>Düğümün gördükleri ise şunlardır: üzerinde hangi hücrelerin hangi adlarla kayıtlı olduğu, kimin kime ne zaman yazdığı, mesajların boyutu, bağlantıların IP adresleri. Bunlar teslim verileridir — onlar olmadan düğüm çalışamazdı. Daha fazlası <a href="../../privacy/">Gizlilik Politikası</a>'nda.</p>
+<div class="note"><p>Düğüm sahibi, düğümün çalışmasından ve verilerinin yedeğinden sorumludur. Kullanıcıların yazışmalarını okuyamaz — bu bir sözden değil, ağın yapısından kaynaklanır.</p></div>
+<h2 id="s5">Proje düğümleri üzerinden bildirimler ve aramalar</h2>
+<p>App Store'daki Nevod uygulamasına push bildirimi yalnızca Apple anahtarı olan bir düğüm gönderebilir ve bu anahtar yalnızca proje düğümlerinde vardır. Bu yüzden ağa bağlı bir düğüm, bildirimi kendi yerine göndermesini bir proje düğümünden ister. Proje düğümü bu sırada telefonun belirtecini ve bildirim başlığı için gönderenin adını görür; metin ise her zaman aynıdır — "Yeni mesaj". Gönderen alıcının kişileri arasındaysa, telefon kayıtlı olduğu adı kendisi koyar.</p>
+<p><b>Bildirimleri doğrudan kendi düğümümden gönderebilir miyim?</b> Hayır. App Store'daki bir uygulamaya bildirimler yalnızca uygulamanın yayınlandığı Apple geliştirici hesabının anahtarıyla kabul edilir — Nevod'u ise proje yayınlar. Bu anahtar düğüm sahiplerine verilemez: tek bir düğümle sınırlandırılamaz ve herhangi bir Nevod kullanıcısına herhangi bir metinle bildirim gönderme olanağı verir. Bu yüzden bildirimler proje düğümleri üzerinden gider ve metinleri her zaman "Yeni mesaj"dır.</p>
+<p>Aynı şekilde, kendi arama aktarıcısı (TURN) olmayan bir düğüm de ağın düğümlerinden bir aktarıcı alır — daha fazlası <a href="../node-turn/">Kendi düğümünüz üzerinden aramalar</a> bölümünde.</p>
+<p>Buradan önemli bir sonuç çıkar: <b>ağa bağlı olmayan bir düğüm mesajları teslim eder, ama uygulama kapalıyken telefonlara bildirim gelmez.</b> Nasıl bağlanacağınız — <a href="../node-network/">Nevod ağına katılmak</a> bölümünde.</p>
+<h2 id="s6">Kurulum nelerden oluşur</h2>
+<p>Hazır sunucu paketi (<a href="https://github.com/avk0978/nevod-messenger">kaynak kodundaki</a> <code>installer/docker</code> klasörü) iki Docker konteynerinden oluşur:</p>
+<div class="tbl"><table><tr><th>Konteyner</th><th>Ne yapar</th><th>Portlar</th></tr><tr><td><code>nevod_node</code></td><td>düğümün kendisi</td><td>8765 — diğer düğümler için; 8766 — yönetim paneli, yalnızca sunucunun kendisinden erişilebilir</td></tr><tr><td><code>nevod_caddy</code></td><td>Caddy web sunucusu: alan adınız için HTTPS sertifikasını kendisi alır ve telefon ile panel bağlantılarını düğüme iletir</td><td>80 ve 443</td></tr></table></div>
+<p>Düğümün tüm verileri ayar dosyasının yanındaki <code>data/</code> klasöründedir:</p>
+<ul><li><code>node.json</code> — <b>düğümün kimliği</b>: anahtarları. Bu dosyayı kaybederseniz düğümü kaybedersiniz: aynı kimlikle bir düğüm yeniden oluşturulamaz ve tüm kullanıcıların yeni bir düğüme kaydolması gerekir. Yedeğini alın.</li><li><code>node.db</code> — veritabanı: kayıtlar, davetler, mesaj arabelleği.</li></ul>
+<h2 id="s7">Neye ihtiyacınız var</h2>
+<ul><li><b>Bir Linux sunucusu</b> — en ucuz kiralık VPS yeter: 1 işlemci, 1 GB bellek, 10 GB disk. Onlarca ve yüzlerce kullanıcı için bu yeterlidir.</li><li>Sunucuya yönlendirebileceğiniz <b>bir alan adı</b> (veya alt alan adı) — örneğin <code>node.example.org</code>. Alan adı olmadan telefonlar HTTPS sertifikasını doğrulayamaz.</li><li><b>Yaklaşık yarım saat</b> ve sunucuya SSH ile bağlanabilme becerisi. Tüm komutlar <a href="../node-install/">Adım adım kurulum</a> bölümünde — olduğu gibi kopyalayabilirsiniz.</li></ul><p class="doc-nav"><a href="/tr/docs/faq/">← Sorular ve sorunlar</a><a href="/tr/docs/">↑ Belgeler</a><a href="/tr/docs/node-install/">Adım adım kurulum →</a></p></div></div></main>
+<footer class="site"><div class="wrap">
+<div>© 2026 Nevod · Kolpakov Andrey</div>
+<div><a href="/tr/support/">Destek</a> · <a href="/tr/privacy/">Gizlilik</a> · <a href="/tr/terms/">Kullanım Koşulları</a> · <a href="/tr/node/">Kendi düğümün</a> · <a href="https://github.com/avk0978/nevod-messenger">Kaynak kodu</a></div>
+</div></footer>
+</body>
+</html>

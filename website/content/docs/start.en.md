@@ -17,7 +17,7 @@ You can write to people on any node of the network, not only your own.
 
 1. Open Nevod. The app asks for permission to send notifications — allow it, otherwise you won't know about messages and calls while Nevod is closed.
 2. Read the key points of the Terms of Use, turn on **I accept the Terms of Use** and tap **Continue**.
-3. **Explore Network** opens — a list of open nodes. You can look around here: nodes, their bots and pages are available without registering.
+3. **Explore Network** opens — a list of open nodes. You can look around here: nodes, their bots and pages are available without registering. Until you're registered on a node, the list shows only the Nevod project's nodes; the network's other open nodes appear after you register — the app gets their list from your node.
 4. Tap **Start messaging** (top right).
 5. Enter **Your display name** — this is how others will see you. Tap **Get started**.
 

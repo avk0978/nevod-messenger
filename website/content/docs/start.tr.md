@@ -17,7 +17,7 @@ Yalnızca kendi düğümünüzdekilerle değil, ağdaki her düğümdeki insanla
 
 1. Nevod'u açın. Uygulama bildirim izni ister — izin verin, yoksa Nevod kapalıyken mesajlardan ve aramalardan haberiniz olmaz.
 2. Kullanım Koşulları'nın özetini okuyun, **Kullanım Koşulları'nı kabul ediyorum** seçeneğini açın ve **Devam**'a dokunun.
-3. **Ağı keşfet** açılır — açık düğümlerin listesi. Burada etrafa bakabilirsiniz: düğümler, botları ve sayfaları kayıt olmadan da görülebilir.
+3. **Ağı keşfet** açılır — açık düğümlerin listesi. Burada etrafa bakabilirsiniz: düğümler, botları ve sayfaları kayıt olmadan da görülebilir. Hiçbir düğüme kayıtlı değilken listede yalnızca Nevod projesinin düğümleri görünür; ağdaki diğer açık düğümler kayıt olduktan sonra çıkar — uygulama onların listesini kendi düğümünüzden alır.
 4. **Mesajlaşmaya başla**'ya dokunun (sağ üstte).
 5. **Görünen adınız** alanına bir ad yazın — başkaları sizi bu adla görür. **Başlayın**'a dokunun.
 

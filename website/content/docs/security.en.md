@@ -1,6 +1,6 @@
 # Security and backups
 
-What Nevod protects by itself, how it protects you from fraudsters and hacking, what you should do, how to keep strangers away, how to lock a chat with a password, how to block and report — and why Nevod has no message backups.
+What Nevod protects by itself, how it protects you from fraudsters and hacking, what you should do, how to lock a chat with a password, how to block and report — and why Nevod has no message backups.
 
 ## What is protected without your involvement
 
@@ -44,17 +44,6 @@ You can lock a single chat with a password — then even someone holding your un
 3. The passwords must be different. To change them — in the same place, **Change passwords**.
 
 > The chat password is stored only on this phone, and not the password itself but its hash. **A forgotten password can't be recovered** — neither by you nor by the developers — and the chat can no longer be opened. Choose a password you won't forget. The duress password deletes the conversation only on your phone: the other person keeps it.
-
-## Protection from strangers
-
-It's not only people you gave your card to who can write to you and call you. On an open node, such as Nevod Open, anyone can register, and node members see each other in **Contacts → On this node**. Besides, someone you talk to may forward your card to another person. A stranger here means someone who isn't in your contacts.
-
-**Profile → Security** has two settings. Whether to turn them on is up to you; both are off at first:
-
-- **Calls only from contacts** — a call from someone who isn't in your contacts is silently declined, and the phone doesn't ring. The call shows in the history as missed.
-- **Images from strangers — on tap** — photos and videos from someone who isn't in your contacts aren't shown right away: the chat shows a **Show** placeholder, and the app opens the file only after you tap it. That way even a specially crafted image can't go off by itself.
-
-On a closed node where the administrator knows all the members, these settings are usually not needed. On an open node, it's worth turning them on.
 
 ## Blocking and reporting
 

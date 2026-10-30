@@ -54,7 +54,7 @@ Her kod bir kez kullanılır. Her kişi için ayrı bir kod oluşturun — daha 
 **Ayarlar → "Ağı keşfet" listesinde görünürlük**:
 
 - `closed` (varsayılan) — düğüm diğer düğümlerin kullanıcılarına "Ağı keşfet"te gösterilmez. Aile, kuruluş, her türlü kapalı grup için uygundur.
-- `open` — düğüm "Ağı keşfet"te görünür ve diğer düğümlerin kullanıcıları onu bulabilir. Açık bir topluluk için uygundur.
+- `open` — düğüm "Ağı keşfet"te görünür ve diğer düğümlerin kullanıcıları onu bulabilir. Açık bir topluluk için uygundur. Düğüm, ağa bağlı olduğu sürece ve yalnızca bir düğüme zaten kayıtlı olanlara görünür: kayıttan önce uygulama yalnızca projenin düğümlerini gösterir.
 
 Bu seçim kaydı açmaz: kimin kabul edileceğine yine hücre kabul modu karar verir (2. adım). "Ağı keşfet"teki doğrulanmış düğüm altın halkası şu anda yalnızca Nevod projesinin düğümlerinde bulunur.
 

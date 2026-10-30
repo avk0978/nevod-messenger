@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Primera configuración en el panel de administración — Nevod</title>
+<meta name="description" content="El nodo está funcionando: ahora hay que ponerle nombre, decidir a quién admitir y registrarte tú en él. Todo se hace en el panel de administración, en https://node.example.org/nevod-admin (cómo abrirlo: paso 9 de la instalación).">
+<link rel="canonical" href="https://nevod.network/es/docs/node-panel/">
+<link rel="alternate" hreflang="uk" href="https://nevod.network/uk/docs/node-panel/"><link rel="alternate" hreflang="en" href="https://nevod.network/en/docs/node-panel/"><link rel="alternate" hreflang="de" href="https://nevod.network/de/docs/node-panel/"><link rel="alternate" hreflang="tr" href="https://nevod.network/tr/docs/node-panel/"><link rel="alternate" hreflang="es" href="https://nevod.network/es/docs/node-panel/"><link rel="alternate" hreflang="it" href="https://nevod.network/it/docs/node-panel/"><link rel="alternate" hreflang="fr" href="https://nevod.network/fr/docs/node-panel/">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik:wght@500..700&family=IBM+Plex+Sans:wght@400;600&display=swap">
+<style>
+:root { --ink:#14213D; --paper:#F7F6F1; --card:#FFFFFF; --line:#DCDFE6; --muted:#4A5568;
+        --accent:#F2C230; --accent-ink:#8A6A00; --dark2:#1E2F55; --soft:#C9D3E6; }
+* { box-sizing:border-box; }
+html { -webkit-text-size-adjust:100%; }
+body { margin:0; background:var(--paper); color:var(--ink); font:17px/1.6 'IBM Plex Sans', Arial, sans-serif; }
+a { color:#1F4E9E; }
+h1,h2,h3 { font-family:'Rubik', Arial, sans-serif; line-height:1.15; margin:0 0 .5em;
+  overflow-wrap:break-word; hyphens:auto; }
+main, .hero { overflow-wrap:break-word; }
+h1 { font-size:clamp(28px,5vw,56px); } h2 { font-size:clamp(24px,3.2vw,34px); margin-top:1.4em; } h3 { font-size:20px; }
+[id] { scroll-margin-top:76px; }  /* sticky header must not cover an anchor target */
+main.article h2 { margin-top:1.6em; } main.article h1 { font-size:clamp(26px,4vw,44px); }
+main.article hr { border:0; border-top:1px solid var(--line); margin:28px 0; }
+main.article code { font-size:.9em; background:var(--card); border:1px solid var(--line); border-radius:4px; padding:0 4px; }
+main.article ol li, main.article ul li { margin-bottom:.35em; overflow-wrap:anywhere; }
+.pub { margin:16px 0; } .pub h3 a { text-decoration:none; } .pub-date { font-size:14px; color:var(--muted); }
+.pub-back { font-size:15px; }
+main.article pre { background:var(--ink); color:var(--paper); border-radius:8px; padding:12px 14px; overflow-x:auto;
+  font-size:14px; line-height:1.5; margin:0 0 1em; }
+main.article pre code { background:none; border:0; padding:0; font-size:inherit; color:inherit; }
+main.article .note { margin:0 0 1em; } main.article .note p:last-child { margin-bottom:0; }
+.toc li { margin-bottom:.35em; }
+.docs-layout { display:grid; grid-template-columns:250px minmax(0,1fr); gap:40px; align-items:start; }
+.docs-side { position:sticky; top:76px; max-height:calc(100vh - 92px); overflow-y:auto; font-size:15px;
+  line-height:1.4; padding-right:8px; border-right:1px solid var(--line); }
+.docs-side ol, .docs-toc ol { list-style:none; padding:0; margin:0 0 14px; }
+.docs-side li, .docs-toc li { margin:0; }
+.docs-side a, .docs-toc a { display:block; padding:4px 8px; border-radius:6px; text-decoration:none; color:var(--ink); }
+.docs-side a:hover, .docs-toc a:hover { background:var(--card); }
+.docs-side li.cur > a, .docs-toc li.cur > a { background:var(--card); font-weight:600; box-shadow:inset 3px 0 0 var(--accent); }
+.docs-side ul, .docs-toc ul { list-style:none; padding:2px 0 6px 12px; margin:0; }
+.docs-side ul a, .docs-toc ul a { font-size:14px; color:var(--muted); padding:3px 8px; }
+.docs-side .soon, .docs-toc .soon { padding:4px 8px; color:var(--muted); opacity:.7; }
+.docs-group { font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.6px; color:var(--muted);
+  margin:14px 8px 6px; }
+.docs-home { margin:0 0 4px; font-weight:600; } .docs-home a { padding:4px 8px; }
+.docs-toc { display:none; background:var(--card); border:1px solid var(--line); border-radius:10px; margin:0 0 20px; }
+.docs-toc summary { cursor:pointer; padding:10px 14px; font-weight:600; }
+.docs-toc[open] summary { border-bottom:1px solid var(--line); }
+.docs-toc > p, .docs-toc > ol { margin-left:8px; margin-right:8px; }
+@media (max-width:960px) {
+  .docs-layout { display:block; }
+  .docs-side { display:none; }
+  .docs-toc { display:block; }
+}
+.doc-nav { display:flex; flex-wrap:wrap; gap:8px 24px; justify-content:space-between; font-size:15px;
+  border-top:1px solid var(--line); padding-top:16px; margin-top:32px; }
+p, ul, ol, table { margin:0 0 1em; }
+.wrap { max-width:1080px; margin:0 auto; padding:0 16px; }
+header.top { background:var(--ink); color:var(--paper); position:sticky; top:0; z-index:10; }
+header.top .wrap { display:flex; align-items:center; gap:16px; min-height:60px; }
+header.top a { color:var(--paper); text-decoration:none; }
+.brand { font-family:'Rubik', Arial, sans-serif; font-weight:700; font-size:20px; margin-right:auto; }
+.brand span { color:var(--accent); }
+nav.main { display:flex; gap:14px; font-size:15px; }
+nav.main a { opacity:.85; white-space:nowrap; } nav.main a[aria-current] { opacity:1; border-bottom:2px solid var(--accent); }
+details.menu { display:none; order:3; }
+details.menu summary { list-style:none; cursor:pointer; width:44px; height:44px; margin-right:-10px;
+  display:flex; align-items:center; justify-content:center; }
+details.menu summary::-webkit-details-marker { display:none; }
+.burger, .burger::before, .burger::after { display:block; width:22px; height:2px; background:var(--paper);
+  border-radius:2px; position:relative; transition:transform .2s, background .2s; }
+.burger::before, .burger::after { content:""; position:absolute; left:0; }
+.burger::before { top:-7px; } .burger::after { top:7px; }
+details.menu[open] .burger { background:transparent; }
+details.menu[open] .burger::before { transform:translateY(7px) rotate(45deg); }
+details.menu[open] .burger::after { transform:translateY(-7px) rotate(-45deg); }
+details.menu nav { position:absolute; left:0; right:0; top:100%; background:var(--ink);
+  border-top:1px solid var(--dark2); box-shadow:0 12px 24px rgba(0,0,0,.25); padding:6px 0 12px; }
+details.menu nav a { display:block; padding:12px 16px; font-size:17px; opacity:.9; }
+details.menu nav a[aria-current] { opacity:1; color:var(--accent); }
+details.lang { position:relative; font-size:15px; }
+details.lang summary { list-style:none; cursor:pointer; border:1px solid var(--accent); color:var(--accent);
+  padding:3px 12px; border-radius:999px; }
+details.lang summary::-webkit-details-marker { display:none; }
+details.lang summary:empty { min-width:6em; height:calc(1.6em + 8px); box-sizing:border-box; }
+details.lang ul { position:absolute; right:0; top:34px; background:var(--card); color:var(--ink); list-style:none;
+  padding:8px 0; margin:0; border-radius:10px; box-shadow:0 8px 24px rgba(0,0,0,.2); min-width:160px; }
+details.lang li a { color:var(--ink); display:block; padding:6px 16px; }
+@media (max-width:960px) {
+  nav.main { display:none; }
+  details.menu { display:block; }
+  header.top .wrap { min-height:56px; gap:12px; }
+  details.lang li a { padding:10px 16px; }
+}
+.hero { background:var(--ink); color:var(--paper); padding:56px 0 64px; }
+.hero p.lead { font-size:clamp(18px,2.2vw,22px); color:var(--soft); max-width:760px; }
+.eyebrow { font-size:14px; letter-spacing:3px; text-transform:uppercase; color:var(--accent); margin-bottom:12px; }
+.btns { display:flex; gap:12px; flex-wrap:wrap; margin-top:24px; }
+.btn { display:inline-block; padding:12px 22px; border-radius:10px; text-decoration:none; font-weight:600; }
+.btn.primary { background:var(--accent); color:var(--ink); } .btn.ghost { border:1px solid var(--soft); color:var(--paper); }
+main { padding:40px 0 56px; }
+.grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:16px; margin:16px 0 8px; }
+.card { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:20px; }
+.card h3 { margin-bottom:6px; } .card p { margin:0; color:var(--muted); }
+.status td:first-child { font-weight:600; }
+.tbl { overflow-x:auto; }
+table { border-collapse:collapse; width:100%; background:var(--card); border:1px solid var(--line); border-radius:12px; }
+th, td { text-align:left; padding:10px 12px; border-bottom:1px solid var(--line); vertical-align:top; }
+th { background:var(--ink); color:var(--paper); font-weight:600; }
+.note { background:#FBF3D6; border-left:4px solid var(--accent); padding:14px 16px; border-radius:8px; }
+.legal h2 { font-size:22px; }
+.ncard { display:flex; gap:20px; align-items:flex-start; background:var(--card); border:1px solid var(--line);
+  border-radius:14px; padding:20px; margin:8px 0 16px; }
+.ncard-qr { flex:0 0 220px; } .ncard-qr svg { display:block; width:100%; height:auto; }
+.ncard-body { min-width:0; } .ncard-body h3 { margin-bottom:6px; } .ncard-body p { color:var(--muted); }
+.ncard code { display:block; font-size:12px; line-height:1.45; word-break:break-all; background:var(--paper);
+  border:1px solid var(--line); border-radius:8px; padding:8px 10px; margin:0 0 12px; user-select:all; }
+.ncard .btn { border:0; cursor:pointer; font:inherit; font-weight:600; }
+@media (max-width:640px) { .ncard { flex-direction:column; align-items:stretch; } .ncard-qr { flex-basis:auto; width:220px; margin:0 auto; } }
+footer.site { background:var(--ink); color:var(--soft); font-size:14px; padding:28px 0; }
+footer.site a { color:var(--soft); }
+footer.site .wrap { display:flex; flex-wrap:wrap; gap:8px 24px; justify-content:space-between; }
+@media (max-width:640px) {
+  body { font-size:16px; }
+  .hero { padding:36px 0 44px; }
+  main { padding:28px 0 40px; }
+  .btns .btn { flex:1 1 auto; text-align:center; }
+  .card { padding:16px; }
+  /* Wide tables (4+ columns) become one card per row: the first cell is the row title,
+     every other cell is prefixed with its column header (data-label, added by stack_tables). */
+  table.stack, table.stack tbody, table.stack tr, table.stack td { display:block; width:auto !important; }
+  table.stack { background:none; border:0; }
+  table.stack tr:first-child { display:none; }
+  table.stack tr { background:var(--card); border:1px solid var(--line); border-radius:12px; margin-bottom:12px; overflow:hidden; }
+  table.stack td { border-bottom:1px solid var(--line); padding:8px 14px; }
+  table.stack td:last-child { border-bottom:0; }
+  table.stack td:first-child { background:var(--ink); color:var(--paper); font-weight:600; }
+  table.stack td:not(:first-child)::before { content:attr(data-label); display:block; font-size:13px;
+    font-weight:600; color:var(--muted); text-transform:uppercase; letter-spacing:.5px; }
+  footer.site .wrap { flex-direction:column; }
+}
+</style>
+</head>
+<body>
+<header class="top"><div class="wrap">
+<a class="brand" href="/es/">Nevod<span>.</span></a>
+<nav class="main"><a href="/es/">Inicio</a><a href="/es/manifesto/">Manifiesto ZKI</a><a href="/es/compare/">Comparación</a><a href="/es/security/">Seguridad</a><a href="/es/docs/" aria-current="page">Documentación</a><a href="/es/download/">Descargar</a><a href="/es/publications/">Publicaciones</a><a href="/es/about/">Sobre el proyecto</a></nav>
+<details class="menu"><summary aria-label="Menú"><span class="burger"></span></summary><nav><a href="/es/">Inicio</a><a href="/es/manifesto/">Manifiesto ZKI</a><a href="/es/compare/">Comparación</a><a href="/es/security/">Seguridad</a><a href="/es/docs/" aria-current="page">Documentación</a><a href="/es/download/">Descargar</a><a href="/es/publications/">Publicaciones</a><a href="/es/about/">Sobre el proyecto</a></nav></details>
+<details class="lang"><summary>Español</summary><ul><li><a href="/uk/docs/node-panel/" hreflang="uk" lang="uk">Українська</a></li><li><a href="/en/docs/node-panel/" hreflang="en" lang="en">English</a></li><li><a href="/de/docs/node-panel/" hreflang="de" lang="de">Deutsch</a></li><li><a href="/tr/docs/node-panel/" hreflang="tr" lang="tr">Türkçe</a></li><li><a href="/es/docs/node-panel/" hreflang="es" lang="es">Español</a></li><li><a href="/it/docs/node-panel/" hreflang="it" lang="it">Italiano</a></li><li><a href="/fr/docs/node-panel/" hreflang="fr" lang="fr">Français</a></li></ul></details>
+</div></header>
+<main class="article"><div class="wrap docs-layout"><aside class="docs-side"><p class="docs-home"><a href="/es/docs/">Documentación</a></p><p class="docs-group">Para usuarios</p><ol><li><a href="/es/docs/start/">Primeros pasos</a></li><li><a href="/es/docs/contacts/">Contactos</a></li><li><a href="/es/docs/messages/">Mensajes y archivos</a></li><li><a href="/es/docs/calls/">Llamadas</a></li><li><a href="/es/docs/bots/">Bots y asistentes de IA</a></li><li><a href="/es/docs/security/">Seguridad y copias de seguridad</a></li><li><a href="/es/docs/faq/">Preguntas y problemas</a></li></ol><p class="docs-group">Para propietarios de nodos</p><ol><li><a href="/es/docs/node-how/">Cómo funciona un nodo</a></li><li><a href="/es/docs/node-install/">Instalación paso a paso</a></li><li class="cur"><a href="/es/docs/node-panel/" aria-current="page">Primera configuración en el panel de administración</a><ul><li><a href="#s1">Qué hay en cada parte del panel</a></li><li><a href="#s2">1. Ponle nombre al nodo</a></li><li><a href="#s3">2. Decide a quién admitir</a></li><li><a href="#s4">3. Regístrate en tu nodo</a></li><li><a href="#s5">4. Decide si el nodo es visible en la red</a></li><li><a href="#s6">5. Comprueba el nodo</a></li><li><a href="#s7">6. Opcional: más administradores</a></li></ul></li><li><a href="/es/docs/node-invite/">Invitar a personas</a></li><li><a href="/es/docs/node-network/">Conectarse a la red Nevod</a></li><li><a href="/es/docs/node-turn/">Llamadas a través de tu propio nodo</a></li><li><a href="/es/docs/node-maintenance/">Mantenimiento</a></li><li><a href="/es/docs/node-admin/">El panel de administración: todas las páginas y ajustes</a></li></ol></aside><div class="docs-main"><details class="docs-toc"><summary>Contenido</summary><p class="docs-home"><a href="/es/docs/">Documentación</a></p><p class="docs-group">Para usuarios</p><ol><li><a href="/es/docs/start/">Primeros pasos</a></li><li><a href="/es/docs/contacts/">Contactos</a></li><li><a href="/es/docs/messages/">Mensajes y archivos</a></li><li><a href="/es/docs/calls/">Llamadas</a></li><li><a href="/es/docs/bots/">Bots y asistentes de IA</a></li><li><a href="/es/docs/security/">Seguridad y copias de seguridad</a></li><li><a href="/es/docs/faq/">Preguntas y problemas</a></li></ol><p class="docs-group">Para propietarios de nodos</p><ol><li><a href="/es/docs/node-how/">Cómo funciona un nodo</a></li><li><a href="/es/docs/node-install/">Instalación paso a paso</a></li><li class="cur"><a href="/es/docs/node-panel/" aria-current="page">Primera configuración en el panel de administración</a><ul><li><a href="#s1">Qué hay en cada parte del panel</a></li><li><a href="#s2">1. Ponle nombre al nodo</a></li><li><a href="#s3">2. Decide a quién admitir</a></li><li><a href="#s4">3. Regístrate en tu nodo</a></li><li><a href="#s5">4. Decide si el nodo es visible en la red</a></li><li><a href="#s6">5. Comprueba el nodo</a></li><li><a href="#s7">6. Opcional: más administradores</a></li></ul></li><li><a href="/es/docs/node-invite/">Invitar a personas</a></li><li><a href="/es/docs/node-network/">Conectarse a la red Nevod</a></li><li><a href="/es/docs/node-turn/">Llamadas a través de tu propio nodo</a></li><li><a href="/es/docs/node-maintenance/">Mantenimiento</a></li><li><a href="/es/docs/node-admin/">El panel de administración: todas las páginas y ajustes</a></li></ol></details><h1>Primera configuración en el panel de administración</h1>
+<p>El nodo está funcionando: ahora hay que ponerle nombre, decidir a quién admitir y registrarte tú en él. Todo se hace en el panel de administración, en <code>https://node.example.org/nevod-admin</code> (cómo abrirlo: paso 9 de la <a href="../node-install/">instalación</a>).</p>
+<p>El idioma del panel se cambia en su cabecera. La descripción detallada de cada página y ajuste: en <a href="../node-admin/">El panel de administración: todas las páginas y ajustes</a>.</p>
+<h2 id="s1">Qué hay en cada parte del panel</h2>
+<div class="tbl"><table><tr><th>Página</th><th>Para qué sirve</th></tr><tr><td><b>Resumen</b></td><td>Las celdas (usuarios) registradas en el nodo.</td></tr><tr><td><b>Ajustes</b></td><td>Nombre del nodo, modo de admisión, visibilidad.</td></tr><tr><td><b>Solicitudes de acceso</b></td><td>Las solicitudes de los usuarios, si el nodo funciona en modo de aprobación.</td></tr><tr><td><b>Buzón</b></td><td>Mensajes de los usuarios al administrador del nodo: denuncias, preguntas. Puedes responder desde aquí.</td></tr><tr><td><b>Invitaciones</b></td><td>Códigos de invitación para usuarios.</td></tr><tr><td><b>Nodos</b></td><td>Conexión a la red Nevod y los demás nodos que conoce tu nodo.</td></tr><tr><td><b>Publicación</b>, <b>Bots de IA</b></td><td>Los bots y canales que el nodo muestra a sus usuarios.</td></tr><tr><td><b>Seguridad</b></td><td>Cuentas de administrador adicionales.</td></tr><tr><td><b>Diagnóstico</b></td><td>El autodiagnóstico del nodo y su registro.</td></tr></table></div>
+<h2 id="s2">1. Ponle nombre al nodo</h2>
+<p><b>Ajustes → Nombre del nodo</b> → escribe un nombre, por ejemplo «Familia García» o «Colegio n.º 5» → <b>Guardar</b>.</p>
+<p>Los usuarios ven el nombre en la app. Los demás nodos de la red conocen el nombre nuevo después de reiniciar el nodo (ver más abajo). No se pueden usar nombres que hagan pasar el nodo por un nodo del proyecto: con las palabras Nevod, admin, support, official y similares.</p>
+<h2 id="s3">2. Decide a quién admitir</h2>
+<p><b>Ajustes → Modo de admisión de celdas.</b> Un nodo nuevo funciona por defecto <b>por invitación</b>: solo puede registrarse quien tenga un código que tú hayas dado. Normalmente es justo lo que se necesita.</p>
+<div class="tbl"><table><tr><th>Modo en el panel</th><th>Quién puede registrarse</th><th>Quién crea los códigos de invitación</th></tr><tr><td><code>delegated</code> — solo con código de invitación (por defecto)</td><td>Solo con código de invitación. Sin código, el nodo no acepta el registro.</td><td>Tú en el panel, y los usuarios a los que hayas dado el derecho <b>Puede invitar</b>.</td></tr><tr><td><code>admin</code> — solicitud + tu aprobación</td><td>Con código, al momento. Sin código, la app envía una solicitud por sí sola y muestra «Esperando aprobación»; tú la apruebas o la rechazas en la página <b>Solicitudes de acceso</b>.</td><td>Solo tú, en el panel.</td></tr><tr><td><code>open</code> — sin código</td><td>Cualquiera que conozca la dirección del nodo. Sirve para una comunidad abierta; ten en cuenta que luego tendrás que ordenar a mano los registros y los nombres ocupados.</td><td>No hace falta código.</td></tr></table></div>
+<p>El modo se aplica al momento.</p>
+<h2 id="s4">3. Regístrate en tu nodo</h2>
+<ol><li>En el panel: <b>Invitaciones</b> → elige la validez (1 hora, 24 horas o 7 días) → <b>+ Crear código</b>. Aparecen un código QR y un código corto como <code>ABCD-EFGH</code>.</li><li>En el teléfono, instala Nevod desde el App Store.</li><li>Escanea el código QR con la cámara normal del teléfono. Es un enlace: se abre la página de invitación; toca en ella <b>Abrir en Nevod</b>. La app se abre con la dirección de tu nodo y el código ya rellenados.</li><li>Escribe tu nombre y toca <b>Empezar</b>.</li></ol>
+<p>Si escanear no es cómodo, pulsa <b>Copiar enlace</b> en el panel y envíatelo. Si «Abrir en Nevod» no funcionó: en la app toca <b>Empezar a chatear</b>, escribe tu nombre, toca <b>¿Tienes un código de invitación?</b> y pega el enlace en el campo del código. El código corto en lugar del enlace solo sirve cuando la app ya tiene puesto tu nodo.</p>
+<div class="note"><p>Si Nevod en este teléfono ya está registrado en otro nodo (por ejemplo, en Nevod Open), la invitación no te pasa a tu nodo por sí sola: la app avisa de que primero tienes que restablecer la identidad: <b>Perfil → Restablecer identidad…</b>. Restablecerla borra para siempre tu identidad, tus contactos, los mensajes del teléfono y tu registro en el nodo anterior. Después, abre de nuevo el enlace de invitación.</p></div>
+<p>Cada código sirve una sola vez. Crea uno distinto para cada persona; más en <a href="../node-invite/">Invitar a personas</a>.</p>
+<h2 id="s5">4. Decide si el nodo es visible en la red</h2>
+<p><b>Ajustes → Visibilidad en «Explorar la red»</b>:</p>
+<ul><li><code>closed</code> (por defecto): el nodo no aparece en «Explorar la red» para los usuarios de otros nodos. Sirve para una familia, una organización, cualquier grupo cerrado.</li><li><code>open</code>: el nodo aparece en «Explorar la red» y los usuarios de otros nodos pueden encontrarlo. Sirve para una comunidad abierta. El nodo se ve mientras está conectado a la red, y solo para quien ya está registrado en algún nodo: antes de registrarse, la app solo muestra los nodos del proyecto.</li></ul>
+<p>Esta elección no abre el registro: a quién admitir lo sigue decidiendo el modo de admisión de celdas (paso 2). El anillo dorado de nodo verificado en «Explorar la red» por ahora solo lo tienen los nodos del proyecto Nevod.</p>
+<p>Este ajuste, igual que el nombre del nodo para otros nodos, se aplica tras reiniciar el nodo. En el servidor, en la carpeta <code>/opt/nevod/installer/docker</code>:</p>
+<pre><code>docker compose restart nevod_node</code></pre>
+<h2 id="s6">5. Comprueba el nodo</h2>
+<p><b>Diagnóstico → Comprobar.</b> En unos segundos el nodo muestra si todo está bien: si su código está al día, si sus ajustes coinciden con la base de datos, si hay problemas de configuración, si el nodo es accesible desde fuera.</p>
+<p>La accesibilidad desde fuera el nodo la comprueba a través de otros nodos de la red. Mientras tu nodo no esté conectado a nadie, esa línea mostrará «No hay pares conocidos»: es lo esperado. Conectarse a la red es el siguiente paso, y es importante: sin él, los teléfonos no recibirán notificaciones mientras la app esté cerrada. Consulta <a href="../node-network/">Conectarse a la red Nevod</a>.</p>
+<h2 id="s7">6. Opcional: más administradores</h2>
+<p><b>Seguridad → Añadir / cambiar contraseña</b>: cada administrador tendrá su propio usuario y contraseña, y podrás revocarlos sin cambiar la contraseña principal de <code>.env</code>. La contraseña principal queda como acceso de reserva por si se pierden las demás.</p><p class="doc-nav"><a href="/es/docs/node-install/">← Instalación paso a paso</a><a href="/es/docs/">↑ Documentación</a><a href="/es/docs/node-invite/">Invitar a personas →</a></p></div></div></main>
+<footer class="site"><div class="wrap">
+<div>© 2026 Nevod · Kolpakov Andrey</div>
+<div><a href="/es/support/">Soporte</a> · <a href="/es/privacy/">Privacidad</a> · <a href="/es/terms/">Condiciones de uso</a> · <a href="/es/node/">Tu propio nodo</a> · <a href="https://github.com/avk0978/nevod-messenger">Código fuente</a></div>
+</div></footer>
+</body>
+</html>

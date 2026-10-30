@@ -40,7 +40,6 @@ Görüntülü arama normal bir arama gibi başlar: arayın, karşınızdaki yan�
 | Ne görüyorsunuz | Ne yapmalı |
 |---|---|
 | **Meşgul** | karşınızdaki şu an başka bir aramada — daha sonra arayın |
-| arama gitmiyor ama mesajlar ulaşıyor | karşınızdaki **Yalnızca kişilerden aramalar** ayarını açmış olabilir ve siz onun kişileri arasında değilsiniz. Sizi eklemesini isteyin — bkz. [Güvenlik](../security/), "Yabancılara karşı koruma" |
 | **Bağlanıyor…** uzun süre kalıyor | birinizin bağlantısı zayıf. Mobil veriden Wi-Fi'ye ya da tersine geçip yeniden arayın |
 | arama bağlandı ama biriniz duyulmuyor | Nevod'un mikrofonu kullanma izni olduğunu kontrol edin: **iPhone Ayarları → Nevod → Mikrofon** |
 | Nevod kapalıyken gelen aramalar ulaşmıyor | iPhone'da Rahatsız Etme veya başka bir Odak modunun açık olmadığını kontrol edin. Özel bir düğümdeyseniz, yöneticisi düğümün [ağa bağlı](../node-network/) olduğunu kontrol etmelidir — aksi hâlde arama telefonu "uyandıramaz" |

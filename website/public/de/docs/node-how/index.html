@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Wie ein Node funktioniert — Nevod</title>
+<meta name="description" content="Ein Node ist ein Programm auf einem Server, über das Telefone Nachrichten austauschen und Anrufe aufbauen. Hier kurz, was ein Node tut, was er speichert und was er nicht sieht — damit du vor der Installation weißt, worauf du dich einlässt.">
+<link rel="canonical" href="https://nevod.network/de/docs/node-how/">
+<link rel="alternate" hreflang="uk" href="https://nevod.network/uk/docs/node-how/"><link rel="alternate" hreflang="en" href="https://nevod.network/en/docs/node-how/"><link rel="alternate" hreflang="de" href="https://nevod.network/de/docs/node-how/"><link rel="alternate" hreflang="tr" href="https://nevod.network/tr/docs/node-how/"><link rel="alternate" hreflang="es" href="https://nevod.network/es/docs/node-how/"><link rel="alternate" hreflang="it" href="https://nevod.network/it/docs/node-how/"><link rel="alternate" hreflang="fr" href="https://nevod.network/fr/docs/node-how/">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik:wght@500..700&family=IBM+Plex+Sans:wght@400;600&display=swap">
+<style>
+:root { --ink:#14213D; --paper:#F7F6F1; --card:#FFFFFF; --line:#DCDFE6; --muted:#4A5568;
+        --accent:#F2C230; --accent-ink:#8A6A00; --dark2:#1E2F55; --soft:#C9D3E6; }
+* { box-sizing:border-box; }
+html { -webkit-text-size-adjust:100%; }
+body { margin:0; background:var(--paper); color:var(--ink); font:17px/1.6 'IBM Plex Sans', Arial, sans-serif; }
+a { color:#1F4E9E; }
+h1,h2,h3 { font-family:'Rubik', Arial, sans-serif; line-height:1.15; margin:0 0 .5em;
+  overflow-wrap:break-word; hyphens:auto; }
+main, .hero { overflow-wrap:break-word; }
+h1 { font-size:clamp(28px,5vw,56px); } h2 { font-size:clamp(24px,3.2vw,34px); margin-top:1.4em; } h3 { font-size:20px; }
+[id] { scroll-margin-top:76px; }  /* sticky header must not cover an anchor target */
+main.article h2 { margin-top:1.6em; } main.article h1 { font-size:clamp(26px,4vw,44px); }
+main.article hr { border:0; border-top:1px solid var(--line); margin:28px 0; }
+main.article code { font-size:.9em; background:var(--card); border:1px solid var(--line); border-radius:4px; padding:0 4px; }
+main.article ol li, main.article ul li { margin-bottom:.35em; overflow-wrap:anywhere; }
+.pub { margin:16px 0; } .pub h3 a { text-decoration:none; } .pub-date { font-size:14px; color:var(--muted); }
+.pub-back { font-size:15px; }
+main.article pre { background:var(--ink); color:var(--paper); border-radius:8px; padding:12px 14px; overflow-x:auto;
+  font-size:14px; line-height:1.5; margin:0 0 1em; }
+main.article pre code { background:none; border:0; padding:0; font-size:inherit; color:inherit; }
+main.article .note { margin:0 0 1em; } main.article .note p:last-child { margin-bottom:0; }
+.toc li { margin-bottom:.35em; }
+.docs-layout { display:grid; grid-template-columns:250px minmax(0,1fr); gap:40px; align-items:start; }
+.docs-side { position:sticky; top:76px; max-height:calc(100vh - 92px); overflow-y:auto; font-size:15px;
+  line-height:1.4; padding-right:8px; border-right:1px solid var(--line); }
+.docs-side ol, .docs-toc ol { list-style:none; padding:0; margin:0 0 14px; }
+.docs-side li, .docs-toc li { margin:0; }
+.docs-side a, .docs-toc a { display:block; padding:4px 8px; border-radius:6px; text-decoration:none; color:var(--ink); }
+.docs-side a:hover, .docs-toc a:hover { background:var(--card); }
+.docs-side li.cur > a, .docs-toc li.cur > a { background:var(--card); font-weight:600; box-shadow:inset 3px 0 0 var(--accent); }
+.docs-side ul, .docs-toc ul { list-style:none; padding:2px 0 6px 12px; margin:0; }
+.docs-side ul a, .docs-toc ul a { font-size:14px; color:var(--muted); padding:3px 8px; }
+.docs-side .soon, .docs-toc .soon { padding:4px 8px; color:var(--muted); opacity:.7; }
+.docs-group { font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.6px; color:var(--muted);
+  margin:14px 8px 6px; }
+.docs-home { margin:0 0 4px; font-weight:600; } .docs-home a { padding:4px 8px; }
+.docs-toc { display:none; background:var(--card); border:1px solid var(--line); border-radius:10px; margin:0 0 20px; }
+.docs-toc summary { cursor:pointer; padding:10px 14px; font-weight:600; }
+.docs-toc[open] summary { border-bottom:1px solid var(--line); }
+.docs-toc > p, .docs-toc > ol { margin-left:8px; margin-right:8px; }
+@media (max-width:960px) {
+  .docs-layout { display:block; }
+  .docs-side { display:none; }
+  .docs-toc { display:block; }
+}
+.doc-nav { display:flex; flex-wrap:wrap; gap:8px 24px; justify-content:space-between; font-size:15px;
+  border-top:1px solid var(--line); padding-top:16px; margin-top:32px; }
+p, ul, ol, table { margin:0 0 1em; }
+.wrap { max-width:1080px; margin:0 auto; padding:0 16px; }
+header.top { background:var(--ink); color:var(--paper); position:sticky; top:0; z-index:10; }
+header.top .wrap { display:flex; align-items:center; gap:16px; min-height:60px; }
+header.top a { color:var(--paper); text-decoration:none; }
+.brand { font-family:'Rubik', Arial, sans-serif; font-weight:700; font-size:20px; margin-right:auto; }
+.brand span { color:var(--accent); }
+nav.main { display:flex; gap:14px; font-size:15px; }
+nav.main a { opacity:.85; white-space:nowrap; } nav.main a[aria-current] { opacity:1; border-bottom:2px solid var(--accent); }
+details.menu { display:none; order:3; }
+details.menu summary { list-style:none; cursor:pointer; width:44px; height:44px; margin-right:-10px;
+  display:flex; align-items:center; justify-content:center; }
+details.menu summary::-webkit-details-marker { display:none; }
+.burger, .burger::before, .burger::after { display:block; width:22px; height:2px; background:var(--paper);
+  border-radius:2px; position:relative; transition:transform .2s, background .2s; }
+.burger::before, .burger::after { content:""; position:absolute; left:0; }
+.burger::before { top:-7px; } .burger::after { top:7px; }
+details.menu[open] .burger { background:transparent; }
+details.menu[open] .burger::before { transform:translateY(7px) rotate(45deg); }
+details.menu[open] .burger::after { transform:translateY(-7px) rotate(-45deg); }
+details.menu nav { position:absolute; left:0; right:0; top:100%; background:var(--ink);
+  border-top:1px solid var(--dark2); box-shadow:0 12px 24px rgba(0,0,0,.25); padding:6px 0 12px; }
+details.menu nav a { display:block; padding:12px 16px; font-size:17px; opacity:.9; }
+details.menu nav a[aria-current] { opacity:1; color:var(--accent); }
+details.lang { position:relative; font-size:15px; }
+details.lang summary { list-style:none; cursor:pointer; border:1px solid var(--accent); color:var(--accent);
+  padding:3px 12px; border-radius:999px; }
+details.lang summary::-webkit-details-marker { display:none; }
+details.lang summary:empty { min-width:6em; height:calc(1.6em + 8px); box-sizing:border-box; }
+details.lang ul { position:absolute; right:0; top:34px; background:var(--card); color:var(--ink); list-style:none;
+  padding:8px 0; margin:0; border-radius:10px; box-shadow:0 8px 24px rgba(0,0,0,.2); min-width:160px; }
+details.lang li a { color:var(--ink); display:block; padding:6px 16px; }
+@media (max-width:960px) {
+  nav.main { display:none; }
+  details.menu { display:block; }
+  header.top .wrap { min-height:56px; gap:12px; }
+  details.lang li a { padding:10px 16px; }
+}
+.hero { background:var(--ink); color:var(--paper); padding:56px 0 64px; }
+.hero p.lead { font-size:clamp(18px,2.2vw,22px); color:var(--soft); max-width:760px; }
+.eyebrow { font-size:14px; letter-spacing:3px; text-transform:uppercase; color:var(--accent); margin-bottom:12px; }
+.btns { display:flex; gap:12px; flex-wrap:wrap; margin-top:24px; }
+.btn { display:inline-block; padding:12px 22px; border-radius:10px; text-decoration:none; font-weight:600; }
+.btn.primary { background:var(--accent); color:var(--ink); } .btn.ghost { border:1px solid var(--soft); color:var(--paper); }
+main { padding:40px 0 56px; }
+.grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:16px; margin:16px 0 8px; }
+.card { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:20px; }
+.card h3 { margin-bottom:6px; } .card p { margin:0; color:var(--muted); }
+.status td:first-child { font-weight:600; }
+.tbl { overflow-x:auto; }
+table { border-collapse:collapse; width:100%; background:var(--card); border:1px solid var(--line); border-radius:12px; }
+th, td { text-align:left; padding:10px 12px; border-bottom:1px solid var(--line); vertical-align:top; }
+th { background:var(--ink); color:var(--paper); font-weight:600; }
+.note { background:#FBF3D6; border-left:4px solid var(--accent); padding:14px 16px; border-radius:8px; }
+.legal h2 { font-size:22px; }
+.ncard { display:flex; gap:20px; align-items:flex-start; background:var(--card); border:1px solid var(--line);
+  border-radius:14px; padding:20px; margin:8px 0 16px; }
+.ncard-qr { flex:0 0 220px; } .ncard-qr svg { display:block; width:100%; height:auto; }
+.ncard-body { min-width:0; } .ncard-body h3 { margin-bottom:6px; } .ncard-body p { color:var(--muted); }
+.ncard code { display:block; font-size:12px; line-height:1.45; word-break:break-all; background:var(--paper);
+  border:1px solid var(--line); border-radius:8px; padding:8px 10px; margin:0 0 12px; user-select:all; }
+.ncard .btn { border:0; cursor:pointer; font:inherit; font-weight:600; }
+@media (max-width:640px) { .ncard { flex-direction:column; align-items:stretch; } .ncard-qr { flex-basis:auto; width:220px; margin:0 auto; } }
+footer.site { background:var(--ink); color:var(--soft); font-size:14px; padding:28px 0; }
+footer.site a { color:var(--soft); }
+footer.site .wrap { display:flex; flex-wrap:wrap; gap:8px 24px; justify-content:space-between; }
+@media (max-width:640px) {
+  body { font-size:16px; }
+  .hero { padding:36px 0 44px; }
+  main { padding:28px 0 40px; }
+  .btns .btn { flex:1 1 auto; text-align:center; }
+  .card { padding:16px; }
+  /* Wide tables (4+ columns) become one card per row: the first cell is the row title,
+     every other cell is prefixed with its column header (data-label, added by stack_tables). */
+  table.stack, table.stack tbody, table.stack tr, table.stack td { display:block; width:auto !important; }
+  table.stack { background:none; border:0; }
+  table.stack tr:first-child { display:none; }
+  table.stack tr { background:var(--card); border:1px solid var(--line); border-radius:12px; margin-bottom:12px; overflow:hidden; }
+  table.stack td { border-bottom:1px solid var(--line); padding:8px 14px; }
+  table.stack td:last-child { border-bottom:0; }
+  table.stack td:first-child { background:var(--ink); color:var(--paper); font-weight:600; }
+  table.stack td:not(:first-child)::before { content:attr(data-label); display:block; font-size:13px;
+    font-weight:600; color:var(--muted); text-transform:uppercase; letter-spacing:.5px; }
+  footer.site .wrap { flex-direction:column; }
+}
+</style>
+</head>
+<body>
+<header class="top"><div class="wrap">
+<a class="brand" href="/de/">Nevod<span>.</span></a>
+<nav class="main"><a href="/de/">Start</a><a href="/de/manifesto/">ZKI-Manifest</a><a href="/de/compare/">Vergleich</a><a href="/de/security/">Sicherheit</a><a href="/de/docs/" aria-current="page">Doku</a><a href="/de/download/">Download</a><a href="/de/publications/">Publikationen</a><a href="/de/about/">Über das Projekt</a></nav>
+<details class="menu"><summary aria-label="Menü"><span class="burger"></span></summary><nav><a href="/de/">Start</a><a href="/de/manifesto/">ZKI-Manifest</a><a href="/de/compare/">Vergleich</a><a href="/de/security/">Sicherheit</a><a href="/de/docs/" aria-current="page">Doku</a><a href="/de/download/">Download</a><a href="/de/publications/">Publikationen</a><a href="/de/about/">Über das Projekt</a></nav></details>
+<details class="lang"><summary>Deutsch</summary><ul><li><a href="/uk/docs/node-how/" hreflang="uk" lang="uk">Українська</a></li><li><a href="/en/docs/node-how/" hreflang="en" lang="en">English</a></li><li><a href="/de/docs/node-how/" hreflang="de" lang="de">Deutsch</a></li><li><a href="/tr/docs/node-how/" hreflang="tr" lang="tr">Türkçe</a></li><li><a href="/es/docs/node-how/" hreflang="es" lang="es">Español</a></li><li><a href="/it/docs/node-how/" hreflang="it" lang="it">Italiano</a></li><li><a href="/fr/docs/node-how/" hreflang="fr" lang="fr">Français</a></li></ul></details>
+</div></header>
+<main class="article"><div class="wrap docs-layout"><aside class="docs-side"><p class="docs-home"><a href="/de/docs/">Doku</a></p><p class="docs-group">Für Nutzer</p><ol><li><a href="/de/docs/start/">Erste Schritte</a></li><li><a href="/de/docs/contacts/">Kontakte</a></li><li><a href="/de/docs/messages/">Nachrichten und Dateien</a></li><li><a href="/de/docs/calls/">Anrufe</a></li><li><a href="/de/docs/bots/">Bots und KI-Assistenten</a></li><li><a href="/de/docs/security/">Sicherheit und Backups</a></li><li><a href="/de/docs/faq/">Fragen und Probleme</a></li></ol><p class="docs-group">Für Node-Betreiber</p><ol><li class="cur"><a href="/de/docs/node-how/" aria-current="page">Wie ein Node funktioniert</a><ul><li><a href="#s1">Node, Zelle und Heim-Node</a></li><li><a href="#s2">Arten von Nodes</a></li><li><a href="#s3">Was ein Node speichert</a></li><li><a href="#s4">Was ein Node nicht sieht</a></li><li><a href="#s5">Mitteilungen und Anrufe über Projekt-Nodes</a></li><li><a href="#s6">Woraus die Installation besteht</a></li><li><a href="#s7">Was du brauchst</a></li></ul></li><li><a href="/de/docs/node-install/">Installation Schritt für Schritt</a></li><li><a href="/de/docs/node-panel/">Ersteinrichtung im Admin-Panel</a></li><li><a href="/de/docs/node-invite/">Leute einladen</a></li><li><a href="/de/docs/node-network/">Anschluss an das Nevod-Netz</a></li><li><a href="/de/docs/node-turn/">Anrufe über den eigenen Node</a></li><li><a href="/de/docs/node-maintenance/">Wartung</a></li><li><a href="/de/docs/node-admin/">Das Admin-Panel: alle Seiten und Einstellungen</a></li></ol></aside><div class="docs-main"><details class="docs-toc"><summary>Inhalt</summary><p class="docs-home"><a href="/de/docs/">Doku</a></p><p class="docs-group">Für Nutzer</p><ol><li><a href="/de/docs/start/">Erste Schritte</a></li><li><a href="/de/docs/contacts/">Kontakte</a></li><li><a href="/de/docs/messages/">Nachrichten und Dateien</a></li><li><a href="/de/docs/calls/">Anrufe</a></li><li><a href="/de/docs/bots/">Bots und KI-Assistenten</a></li><li><a href="/de/docs/security/">Sicherheit und Backups</a></li><li><a href="/de/docs/faq/">Fragen und Probleme</a></li></ol><p class="docs-group">Für Node-Betreiber</p><ol><li class="cur"><a href="/de/docs/node-how/" aria-current="page">Wie ein Node funktioniert</a><ul><li><a href="#s1">Node, Zelle und Heim-Node</a></li><li><a href="#s2">Arten von Nodes</a></li><li><a href="#s3">Was ein Node speichert</a></li><li><a href="#s4">Was ein Node nicht sieht</a></li><li><a href="#s5">Mitteilungen und Anrufe über Projekt-Nodes</a></li><li><a href="#s6">Woraus die Installation besteht</a></li><li><a href="#s7">Was du brauchst</a></li></ul></li><li><a href="/de/docs/node-install/">Installation Schritt für Schritt</a></li><li><a href="/de/docs/node-panel/">Ersteinrichtung im Admin-Panel</a></li><li><a href="/de/docs/node-invite/">Leute einladen</a></li><li><a href="/de/docs/node-network/">Anschluss an das Nevod-Netz</a></li><li><a href="/de/docs/node-turn/">Anrufe über den eigenen Node</a></li><li><a href="/de/docs/node-maintenance/">Wartung</a></li><li><a href="/de/docs/node-admin/">Das Admin-Panel: alle Seiten und Einstellungen</a></li></ol></details><h1>Wie ein Node funktioniert</h1>
+<p>Ein Node ist ein Programm auf einem Server, über das Telefone Nachrichten austauschen und Anrufe aufbauen. Hier kurz, was ein Node tut, was er speichert und was er nicht sieht — damit du vor der Installation weißt, worauf du dich einlässt.</p>
+<h2 id="s1">Node, Zelle und Heim-Node</h2>
+<p>Jeder Nevod-Nutzer ist eine <b>Zelle</b>: ein Paar Verschlüsselungsschlüssel, das auf dem Telefon erzeugt wird und es nie verlässt. Eine Zelle registriert sich auf einem Node — ihrem <b>Heim-Node</b>. Über ihn bekommt das Telefon Nachrichten, die geschickt wurden, während es aus war.</p>
+<p>Nodes sind zu einem gemeinsamen Netz verbunden. Schreibst du jemandem auf einem anderen Node, gibt dein Node die verschlüsselte Nachricht an dessen Node weiter. Einen zentralen Server gibt es nicht: Das Netz sind die Nodes selbst.</p>
+<p>Die Last eines Nodes hängt nur von seinem eigenen Kreis ab — seinen Nutzern und Bots — und nicht von der Größe des ganzen Netzes: Ein Node leitet keine Nachrichten anderer Nodes weiter und speichert sie nicht. Deshalb reicht für einen Node ein gewöhnlicher Computer, und er wird nicht schwerer, egal wie viele Menschen auf anderen Nodes zu Nevod kommen. Solche Netze heißen <b>gering belastet</b> (Klasse LL-0) — mehr im Artikel <a href="../../publications/low-load-networks/">„Low-Load Distributed Data Networks“</a> (DOI 10.5281/zenodo.23621073).</p>
+<h2 id="s2">Arten von Nodes</h2>
+<p>Alle Nodes laufen mit demselben Programm. Was ein Node wird — ein geschlossener Familien-Node, ein offener Community-Node oder der Node einer Organisation —, entscheiden drei Einstellungen im <a href="../node-admin/">Admin-Panel</a>:</p>
+<ul><li><b>wen zulassen</b> — der Zulassungsmodus für Zellen: nur mit Einladungscode, mit Code oder auf Antrag mit deiner Freigabe, oder alle (Einzelheiten in der Tabelle unter <a href="../node-panel/">Ersteinrichtung</a>, Schritt 2);</li><li><b>ob der Node in „Netzwerk erkunden“ sichtbar ist</b> für Nutzer anderer Nodes;</li><li><b>was der Node seinen Nutzern zeigt</b> — die auf ihm veröffentlichten Bots und Seiten.</li></ul>
+<div class="tbl"><table class="stack"><tr><th>Welcher Node</th><th>Wen zulassen</th><th>Sichtbar in „Netzwerk erkunden“</th><th>Beispiel</th></tr><tr><td data-label="Welcher Node">Geschlossen: Familie, Freunde, Organisation</td><td data-label="Wen zulassen">mit Einladungscode</td><td data-label="Sichtbar in „Netzwerk erkunden“">nein</td><td data-label="Beispiel">Firmen-Node, auf den der Administrator jeden Mitarbeiter einlädt</td></tr><tr><td data-label="Welcher Node">Community mit Auswahl</td><td data-label="Wen zulassen">mit Code oder auf Antrag mit Freigabe</td><td data-label="Sichtbar in „Netzwerk erkunden“">ja</td><td data-label="Beispiel">Vereins-Node: jeder kann ihn finden, aber Mitglieder gibt der Administrator frei</td></tr><tr><td data-label="Welcher Node">Offene Community</td><td data-label="Wen zulassen">alle</td><td data-label="Sichtbar in „Netzwerk erkunden“">ja</td><td data-label="Beispiel">öffentlicher Node wie Nevod Open</td></tr></table></div>
+<p><b>Wo der Node läuft</b> — auf einem gemieteten Server mit Domain oder zu Hause auf deinem Computer — ändert nichts an seinen Möglichkeiten. Ein Heim-Node muss aus dem Internet erreichbar sein: Portweiterleitung am Router und eine Domain. Deshalb ist der Start mit einem gemieteten Server einfacher — die ganze Dokumentation ist dafür geschrieben.</p>
+<p><b>Wichtig für einen Heim-Node: Aus deinem Heimnetz wird er nach anderen Regeln erreicht.</b> Telefone verbinden sich über die Domain mit dem Node, und die Domain zeigt auf die externe Adresse deines Routers. Ein Telefon im Heim-WLAN spricht diese externe Adresse von innerhalb des Netzes an, und viele Router lassen solche Verbindungen nicht durch. Dann funktioniert der Node über Mobilfunk, aber im Heim-WLAN meldet die App „Keine Verbindung“. Über die lokale Adresse des Servers (zum Beispiel <code>192.168.1.10</code>) geht es auch nicht: Das Zertifikat ist für die Domain ausgestellt, nicht für die Adresse. Gelöst wird das am Router, auf eine von zwei Arten:</p>
+<ul><li>schalte <b>NAT-Loopback</b> ein (auch NAT-Hairpinning oder NAT-Reflection genannt), wenn der Router es unterstützt;</li><li>oder lege im DNS des Routers einen lokalen Eintrag an: deine Domain → lokale Adresse des Servers.</li></ul>
+<p>Prüfe das gleich nach der Installation: Verbinde dich mit einem Telefon sowohl über das Heim-WLAN als auch über Mobilfunk mit dem Node.</p>
+<p><b>Die Nodes des Nevod-Projekts</b> — Nevod Open, Dev Planet und einige andere — unterscheiden sich von den übrigen nicht durch das Programm, sondern durch drei Dinge:</p>
+<ul><li>sie haben einen Apple-Schlüssel für Push-Mitteilungen und ein Anruf-Relay und teilen beides mit den Nodes des Netzes (siehe unten);</li><li>in „Netzwerk erkunden“ tragen sie den <b>goldenen Ring</b> eines geprüften Nodes und ein Zweck-Etikett — „Community“, „Informativ“, „KI-Agent“. Der Ring wird durch die Signatur des Projektkurators bestätigt und kommt derzeit nur bei Projekt-Nodes vor;</li><li><b>Nevod Open</b> ist der Node, auf dem die App Nutzer standardmäßig registriert, und der Einstiegspunkt ins Netz für neue Nodes: Man kann sich ohne Einladung mit ihm verbinden.</li></ul>
+<div class="note"><p>In den Panel-Einstellungen gibt es noch „Node-Typ“ — <code>permanent</code> oder <code>temporary</code> — und „ID des übergeordneten Nodes“. Das ist <b>in Entwicklung</b>: temporäre Nodes (zum Beispiel für die Dauer einer Veranstaltung). Die App nutzt sie noch nicht — lass <code>permanent</code> stehen und die ID des übergeordneten Nodes leer.</p></div>
+<h2 id="s3">Was ein Node speichert</h2>
+<ul><li><b>Registrierungen der Zellen</b>: Kennung, öffentliche Schlüssel und den vom Nutzer gewählten Anzeigenamen.</li><li><b>Nicht zugestellte Nachrichten</b> — verschlüsselt, bis der Empfänger online kommt, aber höchstens 72 Stunden. Nach der Zustellung wird die Nachricht gelöscht.</li><li><b>Mitteilungs-Tokens</b> der Telefone — um ein Telefon zu „wecken“, wenn eine Nachricht oder ein Anruf kommt.</li><li><b>Einladungscodes</b>, Beitrittsanfragen, Nachrichten von Nutzern an den Administrator des Nodes.</li><li><b>Die Liste der anderen Nodes im Netz</b> und seine eigenen Einstellungen.</li><li><b>Technische Protokolle</b> — in der Größe begrenzt (3 Dateien zu je 10 MB pro Container); alte Einträge werden überschrieben.</li></ul>
+<h2 id="s4">Was ein Node nicht sieht</h2>
+<ul><li><b>Text von Nachrichten, Fotos, Videos, Sprachnachrichten und Dateien.</b> Sie werden auf dem Telefon des Absenders mit dem Schlüssel des Empfängers verschlüsselt. Der Node stellt sie zu, ohne den Schlüssel zu haben, mit dem man sie öffnen könnte.</li><li><b>Den Inhalt von Anrufen.</b> Ton und Video gehen direkt oder über ein Relay (TURN) verschlüsselt zwischen den Telefonen.</li><li><b>Kontakte und Unterhaltungen auf dem Telefon.</b> Sie liegen nur auf dem Gerät.</li></ul>
+<p>Was der Node dabei sieht: welche Zellen auf ihm registriert sind und unter welchen Namen, wer wem wann schreibt, die Größe von Nachrichten, die IP-Adressen der Verbindungen. Das sind Zustelldaten — ohne sie könnte der Node nicht arbeiten. Mehr in der <a href="../../privacy/">Datenschutzerklärung</a>.</p>
+<div class="note"><p>Der Betreiber des Nodes ist dafür verantwortlich, dass der Node läuft, und für das Backup seiner Daten. Die Unterhaltungen der Nutzer lesen kann er nicht — das folgt aus dem Aufbau des Netzes, nicht aus einem Versprechen.</p></div>
+<h2 id="s5">Mitteilungen und Anrufe über Projekt-Nodes</h2>
+<p>Push-Mitteilungen an die Nevod-App aus dem App Store kann nur ein Node senden, der einen Apple-Schlüssel hat, und den haben nur Projekt-Nodes. Deshalb bittet ein mit dem Netz verbundener Node einen Projekt-Node, die Mitteilung für ihn zu senden. Der Projekt-Node sieht dabei das Token des Telefons und den Namen des Absenders für den Mitteilungstitel, und der Text ist immer derselbe — „Neue Nachricht“. Ist der Absender in den Kontakten des Empfängers, setzt das Telefon selbst den Namen ein, unter dem er gespeichert ist.</p>
+<p><b>Kann ich Mitteilungen direkt von meinem Node senden?</b> Nein. Mitteilungen an eine App aus dem App Store werden nur mit einem Schlüssel des Apple-Entwicklerkontos angenommen, unter dem die App veröffentlicht wurde — und Nevod wird vom Projekt veröffentlicht. Diesen Schlüssel kann man nicht an Node-Betreiber weitergeben: Er lässt sich nicht auf einen Node beschränken und erlaubt es, jedem Nevod-Nutzer eine Mitteilung mit beliebigem Text zu senden. Deshalb gehen Mitteilungen über Projekt-Nodes, und ihr Text ist immer „Neue Nachricht“.</p>
+<p>Ebenso bekommt ein Node ohne eigenes Anruf-Relay (TURN) eines von den Nodes des Netzes — mehr unter <a href="../node-turn/">Anrufe über den eigenen Node</a>.</p>
+<p>Daraus folgt Wichtiges: <b>Ein nicht mit dem Netz verbundener Node stellt Nachrichten zu, aber Telefone bekommen keine Mitteilungen</b>, solange die App geschlossen ist. Wie du dich verbindest — siehe <a href="../node-network/">Anschluss an das Nevod-Netz</a>.</p>
+<h2 id="s6">Woraus die Installation besteht</h2>
+<p>Das fertige Server-Paket (der Ordner <code>installer/docker</code> im <a href="https://github.com/avk0978/nevod-messenger">Quellcode</a>) besteht aus zwei Docker-Containern:</p>
+<div class="tbl"><table><tr><th>Container</th><th>Was er tut</th><th>Ports</th></tr><tr><td><code>nevod_node</code></td><td>der Node selbst</td><td>8765 — für andere Nodes; 8766 — das Admin-Panel, nur vom Server selbst erreichbar</td></tr><tr><td><code>nevod_caddy</code></td><td>der Webserver Caddy: holt selbst ein HTTPS-Zertifikat für deine Domain und reicht Verbindungen von Telefonen und Panel an den Node weiter</td><td>80 und 443</td></tr></table></div>
+<p>Alle Daten des Nodes liegen im Ordner <code>data/</code> neben der Einstellungsdatei:</p>
+<ul><li><code>node.json</code> — <b>die Identität des Nodes</b>: seine Schlüssel. Verlierst du diese Datei, verlierst du den Node: Ein Node mit derselben Identität lässt sich nicht neu anlegen, und alle Nutzer müssten sich auf einem neuen registrieren. Mach ein Backup.</li><li><code>node.db</code> — die Datenbank: Registrierungen, Einladungen, der Nachrichtenpuffer.</li></ul>
+<h2 id="s7">Was du brauchst</h2>
+<ul><li><b>Einen Linux-Server</b> — der günstigste gemietete VPS genügt: 1 CPU, 1 GB Arbeitsspeicher, 10 GB Festplatte. Für Dutzende und Hunderte Nutzer reicht das.</li><li><b>Eine Domain</b> (oder Subdomain), die du auf den Server zeigen lassen kannst — zum Beispiel <code>node.example.org</code>. Ohne Domain können Telefone das HTTPS-Zertifikat nicht prüfen.</li><li><b>Etwa eine halbe Stunde</b> und die Fähigkeit, dich per SSH mit dem Server zu verbinden. Alle Befehle stehen unter <a href="../node-install/">Installation Schritt für Schritt</a> — du kannst sie unverändert kopieren.</li></ul><p class="doc-nav"><a href="/de/docs/faq/">← Fragen und Probleme</a><a href="/de/docs/">↑ Doku</a><a href="/de/docs/node-install/">Installation Schritt für Schritt →</a></p></div></div></main>
+<footer class="site"><div class="wrap">
+<div>© 2026 Nevod · Kolpakov Andrey</div>
+<div><a href="/de/support/">Support</a> · <a href="/de/privacy/">Datenschutz</a> · <a href="/de/terms/">Nutzungsbedingungen</a> · <a href="/de/node/">Eigener Node</a> · <a href="https://github.com/avk0978/nevod-messenger">Quellcode</a></div>
+</div></footer>
+</body>
+</html>

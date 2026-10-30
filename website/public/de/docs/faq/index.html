@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fragen und Probleme — Nevod</title>
+<meta name="description" content="Kurze Antworten auf häufige Fragen und was zu tun ist, wenn etwas nicht funktioniert. Ist deine Frage nicht dabei, schreib uns (am Ende dieses Abschnitts).">
+<link rel="canonical" href="https://nevod.network/de/docs/faq/">
+<link rel="alternate" hreflang="uk" href="https://nevod.network/uk/docs/faq/"><link rel="alternate" hreflang="en" href="https://nevod.network/en/docs/faq/"><link rel="alternate" hreflang="de" href="https://nevod.network/de/docs/faq/"><link rel="alternate" hreflang="tr" href="https://nevod.network/tr/docs/faq/"><link rel="alternate" hreflang="es" href="https://nevod.network/es/docs/faq/"><link rel="alternate" hreflang="it" href="https://nevod.network/it/docs/faq/"><link rel="alternate" hreflang="fr" href="https://nevod.network/fr/docs/faq/">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik:wght@500..700&family=IBM+Plex+Sans:wght@400;600&display=swap">
+<style>
+:root { --ink:#14213D; --paper:#F7F6F1; --card:#FFFFFF; --line:#DCDFE6; --muted:#4A5568;
+        --accent:#F2C230; --accent-ink:#8A6A00; --dark2:#1E2F55; --soft:#C9D3E6; }
+* { box-sizing:border-box; }
+html { -webkit-text-size-adjust:100%; }
+body { margin:0; background:var(--paper); color:var(--ink); font:17px/1.6 'IBM Plex Sans', Arial, sans-serif; }
+a { color:#1F4E9E; }
+h1,h2,h3 { font-family:'Rubik', Arial, sans-serif; line-height:1.15; margin:0 0 .5em;
+  overflow-wrap:break-word; hyphens:auto; }
+main, .hero { overflow-wrap:break-word; }
+h1 { font-size:clamp(28px,5vw,56px); } h2 { font-size:clamp(24px,3.2vw,34px); margin-top:1.4em; } h3 { font-size:20px; }
+[id] { scroll-margin-top:76px; }  /* sticky header must not cover an anchor target */
+main.article h2 { margin-top:1.6em; } main.article h1 { font-size:clamp(26px,4vw,44px); }
+main.article hr { border:0; border-top:1px solid var(--line); margin:28px 0; }
+main.article code { font-size:.9em; background:var(--card); border:1px solid var(--line); border-radius:4px; padding:0 4px; }
+main.article ol li, main.article ul li { margin-bottom:.35em; overflow-wrap:anywhere; }
+.pub { margin:16px 0; } .pub h3 a { text-decoration:none; } .pub-date { font-size:14px; color:var(--muted); }
+.pub-back { font-size:15px; }
+main.article pre { background:var(--ink); color:var(--paper); border-radius:8px; padding:12px 14px; overflow-x:auto;
+  font-size:14px; line-height:1.5; margin:0 0 1em; }
+main.article pre code { background:none; border:0; padding:0; font-size:inherit; color:inherit; }
+main.article .note { margin:0 0 1em; } main.article .note p:last-child { margin-bottom:0; }
+.toc li { margin-bottom:.35em; }
+.docs-layout { display:grid; grid-template-columns:250px minmax(0,1fr); gap:40px; align-items:start; }
+.docs-side { position:sticky; top:76px; max-height:calc(100vh - 92px); overflow-y:auto; font-size:15px;
+  line-height:1.4; padding-right:8px; border-right:1px solid var(--line); }
+.docs-side ol, .docs-toc ol { list-style:none; padding:0; margin:0 0 14px; }
+.docs-side li, .docs-toc li { margin:0; }
+.docs-side a, .docs-toc a { display:block; padding:4px 8px; border-radius:6px; text-decoration:none; color:var(--ink); }
+.docs-side a:hover, .docs-toc a:hover { background:var(--card); }
+.docs-side li.cur > a, .docs-toc li.cur > a { background:var(--card); font-weight:600; box-shadow:inset 3px 0 0 var(--accent); }
+.docs-side ul, .docs-toc ul { list-style:none; padding:2px 0 6px 12px; margin:0; }
+.docs-side ul a, .docs-toc ul a { font-size:14px; color:var(--muted); padding:3px 8px; }
+.docs-side .soon, .docs-toc .soon { padding:4px 8px; color:var(--muted); opacity:.7; }
+.docs-group { font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.6px; color:var(--muted);
+  margin:14px 8px 6px; }
+.docs-home { margin:0 0 4px; font-weight:600; } .docs-home a { padding:4px 8px; }
+.docs-toc { display:none; background:var(--card); border:1px solid var(--line); border-radius:10px; margin:0 0 20px; }
+.docs-toc summary { cursor:pointer; padding:10px 14px; font-weight:600; }
+.docs-toc[open] summary { border-bottom:1px solid var(--line); }
+.docs-toc > p, .docs-toc > ol { margin-left:8px; margin-right:8px; }
+@media (max-width:960px) {
+  .docs-layout { display:block; }
+  .docs-side { display:none; }
+  .docs-toc { display:block; }
+}
+.doc-nav { display:flex; flex-wrap:wrap; gap:8px 24px; justify-content:space-between; font-size:15px;
+  border-top:1px solid var(--line); padding-top:16px; margin-top:32px; }
+p, ul, ol, table { margin:0 0 1em; }
+.wrap { max-width:1080px; margin:0 auto; padding:0 16px; }
+header.top { background:var(--ink); color:var(--paper); position:sticky; top:0; z-index:10; }
+header.top .wrap { display:flex; align-items:center; gap:16px; min-height:60px; }
+header.top a { color:var(--paper); text-decoration:none; }
+.brand { font-family:'Rubik', Arial, sans-serif; font-weight:700; font-size:20px; margin-right:auto; }
+.brand span { color:var(--accent); }
+nav.main { display:flex; gap:14px; font-size:15px; }
+nav.main a { opacity:.85; white-space:nowrap; } nav.main a[aria-current] { opacity:1; border-bottom:2px solid var(--accent); }
+details.menu { display:none; order:3; }
+details.menu summary { list-style:none; cursor:pointer; width:44px; height:44px; margin-right:-10px;
+  display:flex; align-items:center; justify-content:center; }
+details.menu summary::-webkit-details-marker { display:none; }
+.burger, .burger::before, .burger::after { display:block; width:22px; height:2px; background:var(--paper);
+  border-radius:2px; position:relative; transition:transform .2s, background .2s; }
+.burger::before, .burger::after { content:""; position:absolute; left:0; }
+.burger::before { top:-7px; } .burger::after { top:7px; }
+details.menu[open] .burger { background:transparent; }
+details.menu[open] .burger::before { transform:translateY(7px) rotate(45deg); }
+details.menu[open] .burger::after { transform:translateY(-7px) rotate(-45deg); }
+details.menu nav { position:absolute; left:0; right:0; top:100%; background:var(--ink);
+  border-top:1px solid var(--dark2); box-shadow:0 12px 24px rgba(0,0,0,.25); padding:6px 0 12px; }
+details.menu nav a { display:block; padding:12px 16px; font-size:17px; opacity:.9; }
+details.menu nav a[aria-current] { opacity:1; color:var(--accent); }
+details.lang { position:relative; font-size:15px; }
+details.lang summary { list-style:none; cursor:pointer; border:1px solid var(--accent); color:var(--accent);
+  padding:3px 12px; border-radius:999px; }
+details.lang summary::-webkit-details-marker { display:none; }
+details.lang summary:empty { min-width:6em; height:calc(1.6em + 8px); box-sizing:border-box; }
+details.lang ul { position:absolute; right:0; top:34px; background:var(--card); color:var(--ink); list-style:none;
+  padding:8px 0; margin:0; border-radius:10px; box-shadow:0 8px 24px rgba(0,0,0,.2); min-width:160px; }
+details.lang li a { color:var(--ink); display:block; padding:6px 16px; }
+@media (max-width:960px) {
+  nav.main { display:none; }
+  details.menu { display:block; }
+  header.top .wrap { min-height:56px; gap:12px; }
+  details.lang li a { padding:10px 16px; }
+}
+.hero { background:var(--ink); color:var(--paper); padding:56px 0 64px; }
+.hero p.lead { font-size:clamp(18px,2.2vw,22px); color:var(--soft); max-width:760px; }
+.eyebrow { font-size:14px; letter-spacing:3px; text-transform:uppercase; color:var(--accent); margin-bottom:12px; }
+.btns { display:flex; gap:12px; flex-wrap:wrap; margin-top:24px; }
+.btn { display:inline-block; padding:12px 22px; border-radius:10px; text-decoration:none; font-weight:600; }
+.btn.primary { background:var(--accent); color:var(--ink); } .btn.ghost { border:1px solid var(--soft); color:var(--paper); }
+main { padding:40px 0 56px; }
+.grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:16px; margin:16px 0 8px; }
+.card { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:20px; }
+.card h3 { margin-bottom:6px; } .card p { margin:0; color:var(--muted); }
+.status td:first-child { font-weight:600; }
+.tbl { overflow-x:auto; }
+table { border-collapse:collapse; width:100%; background:var(--card); border:1px solid var(--line); border-radius:12px; }
+th, td { text-align:left; padding:10px 12px; border-bottom:1px solid var(--line); vertical-align:top; }
+th { background:var(--ink); color:var(--paper); font-weight:600; }
+.note { background:#FBF3D6; border-left:4px solid var(--accent); padding:14px 16px; border-radius:8px; }
+.legal h2 { font-size:22px; }
+.ncard { display:flex; gap:20px; align-items:flex-start; background:var(--card); border:1px solid var(--line);
+  border-radius:14px; padding:20px; margin:8px 0 16px; }
+.ncard-qr { flex:0 0 220px; } .ncard-qr svg { display:block; width:100%; height:auto; }
+.ncard-body { min-width:0; } .ncard-body h3 { margin-bottom:6px; } .ncard-body p { color:var(--muted); }
+.ncard code { display:block; font-size:12px; line-height:1.45; word-break:break-all; background:var(--paper);
+  border:1px solid var(--line); border-radius:8px; padding:8px 10px; margin:0 0 12px; user-select:all; }
+.ncard .btn { border:0; cursor:pointer; font:inherit; font-weight:600; }
+@media (max-width:640px) { .ncard { flex-direction:column; align-items:stretch; } .ncard-qr { flex-basis:auto; width:220px; margin:0 auto; } }
+footer.site { background:var(--ink); color:var(--soft); font-size:14px; padding:28px 0; }
+footer.site a { color:var(--soft); }
+footer.site .wrap { display:flex; flex-wrap:wrap; gap:8px 24px; justify-content:space-between; }
+@media (max-width:640px) {
+  body { font-size:16px; }
+  .hero { padding:36px 0 44px; }
+  main { padding:28px 0 40px; }
+  .btns .btn { flex:1 1 auto; text-align:center; }
+  .card { padding:16px; }
+  /* Wide tables (4+ columns) become one card per row: the first cell is the row title,
+     every other cell is prefixed with its column header (data-label, added by stack_tables). */
+  table.stack, table.stack tbody, table.stack tr, table.stack td { display:block; width:auto !important; }
+  table.stack { background:none; border:0; }
+  table.stack tr:first-child { display:none; }
+  table.stack tr { background:var(--card); border:1px solid var(--line); border-radius:12px; margin-bottom:12px; overflow:hidden; }
+  table.stack td { border-bottom:1px solid var(--line); padding:8px 14px; }
+  table.stack td:last-child { border-bottom:0; }
+  table.stack td:first-child { background:var(--ink); color:var(--paper); font-weight:600; }
+  table.stack td:not(:first-child)::before { content:attr(data-label); display:block; font-size:13px;
+    font-weight:600; color:var(--muted); text-transform:uppercase; letter-spacing:.5px; }
+  footer.site .wrap { flex-direction:column; }
+}
+</style>
+</head>
+<body>
+<header class="top"><div class="wrap">
+<a class="brand" href="/de/">Nevod<span>.</span></a>
+<nav class="main"><a href="/de/">Start</a><a href="/de/manifesto/">ZKI-Manifest</a><a href="/de/compare/">Vergleich</a><a href="/de/security/">Sicherheit</a><a href="/de/docs/" aria-current="page">Doku</a><a href="/de/download/">Download</a><a href="/de/publications/">Publikationen</a><a href="/de/about/">Über das Projekt</a></nav>
+<details class="menu"><summary aria-label="Menü"><span class="burger"></span></summary><nav><a href="/de/">Start</a><a href="/de/manifesto/">ZKI-Manifest</a><a href="/de/compare/">Vergleich</a><a href="/de/security/">Sicherheit</a><a href="/de/docs/" aria-current="page">Doku</a><a href="/de/download/">Download</a><a href="/de/publications/">Publikationen</a><a href="/de/about/">Über das Projekt</a></nav></details>
+<details class="lang"><summary>Deutsch</summary><ul><li><a href="/uk/docs/faq/" hreflang="uk" lang="uk">Українська</a></li><li><a href="/en/docs/faq/" hreflang="en" lang="en">English</a></li><li><a href="/de/docs/faq/" hreflang="de" lang="de">Deutsch</a></li><li><a href="/tr/docs/faq/" hreflang="tr" lang="tr">Türkçe</a></li><li><a href="/es/docs/faq/" hreflang="es" lang="es">Español</a></li><li><a href="/it/docs/faq/" hreflang="it" lang="it">Italiano</a></li><li><a href="/fr/docs/faq/" hreflang="fr" lang="fr">Français</a></li></ul></details>
+</div></header>
+<main class="article"><div class="wrap docs-layout"><aside class="docs-side"><p class="docs-home"><a href="/de/docs/">Doku</a></p><p class="docs-group">Für Nutzer</p><ol><li><a href="/de/docs/start/">Erste Schritte</a></li><li><a href="/de/docs/contacts/">Kontakte</a></li><li><a href="/de/docs/messages/">Nachrichten und Dateien</a></li><li><a href="/de/docs/calls/">Anrufe</a></li><li><a href="/de/docs/bots/">Bots und KI-Assistenten</a></li><li><a href="/de/docs/security/">Sicherheit und Backups</a></li><li class="cur"><a href="/de/docs/faq/" aria-current="page">Fragen und Probleme</a><ul><li><a href="#s1">Allgemeine Fragen</a></li><li><a href="#s2">Registrierung</a></li><li><a href="#s3">Verbindung</a></li><li><a href="#s4">Nachrichten und Dateien</a></li><li><a href="#s5">KI-Assistenten</a></li><li><a href="#s6">Ein Problem melden</a></li></ul></li></ol><p class="docs-group">Für Node-Betreiber</p><ol><li><a href="/de/docs/node-how/">Wie ein Node funktioniert</a></li><li><a href="/de/docs/node-install/">Installation Schritt für Schritt</a></li><li><a href="/de/docs/node-panel/">Ersteinrichtung im Admin-Panel</a></li><li><a href="/de/docs/node-invite/">Leute einladen</a></li><li><a href="/de/docs/node-network/">Anschluss an das Nevod-Netz</a></li><li><a href="/de/docs/node-turn/">Anrufe über den eigenen Node</a></li><li><a href="/de/docs/node-maintenance/">Wartung</a></li><li><a href="/de/docs/node-admin/">Das Admin-Panel: alle Seiten und Einstellungen</a></li></ol></aside><div class="docs-main"><details class="docs-toc"><summary>Inhalt</summary><p class="docs-home"><a href="/de/docs/">Doku</a></p><p class="docs-group">Für Nutzer</p><ol><li><a href="/de/docs/start/">Erste Schritte</a></li><li><a href="/de/docs/contacts/">Kontakte</a></li><li><a href="/de/docs/messages/">Nachrichten und Dateien</a></li><li><a href="/de/docs/calls/">Anrufe</a></li><li><a href="/de/docs/bots/">Bots und KI-Assistenten</a></li><li><a href="/de/docs/security/">Sicherheit und Backups</a></li><li class="cur"><a href="/de/docs/faq/" aria-current="page">Fragen und Probleme</a><ul><li><a href="#s1">Allgemeine Fragen</a></li><li><a href="#s2">Registrierung</a></li><li><a href="#s3">Verbindung</a></li><li><a href="#s4">Nachrichten und Dateien</a></li><li><a href="#s5">KI-Assistenten</a></li><li><a href="#s6">Ein Problem melden</a></li></ul></li></ol><p class="docs-group">Für Node-Betreiber</p><ol><li><a href="/de/docs/node-how/">Wie ein Node funktioniert</a></li><li><a href="/de/docs/node-install/">Installation Schritt für Schritt</a></li><li><a href="/de/docs/node-panel/">Ersteinrichtung im Admin-Panel</a></li><li><a href="/de/docs/node-invite/">Leute einladen</a></li><li><a href="/de/docs/node-network/">Anschluss an das Nevod-Netz</a></li><li><a href="/de/docs/node-turn/">Anrufe über den eigenen Node</a></li><li><a href="/de/docs/node-maintenance/">Wartung</a></li><li><a href="/de/docs/node-admin/">Das Admin-Panel: alle Seiten und Einstellungen</a></li></ol></details><h1>Fragen und Probleme</h1>
+<p>Kurze Antworten auf häufige Fragen und was zu tun ist, wenn etwas nicht funktioniert. Ist deine Frage nicht dabei, schreib uns (am Ende dieses Abschnitts).</p>
+<h2 id="s1">Allgemeine Fragen</h2>
+<p><b>Kostet Nevod etwas?</b> Nein. Die App ist kostenlos, ohne Abos und ohne Werbung. Bezahlen musst du höchstens einen KI-Anbieter, wenn du KI-Assistenten mit deinem eigenen Schlüssel nutzt — siehe <a href="../bots/">Bots und KI-Assistenten</a>.</p>
+<p><b>Brauche ich eine Telefonnummer?</b> Nein. Nevod braucht weder Telefonnummer noch E-Mail-Adresse und fragt nicht danach. Dich kennen nur die, mit denen du Karten ausgetauscht hast.</p>
+<p><b>Gibt es Nevod für Android oder den Computer?</b> Derzeit nur für iPhone und iPad. Eine Android-Version ist in Entwicklung.</p>
+<p><b>Kann ich Nevod auf zwei Geräten gleichzeitig nutzen?</b> Noch nicht: Eine Identität lebt auf einem Gerät. Auf einem zweiten iPhone oder iPad hast du eine eigene Identität mit eigenen Kontakten.</p>
+<p><b>Ich habe mein Telefon gewechselt. Wie übertrage ich meine Unterhaltungen?</b> Vorerst gar nicht: Eine Übertragung auf ein neues Gerät gibt es nicht, und Backups der Nachrichten macht Nevod absichtlich nicht. Erstelle auf dem neuen Telefon eine neue Identität und schick deinen Kontakten deine neue Karte. Mehr unter <a href="../security/">Sicherheit und Backups</a>.</p>
+<p><b>Wie wechsle ich auf einen anderen Node?</b> Nur über das Zurücksetzen der Identität: <b>Profil → Identität zurücksetzen…</b>, dann öffne die Einladung auf den neuen Node. Das Zurücksetzen löscht dauerhaft deine Identität, deine Kontakte, die Nachrichten auf dem Telefon und deine Registrierung auf dem bisherigen Node. Um einfach mit jemandem auf einem anderen Node zu schreiben, musst du nicht wechseln — seine Karte genügt.</p>
+<h2 id="s2">Registrierung</h2>
+<div class="tbl"><table><tr><th>Was du siehst</th><th>Was zu tun ist</th></tr><tr><td>„Name bereits vergeben, wähle einen anderen“</td><td>dieser Name existiert auf dem Node schon, oder es ist ein Dienstname (administrator, support, Nevod…). Wähle einen anderen.</td></tr><tr><td>„Einladungscode erforderlich“</td><td>der Node nimmt nur mit Einladung auf. Bitte den Administrator des Nodes um eine Einladung oder wähle einen anderen Node.</td></tr><tr><td>„Ungültiger oder abgelaufener Code — hol dir einen neuen“</td><td>der Code wurde schon benutzt oder ist abgelaufen. Bitte um einen neuen.</td></tr><tr><td>„Warten auf Freigabe“</td><td>der Node nimmt auf Antrag auf — warte auf die Entscheidung des Administrators; du bekommst eine Mitteilung.</td></tr><tr><td>„Anfrage abgelehnt“</td><td>der Administrator des Nodes hat deinen Antrag abgelehnt. Du kannst einen anderen Node wählen, etwa Nevod Open.</td></tr><tr><td>du hast eine Einladung geöffnet, und die App zeigt „Einladung zu einem anderen Knoten“</td><td>du bist schon auf einem Node registriert. Siehe „Wie wechsle ich auf einen anderen Node?“ oben.</td></tr></table></div>
+<h2 id="s3">Verbindung</h2>
+<p><b>Über dem Eingabefeld steht „Keine Verbindung“ oder lange „Verbindung wird hergestellt…“, und du kannst nichts senden.</b> Prüfe dein Internet: Öffne irgendeine Website. Nutzt du ein VPN, schalte es aus oder wechsle den Server. Wechsle zwischen WLAN und Mobilfunk. Hilft das nicht, ist dein Node vielleicht vorübergehend nicht erreichbar — warte ein paar Minuten; bist du auf einem privaten Node, sag seinem Administrator Bescheid.</p>
+<p><b>Mitteilungen kommen nicht an, solange Nevod geschlossen ist.</b></p>
+<ul><li><b>iPhone-Einstellungen → Nevod → Mitteilungen</b> — sie müssen erlaubt sein.</li><li>Prüfe, ob „Nicht stören“ oder ein anderer Fokus eingeschaltet ist.</li><li>Prüfe, ob Mitteilungen für diesen Chat ausgeschaltet sind: Chat-Einstellungen (Zahnrad) → <b>Mitteilungen</b>.</li><li>Auf einem privaten Node: Bitte den Administrator zu prüfen, ob der Node <a href="../node-network/">mit dem Nevod-Netz verbunden</a> ist — sonst kommen keine Mitteilungen an.</li></ul>
+<p><b>Ein Anruf kommt nicht zustande.</b> Siehe <a href="../calls/">Anrufe</a>, „Wenn ein Anruf nicht zustande kommt“.</p>
+<h2 id="s4">Nachrichten und Dateien</h2>
+<p><b>Neben einer Nachricht ist eine orange Uhr.</b> Der Gesprächspartner ist offline: Die Nachricht wartet auf dem Node und wird zugestellt, sobald er sich verbindet. Der Node bewahrt solche Nachrichten bis zu 72 Stunden auf — kommt die Person in dieser Zeit nicht online, wird die Nachricht nicht zugestellt.</p>
+<p><b>„Nachricht nicht gesendet. Erneut senden?“</b> Beim Senden gab es keine Verbindung. Tippe auf diese Zeile, wenn die Verbindung wieder da ist.</p>
+<p><b>Eine Datei lässt sich nicht senden.</b></p>
+<ul><li>Größer als 50 MB — die App sagt es dir. Wähle Videos über <b>Foto oder Video</b>: Sie werden komprimiert.</li><li>„Video konnte nicht geladen werden“ — liegt der Clip in iCloud, hat das Telefon vielleicht nur eine verkleinerte Kopie. Öffne das Video in der Fotos-App, warte, bis es vollständig geladen ist, und versuch es noch einmal. Wiederholt sich der Fehler, sag uns Bescheid (siehe „Ein Problem melden“ unten).</li><li>„Video konnte nicht komprimiert werden“ — versuch einen kürzeren Clip oder sende ihn über <b>Datei</b>, wenn er kleiner als 50 MB ist.</li></ul>
+<p><b>„Datei konnte nicht gespeichert werden: Speicher voll“.</b> Empfangene Dateien belegen auf dem Telefon Platz im Rahmen des Nevod-Kontingents. Erhöhe es: <b>Profil → Speicher → Kontingent</b> — oder lösche Chats, die du nicht brauchst (in der Chatliste nach links wischen → <b>Löschen</b>).</p>
+<h2 id="s5">KI-Assistenten</h2>
+<p><b>Der Bot schreibt, dass ein Schlüssel nötig ist, oder der Schlüssel wird nicht angenommen.</b> Prüfe, ob der Schlüssel vollständig kopiert und auf der Website des Anbieters nicht widerrufen wurde und ob dein Konto beim Anbieter Guthaben hat oder das kostenlose Limit noch nicht aufgebraucht ist. Den Schlüssel kannst du im Chat mit dem Bot wechseln — <b>Ändern</b>. Mehr unter <a href="../bots/">Bots und KI-Assistenten</a>.</p>
+<h2 id="s6">Ein Problem melden</h2>
+<p><b>Profil → Diagnose</b> — beschreibe, was passiert ist und ungefähr wann (zum Beispiel „2 von 3 Fotos sind nicht angekommen, gegen 21 Uhr“), und tippe auf <b>An die Entwickler senden</b>. Mit deiner Beschreibung geht das technische Protokoll der App mit: Es liegt nur auf deinem Telefon und enthält keine Nachrichtentexte. Das Protokoll geht per E-Mail an support@nevod.network oder, wenn auf dem Telefon kein E-Mail-Konto eingerichtet ist, an den Administrator deines Nodes in Nevod; die Antwort kommt im Chat mit ihm.</p>
+<p>Eine Person oder eine Nachricht melden — siehe <a href="../security/">Sicherheit</a>, „Blockieren und melden“.</p><p class="doc-nav"><a href="/de/docs/security/">← Sicherheit und Backups</a><a href="/de/docs/">↑ Doku</a><a href="/de/docs/node-how/">Wie ein Node funktioniert →</a></p></div></div></main>
+<footer class="site"><div class="wrap">
+<div>© 2026 Nevod · Kolpakov Andrey</div>
+<div><a href="/de/support/">Support</a> · <a href="/de/privacy/">Datenschutz</a> · <a href="/de/terms/">Nutzungsbedingungen</a> · <a href="/de/node/">Eigener Node</a> · <a href="https://github.com/avk0978/nevod-messenger">Quellcode</a></div>
+</div></footer>
+</body>
+</html>

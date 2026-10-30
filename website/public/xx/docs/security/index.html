@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Безопасность и резервные копии — Nevod</title>
+<meta name="description" content="Что Nevod защищает сам, как он защищает от мошенников и взлома, что стоит сделать вам, как закрыть чат паролем, как блокировать и жаловаться — и почему в Nevod нет резервных копий переписки.">
+<link rel="canonical" href="https://nevod.network/xx/docs/security/">
+<link rel="alternate" hreflang="uk" href="https://nevod.network/uk/docs/security/"><link rel="alternate" hreflang="en" href="https://nevod.network/en/docs/security/"><link rel="alternate" hreflang="ru" href="https://nevod.network/xx/docs/security/"><link rel="alternate" hreflang="de" href="https://nevod.network/de/docs/security/"><link rel="alternate" hreflang="tr" href="https://nevod.network/tr/docs/security/"><link rel="alternate" hreflang="es" href="https://nevod.network/es/docs/security/"><link rel="alternate" hreflang="it" href="https://nevod.network/it/docs/security/"><link rel="alternate" hreflang="fr" href="https://nevod.network/fr/docs/security/">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik:wght@500..700&family=IBM+Plex+Sans:wght@400;600&display=swap">
+<style>
+:root { --ink:#14213D; --paper:#F7F6F1; --card:#FFFFFF; --line:#DCDFE6; --muted:#4A5568;
+        --accent:#F2C230; --accent-ink:#8A6A00; --dark2:#1E2F55; --soft:#C9D3E6; }
+* { box-sizing:border-box; }
+html { -webkit-text-size-adjust:100%; }
+body { margin:0; background:var(--paper); color:var(--ink); font:17px/1.6 'IBM Plex Sans', Arial, sans-serif; }
+a { color:#1F4E9E; }
+h1,h2,h3 { font-family:'Rubik', Arial, sans-serif; line-height:1.15; margin:0 0 .5em;
+  overflow-wrap:break-word; hyphens:auto; }
+main, .hero { overflow-wrap:break-word; }
+h1 { font-size:clamp(28px,5vw,56px); } h2 { font-size:clamp(24px,3.2vw,34px); margin-top:1.4em; } h3 { font-size:20px; }
+[id] { scroll-margin-top:76px; }  /* sticky header must not cover an anchor target */
+main.article h2 { margin-top:1.6em; } main.article h1 { font-size:clamp(26px,4vw,44px); }
+main.article hr { border:0; border-top:1px solid var(--line); margin:28px 0; }
+main.article code { font-size:.9em; background:var(--card); border:1px solid var(--line); border-radius:4px; padding:0 4px; }
+main.article ol li, main.article ul li { margin-bottom:.35em; overflow-wrap:anywhere; }
+.pub { margin:16px 0; } .pub h3 a { text-decoration:none; } .pub-date { font-size:14px; color:var(--muted); }
+.pub-back { font-size:15px; }
+main.article pre { background:var(--ink); color:var(--paper); border-radius:8px; padding:12px 14px; overflow-x:auto;
+  font-size:14px; line-height:1.5; margin:0 0 1em; }
+main.article pre code { background:none; border:0; padding:0; font-size:inherit; color:inherit; }
+main.article .note { margin:0 0 1em; } main.article .note p:last-child { margin-bottom:0; }
+.toc li { margin-bottom:.35em; }
+.docs-layout { display:grid; grid-template-columns:250px minmax(0,1fr); gap:40px; align-items:start; }
+.docs-side { position:sticky; top:76px; max-height:calc(100vh - 92px); overflow-y:auto; font-size:15px;
+  line-height:1.4; padding-right:8px; border-right:1px solid var(--line); }
+.docs-side ol, .docs-toc ol { list-style:none; padding:0; margin:0 0 14px; }
+.docs-side li, .docs-toc li { margin:0; }
+.docs-side a, .docs-toc a { display:block; padding:4px 8px; border-radius:6px; text-decoration:none; color:var(--ink); }
+.docs-side a:hover, .docs-toc a:hover { background:var(--card); }
+.docs-side li.cur > a, .docs-toc li.cur > a { background:var(--card); font-weight:600; box-shadow:inset 3px 0 0 var(--accent); }
+.docs-side ul, .docs-toc ul { list-style:none; padding:2px 0 6px 12px; margin:0; }
+.docs-side ul a, .docs-toc ul a { font-size:14px; color:var(--muted); padding:3px 8px; }
+.docs-side .soon, .docs-toc .soon { padding:4px 8px; color:var(--muted); opacity:.7; }
+.docs-group { font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.6px; color:var(--muted);
+  margin:14px 8px 6px; }
+.docs-home { margin:0 0 4px; font-weight:600; } .docs-home a { padding:4px 8px; }
+.docs-toc { display:none; background:var(--card); border:1px solid var(--line); border-radius:10px; margin:0 0 20px; }
+.docs-toc summary { cursor:pointer; padding:10px 14px; font-weight:600; }
+.docs-toc[open] summary { border-bottom:1px solid var(--line); }
+.docs-toc > p, .docs-toc > ol { margin-left:8px; margin-right:8px; }
+@media (max-width:960px) {
+  .docs-layout { display:block; }
+  .docs-side { display:none; }
+  .docs-toc { display:block; }
+}
+.doc-nav { display:flex; flex-wrap:wrap; gap:8px 24px; justify-content:space-between; font-size:15px;
+  border-top:1px solid var(--line); padding-top:16px; margin-top:32px; }
+p, ul, ol, table { margin:0 0 1em; }
+.wrap { max-width:1080px; margin:0 auto; padding:0 16px; }
+header.top { background:var(--ink); color:var(--paper); position:sticky; top:0; z-index:10; }
+header.top .wrap { display:flex; align-items:center; gap:16px; min-height:60px; }
+header.top a { color:var(--paper); text-decoration:none; }
+.brand { font-family:'Rubik', Arial, sans-serif; font-weight:700; font-size:20px; margin-right:auto; }
+.brand span { color:var(--accent); }
+nav.main { display:flex; gap:14px; font-size:15px; }
+nav.main a { opacity:.85; white-space:nowrap; } nav.main a[aria-current] { opacity:1; border-bottom:2px solid var(--accent); }
+details.menu { display:none; order:3; }
+details.menu summary { list-style:none; cursor:pointer; width:44px; height:44px; margin-right:-10px;
+  display:flex; align-items:center; justify-content:center; }
+details.menu summary::-webkit-details-marker { display:none; }
+.burger, .burger::before, .burger::after { display:block; width:22px; height:2px; background:var(--paper);
+  border-radius:2px; position:relative; transition:transform .2s, background .2s; }
+.burger::before, .burger::after { content:""; position:absolute; left:0; }
+.burger::before { top:-7px; } .burger::after { top:7px; }
+details.menu[open] .burger { background:transparent; }
+details.menu[open] .burger::before { transform:translateY(7px) rotate(45deg); }
+details.menu[open] .burger::after { transform:translateY(-7px) rotate(-45deg); }
+details.menu nav { position:absolute; left:0; right:0; top:100%; background:var(--ink);
+  border-top:1px solid var(--dark2); box-shadow:0 12px 24px rgba(0,0,0,.25); padding:6px 0 12px; }
+details.menu nav a { display:block; padding:12px 16px; font-size:17px; opacity:.9; }
+details.menu nav a[aria-current] { opacity:1; color:var(--accent); }
+details.lang { position:relative; font-size:15px; }
+details.lang summary { list-style:none; cursor:pointer; border:1px solid var(--accent); color:var(--accent);
+  padding:3px 12px; border-radius:999px; }
+details.lang summary::-webkit-details-marker { display:none; }
+details.lang summary:empty { min-width:6em; height:calc(1.6em + 8px); box-sizing:border-box; }
+details.lang ul { position:absolute; right:0; top:34px; background:var(--card); color:var(--ink); list-style:none;
+  padding:8px 0; margin:0; border-radius:10px; box-shadow:0 8px 24px rgba(0,0,0,.2); min-width:160px; }
+details.lang li a { color:var(--ink); display:block; padding:6px 16px; }
+@media (max-width:960px) {
+  nav.main { display:none; }
+  details.menu { display:block; }
+  header.top .wrap { min-height:56px; gap:12px; }
+  details.lang li a { padding:10px 16px; }
+}
+.hero { background:var(--ink); color:var(--paper); padding:56px 0 64px; }
+.hero p.lead { font-size:clamp(18px,2.2vw,22px); color:var(--soft); max-width:760px; }
+.eyebrow { font-size:14px; letter-spacing:3px; text-transform:uppercase; color:var(--accent); margin-bottom:12px; }
+.btns { display:flex; gap:12px; flex-wrap:wrap; margin-top:24px; }
+.btn { display:inline-block; padding:12px 22px; border-radius:10px; text-decoration:none; font-weight:600; }
+.btn.primary { background:var(--accent); color:var(--ink); } .btn.ghost { border:1px solid var(--soft); color:var(--paper); }
+main { padding:40px 0 56px; }
+.grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:16px; margin:16px 0 8px; }
+.card { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:20px; }
+.card h3 { margin-bottom:6px; } .card p { margin:0; color:var(--muted); }
+.status td:first-child { font-weight:600; }
+.tbl { overflow-x:auto; }
+table { border-collapse:collapse; width:100%; background:var(--card); border:1px solid var(--line); border-radius:12px; }
+th, td { text-align:left; padding:10px 12px; border-bottom:1px solid var(--line); vertical-align:top; }
+th { background:var(--ink); color:var(--paper); font-weight:600; }
+.note { background:#FBF3D6; border-left:4px solid var(--accent); padding:14px 16px; border-radius:8px; }
+.legal h2 { font-size:22px; }
+.ncard { display:flex; gap:20px; align-items:flex-start; background:var(--card); border:1px solid var(--line);
+  border-radius:14px; padding:20px; margin:8px 0 16px; }
+.ncard-qr { flex:0 0 220px; } .ncard-qr svg { display:block; width:100%; height:auto; }
+.ncard-body { min-width:0; } .ncard-body h3 { margin-bottom:6px; } .ncard-body p { color:var(--muted); }
+.ncard code { display:block; font-size:12px; line-height:1.45; word-break:break-all; background:var(--paper);
+  border:1px solid var(--line); border-radius:8px; padding:8px 10px; margin:0 0 12px; user-select:all; }
+.ncard .btn { border:0; cursor:pointer; font:inherit; font-weight:600; }
+@media (max-width:640px) { .ncard { flex-direction:column; align-items:stretch; } .ncard-qr { flex-basis:auto; width:220px; margin:0 auto; } }
+footer.site { background:var(--ink); color:var(--soft); font-size:14px; padding:28px 0; }
+footer.site a { color:var(--soft); }
+footer.site .wrap { display:flex; flex-wrap:wrap; gap:8px 24px; justify-content:space-between; }
+@media (max-width:640px) {
+  body { font-size:16px; }
+  .hero { padding:36px 0 44px; }
+  main { padding:28px 0 40px; }
+  .btns .btn { flex:1 1 auto; text-align:center; }
+  .card { padding:16px; }
+  /* Wide tables (4+ columns) become one card per row: the first cell is the row title,
+     every other cell is prefixed with its column header (data-label, added by stack_tables). */
+  table.stack, table.stack tbody, table.stack tr, table.stack td { display:block; width:auto !important; }
+  table.stack { background:none; border:0; }
+  table.stack tr:first-child { display:none; }
+  table.stack tr { background:var(--card); border:1px solid var(--line); border-radius:12px; margin-bottom:12px; overflow:hidden; }
+  table.stack td { border-bottom:1px solid var(--line); padding:8px 14px; }
+  table.stack td:last-child { border-bottom:0; }
+  table.stack td:first-child { background:var(--ink); color:var(--paper); font-weight:600; }
+  table.stack td:not(:first-child)::before { content:attr(data-label); display:block; font-size:13px;
+    font-weight:600; color:var(--muted); text-transform:uppercase; letter-spacing:.5px; }
+  footer.site .wrap { flex-direction:column; }
+}
+</style>
+</head>
+<body>
+<header class="top"><div class="wrap">
+<a class="brand" href="/xx/">Nevod<span>.</span></a>
+<nav class="main"><a href="/xx/">Главная</a><a href="/xx/manifesto/">Манифест ZKI</a><a href="/xx/compare/">Сравнение</a><a href="/xx/security/">Безопасность</a><a href="/xx/docs/" aria-current="page">Документация</a><a href="/xx/download/">Скачать</a><a href="/xx/publications/">Публикации</a><a href="/xx/about/">О проекте</a></nav>
+<details class="menu"><summary aria-label="Меню"><span class="burger"></span></summary><nav><a href="/xx/">Главная</a><a href="/xx/manifesto/">Манифест ZKI</a><a href="/xx/compare/">Сравнение</a><a href="/xx/security/">Безопасность</a><a href="/xx/docs/" aria-current="page">Документация</a><a href="/xx/download/">Скачать</a><a href="/xx/publications/">Публикации</a><a href="/xx/about/">О проекте</a></nav></details>
+<details class="lang"><summary></summary><ul><li><a href="/uk/docs/security/" hreflang="uk" lang="uk">Українська</a></li><li><a href="/en/docs/security/" hreflang="en" lang="en">English</a></li><li><a href="/de/docs/security/" hreflang="de" lang="de">Deutsch</a></li><li><a href="/tr/docs/security/" hreflang="tr" lang="tr">Türkçe</a></li><li><a href="/es/docs/security/" hreflang="es" lang="es">Español</a></li><li><a href="/it/docs/security/" hreflang="it" lang="it">Italiano</a></li><li><a href="/fr/docs/security/" hreflang="fr" lang="fr">Français</a></li></ul></details>
+</div></header>
+<main class="article"><div class="wrap docs-layout"><aside class="docs-side"><p class="docs-home"><a href="/xx/docs/">Документация</a></p><p class="docs-group">Для пользователей</p><ol><li><a href="/xx/docs/start/">Первые шаги</a></li><li><a href="/xx/docs/contacts/">Контакты</a></li><li><a href="/xx/docs/messages/">Сообщения и файлы</a></li><li><a href="/xx/docs/calls/">Звонки</a></li><li><a href="/xx/docs/bots/">Боты и AI-ассистенты</a></li><li class="cur"><a href="/xx/docs/security/" aria-current="page">Безопасность и резервные копии</a><ul><li><a href="#s1">Что защищено без вашего участия</a></li><li><a href="#s2">Защита от мошенников и взлома</a></li><li><a href="#s3">Что стоит сделать вам</a></li><li><a href="#s4">Пароль на чат</a></li><li><a href="#s5">Блокировка и жалобы</a></li><li><a href="#s6">Резервных копий нет — и это осознанно</a></li><li><a href="#s7">Сброс личности</a></li></ul></li><li><a href="/xx/docs/faq/">Вопросы и проблемы</a></li></ol><p class="docs-group">Для владельцев узлов</p><ol><li><a href="/xx/docs/node-how/">Как устроен узел</a></li><li><a href="/xx/docs/node-install/">Установка шаг за шагом</a></li><li><a href="/xx/docs/node-panel/">Первая настройка в панели администратора</a></li><li><a href="/xx/docs/node-invite/">Как позвать людей</a></li><li><a href="/xx/docs/node-network/">Подключение к общей сети Nevod</a></li><li><a href="/xx/docs/node-turn/">Звонки через свой узел</a></li><li><a href="/xx/docs/node-maintenance/">Обслуживание</a></li><li><a href="/xx/docs/node-admin/">Панель администратора: все страницы и настройки</a></li></ol></aside><div class="docs-main"><details class="docs-toc"><summary>Содержание</summary><p class="docs-home"><a href="/xx/docs/">Документация</a></p><p class="docs-group">Для пользователей</p><ol><li><a href="/xx/docs/start/">Первые шаги</a></li><li><a href="/xx/docs/contacts/">Контакты</a></li><li><a href="/xx/docs/messages/">Сообщения и файлы</a></li><li><a href="/xx/docs/calls/">Звонки</a></li><li><a href="/xx/docs/bots/">Боты и AI-ассистенты</a></li><li class="cur"><a href="/xx/docs/security/" aria-current="page">Безопасность и резервные копии</a><ul><li><a href="#s1">Что защищено без вашего участия</a></li><li><a href="#s2">Защита от мошенников и взлома</a></li><li><a href="#s3">Что стоит сделать вам</a></li><li><a href="#s4">Пароль на чат</a></li><li><a href="#s5">Блокировка и жалобы</a></li><li><a href="#s6">Резервных копий нет — и это осознанно</a></li><li><a href="#s7">Сброс личности</a></li></ul></li><li><a href="/xx/docs/faq/">Вопросы и проблемы</a></li></ol><p class="docs-group">Для владельцев узлов</p><ol><li><a href="/xx/docs/node-how/">Как устроен узел</a></li><li><a href="/xx/docs/node-install/">Установка шаг за шагом</a></li><li><a href="/xx/docs/node-panel/">Первая настройка в панели администратора</a></li><li><a href="/xx/docs/node-invite/">Как позвать людей</a></li><li><a href="/xx/docs/node-network/">Подключение к общей сети Nevod</a></li><li><a href="/xx/docs/node-turn/">Звонки через свой узел</a></li><li><a href="/xx/docs/node-maintenance/">Обслуживание</a></li><li><a href="/xx/docs/node-admin/">Панель администратора: все страницы и настройки</a></li></ol></details><h1>Безопасность и резервные копии</h1>
+<p>Что Nevod защищает сам, как он защищает от мошенников и взлома, что стоит сделать вам, как закрыть чат паролем, как блокировать и жаловаться — и почему в Nevod нет резервных копий переписки.</p>
+<h2 id="s1">Что защищено без вашего участия</h2>
+<ul><li><b>Переписка и звонки зашифрованы</b> на вашем телефоне ключом собеседника. Узлы, разработчики Nevod и Apple их не видят.</li><li><b>Ключи, контакты и история сообщений хранятся только на вашем телефоне.</b> Их нет ни в резервных копиях iCloud и компьютера, ни на узлах, ни у разработчика.</li><li><b>Узел знает только то, без чего не доставить сообщение:</b> кто на нём зарегистрирован, кому и когда вы пишете, — но не что.</li></ul>
+<p>Подробнее о том, как это устроено, — на странице <a href="../../security/">Безопасность</a>.</p>
+<h2 id="s2">Защита от мошенников и взлома</h2>
+<ul><li><b>Вас не найти по номеру телефона.</b> Номера и почты в Nevod нет, поэтому их нельзя взять из утёкшей базы и использовать для рассылок и звонков мошенников. Написать вам может только тот, у кого есть ваша карточка, или участник вашего узла.</li><li><b>Пароля от аккаунта нет — нечего украсть.</b> Его нельзя подсмотреть, подобрать или выманить. При подключении телефон доказывает узлу, что владеет ключом, но сам ключ телефон не покидает.</li><li><b>За администрацию себя не выдать.</b> Служебные имена — administrator, support, Nevod и похожие на них — зарегистрировать нельзя. Настоящая администрация отмечена синим значком ✓, администратор частного узла — пометкой <b>Администратор узла</b>. Аккаунт со служебным именем без значка и пометки приложение отмечает оранжевым ⚠ и предупреждением в чате.</li><li><b>Поддельные уведомления не пройдут.</b> В уведомлении о новом сообщении нет текста, который мог бы задать посторонний: только «Новое сообщение» и имя отправителя, а служебные имена в нём заменяются на «Nevod». Уведомление «от Nevod» с просьбой ввести код или перейти по ссылке — мошенничество.</li><li><b>Узел не подменить.</b> Всё, что приходит от узла, подписано его ключом, и приложение проверяет подпись. Даже в чужой сети Wi-Fi никто посередине не выдаст себя за ваш узел и не подсунет поддельные сообщения от его имени.</li><li><b>Опасные файлы и картинки отсеиваются.</b> Самые опасные атаки на телефон — вроде шпионской программы Pegasus — приходят в виде специально подготовленной картинки или файла и срабатывают без единого нажатия. Поэтому Nevod проверяет всё, что получает от собеседников: размер файла ограничен, а тип должен совпадать с содержимым — иначе файл не показывается как картинка или видео и сам не открывается. Аватары принимаются только от ваших контактов и участников вашего узла, и приложение не показывает присланное изображение, а перерисовывает его само.</li><li><b>Пока телефон заблокирован, файлы закрыты.</b> Фото, видео и файлы из чатов зашифрованы средствами iOS и через несколько секунд после блокировки становятся недоступны — даже тому, кто получил доступ к памяти телефона. В списке открытых приложений вместо переписки видна заставка Nevod.</li><li><b>Взлом узла не раскроет переписку.</b> На узле нет ни текста сообщений, ни ваших ключей: даже получив доступ к узлу, злоумышленник не прочитает переписку.</li><li><b>Проверенные узлы отмечены.</b> Узлы проекта Nevod в <b>Обзоре сети</b> отмечены золотым кольцом — его подтверждает подпись проекта, поддельный узел получить его не может.</li></ul>
+<h2 id="s3">Что стоит сделать вам</h2>
+<p>Самое уязвимое место — сам телефон: тот, кто разблокировал ваш телефон, видит и вашу переписку. И если на телефон уже проникла шпионская программа, которая взломала саму iOS, она видит всё, что видите вы на экране, — от этого не защитит ни одно приложение, в том числе Nevod. Поэтому важно, чтобы она туда не попала.</p>
+<ul><li><b>Код-пароль на iPhone</b> — обязательно, и не простой вроде 000000.</li><li><b>Обновляйте iOS</b> — обновления закрывают уязвимости, через которые работают шпионские программы.</li><li><b>Перезагружайте телефон время от времени.</b> Многие шпионские программы не переживают перезагрузку.</li><li><b>Если вы журналист, правозащитник или по другой причине можете стать целью</b> — включите <b>Режим блокировки</b> iPhone: <b>Настройки → Конфиденциальность и безопасность → Режим блокировки</b>. Он закрывает многие пути, которыми пользуются атаки вроде Pegasus.</li><li><b>Пароль на важные чаты</b> — см. ниже.</li><li><b>Не сообщайте никому коды и ключи.</b> Администрация Nevod пишет только в приложении, с аккаунта <b>administrator</b> со значком ✓ (на частном узле — с пометкой <b>Администратор узла</b>), никогда — по электронной почте, и никогда не просит пароли, ключи или коды. Тот, кто просит, — мошенник.</li></ul>
+<h2 id="s4">Пароль на чат</h2>
+<p>Отдельный чат можно закрыть паролем — тогда, даже если кто-то держит ваш разблокированный телефон, открыть этот чат он не сможет.</p>
+<ol><li>Откройте чат → значок шестерёнки вверху справа → включите <b>Защита паролем</b>.</li><li>Задайте два пароля: - <b>Пароль для входа</b> — им вы открываете чат; - <b>Пароль-паника</b> — на случай, если вас заставляют открыть чат. Если ввести его вместо настоящего, переписка в этом чате <b>молча удалится</b> с вашего телефона, а на экране появится обычное «Неверный пароль» — со стороны это выглядит как ошибка при вводе.</li><li>Пароли должны быть разными. Сменить их — там же, <b>Изменить пароли</b>.</li></ol>
+<div class="note"><p>Пароль чата хранится только на этом телефоне, и не сам пароль, а его хэш. <b>Забытый пароль восстановить нельзя</b> — ни вам, ни разработчикам, — и открыть такой чат больше не получится. Выбирайте пароль, который вы не забудете. Пароль-паника удаляет переписку только у вас: у собеседника она остаётся.</p></div>
+<h2 id="s5">Блокировка и жалобы</h2>
+<ul><li><b>Заблокировать</b> человека — настройки чата (шестерёнка) → <b>Заблокировать</b>. Он не сможет писать и звонить вам и не узнает об этом. Список заблокированных — <b>Профиль → Безопасность → Заблокированные</b>.</li><li><b>Пожаловаться на сообщение</b> — нажмите на него и подержите → <b>Пожаловаться</b>. Пожаловаться на человека — настройки чата → <b>Пожаловаться</b>.</li><li><b>Сообщить о нарушении</b> без конкретного чата — <b>Профиль → Безопасность → Сообщить о нарушении</b>.</li></ul>
+<p>Жалоба уходит администрации вашего узла — сообщением в приложении аккаунту administrator (или письмом на abuse@nevod.network). Сообщения в Nevod зашифрованы, и администрация их не видит, поэтому текст сообщения, на которое вы жалуетесь, приложение вкладывает в жалобу вместе с ней. Ответ придёт в чат с administrator. Вместе с жалобой человека можно сразу заблокировать — <b>Также заблокировать</b>.</p>
+<h2 id="s6">Резервных копий нет — и это осознанно</h2>
+<p>Ключи, контакты и история сообщений есть только на вашем телефоне. Поэтому:</p>
+<ul><li><b>если телефон потерян, сломан или сброшен — переписку восстановить нельзя;</b></li><li><b>удаление приложения тоже стирает историю;</b></li><li><b>переноса на новый телефон пока нет.</b> На новом телефоне вы создадите новую личность, а контактам понадобится ваша новая карточка.</li></ul>
+<p>Это следствие устройства Nevod: копия, из которой можно восстановить переписку, была бы и копией, к которой может получить доступ кто-то ещё. Если что-то из переписки нужно сохранить надолго — сохраните это отдельно: фото и файлы — через <b>Поделиться</b>.</p>
+<h2 id="s7">Сброс личности</h2>
+<p><b>Профиль → Сбросить личность…</b> — навсегда удаляет личность, контакты, переписку на телефоне и регистрацию на узле. Приложение попросит ввести подтверждающее слово, чтобы сброс нельзя было сделать случайно.</p>
+<p>Сброс нужен, если вы хотите начать с чистого листа или перейти на другой узел. Контакты увидят у вас в чате отметку <b>Личность удалена</b>; чтобы снова переписываться, им понадобится ваша новая карточка.</p><p class="doc-nav"><a href="/xx/docs/bots/">← Боты и AI-ассистенты</a><a href="/xx/docs/">↑ Документация</a><a href="/xx/docs/faq/">Вопросы и проблемы →</a></p></div></div></main>
+<footer class="site"><div class="wrap">
+<div>© 2026 Nevod · Колпаков Андрей Валериевич</div>
+<div><a href="/xx/support/">Поддержка</a> · <a href="/xx/privacy/">Конфиденциальность</a> · <a href="/xx/terms/">Условия использования</a> · <a href="/xx/node/">Свой узел</a> · <a href="https://github.com/avk0978/nevod-messenger">Исходный код</a></div>
+</div></footer>
+</body>
+</html>

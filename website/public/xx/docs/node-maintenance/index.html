@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Обслуживание — Nevod</title>
+<meta name="description" content="Обновление узла, резервные копии, перенос на другой сервер, журналы и обычный уход за сервером. Все команды docker compose выполняются на сервере из папки /opt/nevod/installer/docker:">
+<link rel="canonical" href="https://nevod.network/xx/docs/node-maintenance/">
+<link rel="alternate" hreflang="uk" href="https://nevod.network/uk/docs/node-maintenance/"><link rel="alternate" hreflang="en" href="https://nevod.network/en/docs/node-maintenance/"><link rel="alternate" hreflang="ru" href="https://nevod.network/xx/docs/node-maintenance/"><link rel="alternate" hreflang="de" href="https://nevod.network/de/docs/node-maintenance/"><link rel="alternate" hreflang="tr" href="https://nevod.network/tr/docs/node-maintenance/"><link rel="alternate" hreflang="es" href="https://nevod.network/es/docs/node-maintenance/"><link rel="alternate" hreflang="it" href="https://nevod.network/it/docs/node-maintenance/"><link rel="alternate" hreflang="fr" href="https://nevod.network/fr/docs/node-maintenance/">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik:wght@500..700&family=IBM+Plex+Sans:wght@400;600&display=swap">
+<style>
+:root { --ink:#14213D; --paper:#F7F6F1; --card:#FFFFFF; --line:#DCDFE6; --muted:#4A5568;
+        --accent:#F2C230; --accent-ink:#8A6A00; --dark2:#1E2F55; --soft:#C9D3E6; }
+* { box-sizing:border-box; }
+html { -webkit-text-size-adjust:100%; }
+body { margin:0; background:var(--paper); color:var(--ink); font:17px/1.6 'IBM Plex Sans', Arial, sans-serif; }
+a { color:#1F4E9E; }
+h1,h2,h3 { font-family:'Rubik', Arial, sans-serif; line-height:1.15; margin:0 0 .5em;
+  overflow-wrap:break-word; hyphens:auto; }
+main, .hero { overflow-wrap:break-word; }
+h1 { font-size:clamp(28px,5vw,56px); } h2 { font-size:clamp(24px,3.2vw,34px); margin-top:1.4em; } h3 { font-size:20px; }
+[id] { scroll-margin-top:76px; }  /* sticky header must not cover an anchor target */
+main.article h2 { margin-top:1.6em; } main.article h1 { font-size:clamp(26px,4vw,44px); }
+main.article hr { border:0; border-top:1px solid var(--line); margin:28px 0; }
+main.article code { font-size:.9em; background:var(--card); border:1px solid var(--line); border-radius:4px; padding:0 4px; }
+main.article ol li, main.article ul li { margin-bottom:.35em; overflow-wrap:anywhere; }
+.pub { margin:16px 0; } .pub h3 a { text-decoration:none; } .pub-date { font-size:14px; color:var(--muted); }
+.pub-back { font-size:15px; }
+main.article pre { background:var(--ink); color:var(--paper); border-radius:8px; padding:12px 14px; overflow-x:auto;
+  font-size:14px; line-height:1.5; margin:0 0 1em; }
+main.article pre code { background:none; border:0; padding:0; font-size:inherit; color:inherit; }
+main.article .note { margin:0 0 1em; } main.article .note p:last-child { margin-bottom:0; }
+.toc li { margin-bottom:.35em; }
+.docs-layout { display:grid; grid-template-columns:250px minmax(0,1fr); gap:40px; align-items:start; }
+.docs-side { position:sticky; top:76px; max-height:calc(100vh - 92px); overflow-y:auto; font-size:15px;
+  line-height:1.4; padding-right:8px; border-right:1px solid var(--line); }
+.docs-side ol, .docs-toc ol { list-style:none; padding:0; margin:0 0 14px; }
+.docs-side li, .docs-toc li { margin:0; }
+.docs-side a, .docs-toc a { display:block; padding:4px 8px; border-radius:6px; text-decoration:none; color:var(--ink); }
+.docs-side a:hover, .docs-toc a:hover { background:var(--card); }
+.docs-side li.cur > a, .docs-toc li.cur > a { background:var(--card); font-weight:600; box-shadow:inset 3px 0 0 var(--accent); }
+.docs-side ul, .docs-toc ul { list-style:none; padding:2px 0 6px 12px; margin:0; }
+.docs-side ul a, .docs-toc ul a { font-size:14px; color:var(--muted); padding:3px 8px; }
+.docs-side .soon, .docs-toc .soon { padding:4px 8px; color:var(--muted); opacity:.7; }
+.docs-group { font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.6px; color:var(--muted);
+  margin:14px 8px 6px; }
+.docs-home { margin:0 0 4px; font-weight:600; } .docs-home a { padding:4px 8px; }
+.docs-toc { display:none; background:var(--card); border:1px solid var(--line); border-radius:10px; margin:0 0 20px; }
+.docs-toc summary { cursor:pointer; padding:10px 14px; font-weight:600; }
+.docs-toc[open] summary { border-bottom:1px solid var(--line); }
+.docs-toc > p, .docs-toc > ol { margin-left:8px; margin-right:8px; }
+@media (max-width:960px) {
+  .docs-layout { display:block; }
+  .docs-side { display:none; }
+  .docs-toc { display:block; }
+}
+.doc-nav { display:flex; flex-wrap:wrap; gap:8px 24px; justify-content:space-between; font-size:15px;
+  border-top:1px solid var(--line); padding-top:16px; margin-top:32px; }
+p, ul, ol, table { margin:0 0 1em; }
+.wrap { max-width:1080px; margin:0 auto; padding:0 16px; }
+header.top { background:var(--ink); color:var(--paper); position:sticky; top:0; z-index:10; }
+header.top .wrap { display:flex; align-items:center; gap:16px; min-height:60px; }
+header.top a { color:var(--paper); text-decoration:none; }
+.brand { font-family:'Rubik', Arial, sans-serif; font-weight:700; font-size:20px; margin-right:auto; }
+.brand span { color:var(--accent); }
+nav.main { display:flex; gap:14px; font-size:15px; }
+nav.main a { opacity:.85; white-space:nowrap; } nav.main a[aria-current] { opacity:1; border-bottom:2px solid var(--accent); }
+details.menu { display:none; order:3; }
+details.menu summary { list-style:none; cursor:pointer; width:44px; height:44px; margin-right:-10px;
+  display:flex; align-items:center; justify-content:center; }
+details.menu summary::-webkit-details-marker { display:none; }
+.burger, .burger::before, .burger::after { display:block; width:22px; height:2px; background:var(--paper);
+  border-radius:2px; position:relative; transition:transform .2s, background .2s; }
+.burger::before, .burger::after { content:""; position:absolute; left:0; }
+.burger::before { top:-7px; } .burger::after { top:7px; }
+details.menu[open] .burger { background:transparent; }
+details.menu[open] .burger::before { transform:translateY(7px) rotate(45deg); }
+details.menu[open] .burger::after { transform:translateY(-7px) rotate(-45deg); }
+details.menu nav { position:absolute; left:0; right:0; top:100%; background:var(--ink);
+  border-top:1px solid var(--dark2); box-shadow:0 12px 24px rgba(0,0,0,.25); padding:6px 0 12px; }
+details.menu nav a { display:block; padding:12px 16px; font-size:17px; opacity:.9; }
+details.menu nav a[aria-current] { opacity:1; color:var(--accent); }
+details.lang { position:relative; font-size:15px; }
+details.lang summary { list-style:none; cursor:pointer; border:1px solid var(--accent); color:var(--accent);
+  padding:3px 12px; border-radius:999px; }
+details.lang summary::-webkit-details-marker { display:none; }
+details.lang summary:empty { min-width:6em; height:calc(1.6em + 8px); box-sizing:border-box; }
+details.lang ul { position:absolute; right:0; top:34px; background:var(--card); color:var(--ink); list-style:none;
+  padding:8px 0; margin:0; border-radius:10px; box-shadow:0 8px 24px rgba(0,0,0,.2); min-width:160px; }
+details.lang li a { color:var(--ink); display:block; padding:6px 16px; }
+@media (max-width:960px) {
+  nav.main { display:none; }
+  details.menu { display:block; }
+  header.top .wrap { min-height:56px; gap:12px; }
+  details.lang li a { padding:10px 16px; }
+}
+.hero { background:var(--ink); color:var(--paper); padding:56px 0 64px; }
+.hero p.lead { font-size:clamp(18px,2.2vw,22px); color:var(--soft); max-width:760px; }
+.eyebrow { font-size:14px; letter-spacing:3px; text-transform:uppercase; color:var(--accent); margin-bottom:12px; }
+.btns { display:flex; gap:12px; flex-wrap:wrap; margin-top:24px; }
+.btn { display:inline-block; padding:12px 22px; border-radius:10px; text-decoration:none; font-weight:600; }
+.btn.primary { background:var(--accent); color:var(--ink); } .btn.ghost { border:1px solid var(--soft); color:var(--paper); }
+main { padding:40px 0 56px; }
+.grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:16px; margin:16px 0 8px; }
+.card { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:20px; }
+.card h3 { margin-bottom:6px; } .card p { margin:0; color:var(--muted); }
+.status td:first-child { font-weight:600; }
+.tbl { overflow-x:auto; }
+table { border-collapse:collapse; width:100%; background:var(--card); border:1px solid var(--line); border-radius:12px; }
+th, td { text-align:left; padding:10px 12px; border-bottom:1px solid var(--line); vertical-align:top; }
+th { background:var(--ink); color:var(--paper); font-weight:600; }
+.note { background:#FBF3D6; border-left:4px solid var(--accent); padding:14px 16px; border-radius:8px; }
+.legal h2 { font-size:22px; }
+.ncard { display:flex; gap:20px; align-items:flex-start; background:var(--card); border:1px solid var(--line);
+  border-radius:14px; padding:20px; margin:8px 0 16px; }
+.ncard-qr { flex:0 0 220px; } .ncard-qr svg { display:block; width:100%; height:auto; }
+.ncard-body { min-width:0; } .ncard-body h3 { margin-bottom:6px; } .ncard-body p { color:var(--muted); }
+.ncard code { display:block; font-size:12px; line-height:1.45; word-break:break-all; background:var(--paper);
+  border:1px solid var(--line); border-radius:8px; padding:8px 10px; margin:0 0 12px; user-select:all; }
+.ncard .btn { border:0; cursor:pointer; font:inherit; font-weight:600; }
+@media (max-width:640px) { .ncard { flex-direction:column; align-items:stretch; } .ncard-qr { flex-basis:auto; width:220px; margin:0 auto; } }
+footer.site { background:var(--ink); color:var(--soft); font-size:14px; padding:28px 0; }
+footer.site a { color:var(--soft); }
+footer.site .wrap { display:flex; flex-wrap:wrap; gap:8px 24px; justify-content:space-between; }
+@media (max-width:640px) {
+  body { font-size:16px; }
+  .hero { padding:36px 0 44px; }
+  main { padding:28px 0 40px; }
+  .btns .btn { flex:1 1 auto; text-align:center; }
+  .card { padding:16px; }
+  /* Wide tables (4+ columns) become one card per row: the first cell is the row title,
+     every other cell is prefixed with its column header (data-label, added by stack_tables). */
+  table.stack, table.stack tbody, table.stack tr, table.stack td { display:block; width:auto !important; }
+  table.stack { background:none; border:0; }
+  table.stack tr:first-child { display:none; }
+  table.stack tr { background:var(--card); border:1px solid var(--line); border-radius:12px; margin-bottom:12px; overflow:hidden; }
+  table.stack td { border-bottom:1px solid var(--line); padding:8px 14px; }
+  table.stack td:last-child { border-bottom:0; }
+  table.stack td:first-child { background:var(--ink); color:var(--paper); font-weight:600; }
+  table.stack td:not(:first-child)::before { content:attr(data-label); display:block; font-size:13px;
+    font-weight:600; color:var(--muted); text-transform:uppercase; letter-spacing:.5px; }
+  footer.site .wrap { flex-direction:column; }
+}
+</style>
+</head>
+<body>
+<header class="top"><div class="wrap">
+<a class="brand" href="/xx/">Nevod<span>.</span></a>
+<nav class="main"><a href="/xx/">Главная</a><a href="/xx/manifesto/">Манифест ZKI</a><a href="/xx/compare/">Сравнение</a><a href="/xx/security/">Безопасность</a><a href="/xx/docs/" aria-current="page">Документация</a><a href="/xx/download/">Скачать</a><a href="/xx/publications/">Публикации</a><a href="/xx/about/">О проекте</a></nav>
+<details class="menu"><summary aria-label="Меню"><span class="burger"></span></summary><nav><a href="/xx/">Главная</a><a href="/xx/manifesto/">Манифест ZKI</a><a href="/xx/compare/">Сравнение</a><a href="/xx/security/">Безопасность</a><a href="/xx/docs/" aria-current="page">Документация</a><a href="/xx/download/">Скачать</a><a href="/xx/publications/">Публикации</a><a href="/xx/about/">О проекте</a></nav></details>
+<details class="lang"><summary></summary><ul><li><a href="/uk/docs/node-maintenance/" hreflang="uk" lang="uk">Українська</a></li><li><a href="/en/docs/node-maintenance/" hreflang="en" lang="en">English</a></li><li><a href="/de/docs/node-maintenance/" hreflang="de" lang="de">Deutsch</a></li><li><a href="/tr/docs/node-maintenance/" hreflang="tr" lang="tr">Türkçe</a></li><li><a href="/es/docs/node-maintenance/" hreflang="es" lang="es">Español</a></li><li><a href="/it/docs/node-maintenance/" hreflang="it" lang="it">Italiano</a></li><li><a href="/fr/docs/node-maintenance/" hreflang="fr" lang="fr">Français</a></li></ul></details>
+</div></header>
+<main class="article"><div class="wrap docs-layout"><aside class="docs-side"><p class="docs-home"><a href="/xx/docs/">Документация</a></p><p class="docs-group">Для пользователей</p><ol><li><a href="/xx/docs/start/">Первые шаги</a></li><li><a href="/xx/docs/contacts/">Контакты</a></li><li><a href="/xx/docs/messages/">Сообщения и файлы</a></li><li><a href="/xx/docs/calls/">Звонки</a></li><li><a href="/xx/docs/bots/">Боты и AI-ассистенты</a></li><li><a href="/xx/docs/security/">Безопасность и резервные копии</a></li><li><a href="/xx/docs/faq/">Вопросы и проблемы</a></li></ol><p class="docs-group">Для владельцев узлов</p><ol><li><a href="/xx/docs/node-how/">Как устроен узел</a></li><li><a href="/xx/docs/node-install/">Установка шаг за шагом</a></li><li><a href="/xx/docs/node-panel/">Первая настройка в панели администратора</a></li><li><a href="/xx/docs/node-invite/">Как позвать людей</a></li><li><a href="/xx/docs/node-network/">Подключение к общей сети Nevod</a></li><li><a href="/xx/docs/node-turn/">Звонки через свой узел</a></li><li class="cur"><a href="/xx/docs/node-maintenance/" aria-current="page">Обслуживание</a><ul><li><a href="#s1">Обновление узла</a></li><li><a href="#s2">Резервная копия</a></li><li><a href="#s3">Восстановление и перенос на другой сервер</a></li><li><a href="#s4">Журналы</a></li><li><a href="#s5">Перезапуск, остановка, пароль</a></li><li><a href="#s6">Уход за сервером</a></li><li><a href="#s7">Если узел долго не работал</a></li></ul></li><li><a href="/xx/docs/node-admin/">Панель администратора: все страницы и настройки</a></li></ol></aside><div class="docs-main"><details class="docs-toc"><summary>Содержание</summary><p class="docs-home"><a href="/xx/docs/">Документация</a></p><p class="docs-group">Для пользователей</p><ol><li><a href="/xx/docs/start/">Первые шаги</a></li><li><a href="/xx/docs/contacts/">Контакты</a></li><li><a href="/xx/docs/messages/">Сообщения и файлы</a></li><li><a href="/xx/docs/calls/">Звонки</a></li><li><a href="/xx/docs/bots/">Боты и AI-ассистенты</a></li><li><a href="/xx/docs/security/">Безопасность и резервные копии</a></li><li><a href="/xx/docs/faq/">Вопросы и проблемы</a></li></ol><p class="docs-group">Для владельцев узлов</p><ol><li><a href="/xx/docs/node-how/">Как устроен узел</a></li><li><a href="/xx/docs/node-install/">Установка шаг за шагом</a></li><li><a href="/xx/docs/node-panel/">Первая настройка в панели администратора</a></li><li><a href="/xx/docs/node-invite/">Как позвать людей</a></li><li><a href="/xx/docs/node-network/">Подключение к общей сети Nevod</a></li><li><a href="/xx/docs/node-turn/">Звонки через свой узел</a></li><li class="cur"><a href="/xx/docs/node-maintenance/" aria-current="page">Обслуживание</a><ul><li><a href="#s1">Обновление узла</a></li><li><a href="#s2">Резервная копия</a></li><li><a href="#s3">Восстановление и перенос на другой сервер</a></li><li><a href="#s4">Журналы</a></li><li><a href="#s5">Перезапуск, остановка, пароль</a></li><li><a href="#s6">Уход за сервером</a></li><li><a href="#s7">Если узел долго не работал</a></li></ul></li><li><a href="/xx/docs/node-admin/">Панель администратора: все страницы и настройки</a></li></ol></details><h1>Обслуживание</h1>
+<p>Обновление узла, резервные копии, перенос на другой сервер, журналы и обычный уход за сервером. Все команды <code>docker compose</code> выполняются на сервере из папки <code>/opt/nevod/installer/docker</code>:</p>
+<pre><code>cd /opt/nevod/installer/docker</code></pre>
+<h2 id="s1">Обновление узла</h2>
+<p>Новые версии узла выходят в <a href="https://github.com/avk0978/nevod-messenger">исходном коде на GitHub</a> — чтобы узнавать о них, нажмите там <b>Watch</b>. Обновление:</p>
+<pre><code>cd /opt/nevod
+git pull
+cd installer/docker
+docker compose up -d --build</code></pre>
+<p>Узел перезапустится с новой версией; пользователи переподключатся сами, данные в папке <code>data/</code> сохраняются. После обновления загляните в <b>Диагностику</b> панели → <b>Проверить</b>.</p>
+<p>Старые образы после нескольких обновлений занимают место на диске — их можно удалить:</p>
+<pre><code>docker image prune -f</code></pre>
+<h2 id="s2">Резервная копия</h2>
+<p>Самое ценное на сервере — папка <code>data/</code>, а в ней файл <code>node.json</code>: это личность узла. Потеряете его — узел придётся создавать заново, с новым идентификатором, и всем пользователям регистрироваться на нём снова. Делайте копию хотя бы раз в неделю и после каждого изменения настроек.</p>
+<p><b>Сделать копию</b> (узел остановится на несколько секунд):</p>
+<pre><code>docker compose stop nevod_node
+tar czf ~/nevod-backup-$(date +%F).tar.gz data .env
+docker compose start nevod_node</code></pre>
+<p><b>Скачать её к себе.</b> На своём компьютере:</p>
+<pre><code>scp root@node.example.org:~/nevod-backup-*.tar.gz .</code></pre>
+<p>Храните копию не на том же сервере: если с сервером что-то случится, копия пропадёт вместе с ним.</p>
+<div class="note"><p>В копии лежат ключи узла и пароль панели из <code>.env</code>. Храните её так же бережно, как пароль: зашифрованный диск, менеджер паролей с вложениями или похожее место.</p></div>
+<h2 id="s3">Восстановление и перенос на другой сервер</h2>
+<p>Так же переносят узел на новый сервер. Домен остаётся прежним — меняется только сервер, на который он указывает.</p>
+<ol><li>На новом сервере выполните шаги 1, 3–6 <a href="../node-install/">установки</a> (сервер, Docker, файрвол, скачать Nevod) — <b>без</b> шагов 7–8.</li><li>Скопируйте копию на новый сервер и распакуйте её в папку комплекта:</li></ol>
+<pre><code>   scp nevod-backup-ДАТА.tar.gz root@НОВЫЙ-IP:/opt/nevod/installer/docker/</code></pre>
+<p>и на новом сервере:</p>
+<pre><code>   cd /opt/nevod/installer/docker
+   tar xzf nevod-backup-ДАТА.tar.gz</code></pre>
+<ol start="3"><li><b>Остановите узел на старом сервере</b> (<code>docker compose down</code>) — два узла с одной личностью одновременно работать не должны.</li><li>Смените A-запись домена на IP нового сервера и дождитесь, пока <code>ping node.example.org</code> покажет новый адрес.</li><li>Запустите узел на новом сервере: <code>docker compose up -d --build</code>. Caddy сам получит сертификат заново.</li></ol>
+<p>Пользователи ничего не делают: приложение подключится к тому же домену и найдёт там тот же узел.</p>
+<div class="note"><p>Сменить <b>домен</b> узла так просто нельзя: адрес для связи с другими узлами записан в личность узла при первом запуске. Выбирайте домен, который не придётся менять.</p></div>
+<h2 id="s4">Журналы</h2>
+<pre><code>docker compose logs --tail 100 nevod_node
+docker compose logs -f nevod_node</code></pre>
+<p>Первая команда показывает последние 100 строк, вторая — журнал в реальном времени (выход — <b>Ctrl+C</b>). Журнал Caddy — <code>docker compose logs caddy</code>. Последние записи узла видны и в панели: <b>Диагностика → Логи</b>.</p>
+<p>Журналы ограничены по объёму: 3 файла по 10 МБ на каждый контейнер, старые записи затираются сами. Тексты сообщений в журнал не попадают.</p>
+<h2 id="s5">Перезапуск, остановка, пароль</h2>
+<div class="tbl"><table><tr><th>Что нужно</th><th>Команда</th></tr><tr><td>Перезапустить узел (например, после смены имени или видимости в панели)</td><td><code>docker compose restart nevod_node</code></td></tr><tr><td>Остановить всё</td><td><code>docker compose down</code></td></tr><tr><td>Запустить снова</td><td><code>docker compose up -d</code></td></tr><tr><td>Посмотреть, что работает</td><td><code>docker compose ps</code></td></tr></table></div>
+<p><b>Сменить главный пароль панели:</b> впишите новый в строку <code>NEVOD_ADMIN_PASSWORD</code> в <code>.env</code> (<code>nano .env</code>) и выполните <code>docker compose up -d</code> — узел перезапустится с новым паролем. Личные учётные записи со страницы «Безопасность» от этого не меняются.</p>
+<h2 id="s6">Уход за сервером</h2>
+<ul><li><b>Обновления системы</b> — раз в месяц или чаще:</li></ul>
+<pre><code>  apt update &amp;&amp; apt upgrade -y
+  reboot</code></pre>
+<p>После перезагрузки узел, Caddy и coturn (если вы его ставили) запускаются сами.</p>
+<ul><li><b>Место на диске</b> — <code>df -h /</code>. Если места мало, удалите старые образы (<code>docker image prune -f</code>) и старые резервные копии на сервере.</li><li><b>Сертификат HTTPS</b> Caddy продлевает сам. Делать ничего не нужно, но порт 80 должен оставаться открытым.</li><li><b>Узел недоступен?</b> Проще всего узнать об этом сразу — подключите бесплатный сервис проверки доступности сайтов к адресу <code>https://node.example.org</code>: он пришлёт письмо, если узел перестанет отвечать.</li></ul>
+<h2 id="s7">Если узел долго не работал</h2>
+<p>Сообщения для пользователей, которые не выходили на связь, узел хранит до 72 часов, потом удаляет. Узел, который не выходил на связь 72 часа, другие узлы сети убирают из своих списков — после запуска он вернётся в них сам, по мере обмена списками.</p><p class="doc-nav"><a href="/xx/docs/node-turn/">← Звонки через свой узел</a><a href="/xx/docs/">↑ Документация</a><a href="/xx/docs/node-admin/">Панель администратора: все страницы и настройки →</a></p></div></div></main>
+<footer class="site"><div class="wrap">
+<div>© 2026 Nevod · Колпаков Андрей Валериевич</div>
+<div><a href="/xx/support/">Поддержка</a> · <a href="/xx/privacy/">Конфиденциальность</a> · <a href="/xx/terms/">Условия использования</a> · <a href="/xx/node/">Свой узел</a> · <a href="https://github.com/avk0978/nevod-messenger">Исходный код</a></div>
+</div></footer>
+</body>
+</html>

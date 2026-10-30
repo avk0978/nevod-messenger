@@ -54,7 +54,7 @@ Cada código sirve una sola vez. Crea uno distinto para cada persona; más en [I
 **Ajustes → Visibilidad en «Explorar la red»**:
 
 - `closed` (por defecto): el nodo no aparece en «Explorar la red» para los usuarios de otros nodos. Sirve para una familia, una organización, cualquier grupo cerrado.
-- `open`: el nodo aparece en «Explorar la red» y los usuarios de otros nodos pueden encontrarlo. Sirve para una comunidad abierta.
+- `open`: el nodo aparece en «Explorar la red» y los usuarios de otros nodos pueden encontrarlo. Sirve para una comunidad abierta. El nodo se ve mientras está conectado a la red, y solo para quien ya está registrado en algún nodo: antes de registrarse, la app solo muestra los nodos del proyecto.
 
 Esta elección no abre el registro: a quién admitir lo sigue decidiendo el modo de admisión de celdas (paso 2). El anillo dorado de nodo verificado en «Explorar la red» por ahora solo lo tienen los nodos del proyecto Nevod.
 

@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Установка шаг за шагом — Nevod</title>
+<meta name="description" content="Как поставить узел Nevod на арендованный сервер с нуля: от покупки сервера до первого входа в панель администратора. Пример — сервер с Ubuntu 26.04 и домен node.example.org; вместо него везде подставляйте свой.">
+<link rel="canonical" href="https://nevod.network/xx/docs/node-install/">
+<link rel="alternate" hreflang="uk" href="https://nevod.network/uk/docs/node-install/"><link rel="alternate" hreflang="en" href="https://nevod.network/en/docs/node-install/"><link rel="alternate" hreflang="ru" href="https://nevod.network/xx/docs/node-install/"><link rel="alternate" hreflang="de" href="https://nevod.network/de/docs/node-install/"><link rel="alternate" hreflang="tr" href="https://nevod.network/tr/docs/node-install/"><link rel="alternate" hreflang="es" href="https://nevod.network/es/docs/node-install/"><link rel="alternate" hreflang="it" href="https://nevod.network/it/docs/node-install/"><link rel="alternate" hreflang="fr" href="https://nevod.network/fr/docs/node-install/">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik:wght@500..700&family=IBM+Plex+Sans:wght@400;600&display=swap">
+<style>
+:root { --ink:#14213D; --paper:#F7F6F1; --card:#FFFFFF; --line:#DCDFE6; --muted:#4A5568;
+        --accent:#F2C230; --accent-ink:#8A6A00; --dark2:#1E2F55; --soft:#C9D3E6; }
+* { box-sizing:border-box; }
+html { -webkit-text-size-adjust:100%; }
+body { margin:0; background:var(--paper); color:var(--ink); font:17px/1.6 'IBM Plex Sans', Arial, sans-serif; }
+a { color:#1F4E9E; }
+h1,h2,h3 { font-family:'Rubik', Arial, sans-serif; line-height:1.15; margin:0 0 .5em;
+  overflow-wrap:break-word; hyphens:auto; }
+main, .hero { overflow-wrap:break-word; }
+h1 { font-size:clamp(28px,5vw,56px); } h2 { font-size:clamp(24px,3.2vw,34px); margin-top:1.4em; } h3 { font-size:20px; }
+[id] { scroll-margin-top:76px; }  /* sticky header must not cover an anchor target */
+main.article h2 { margin-top:1.6em; } main.article h1 { font-size:clamp(26px,4vw,44px); }
+main.article hr { border:0; border-top:1px solid var(--line); margin:28px 0; }
+main.article code { font-size:.9em; background:var(--card); border:1px solid var(--line); border-radius:4px; padding:0 4px; }
+main.article ol li, main.article ul li { margin-bottom:.35em; overflow-wrap:anywhere; }
+.pub { margin:16px 0; } .pub h3 a { text-decoration:none; } .pub-date { font-size:14px; color:var(--muted); }
+.pub-back { font-size:15px; }
+main.article pre { background:var(--ink); color:var(--paper); border-radius:8px; padding:12px 14px; overflow-x:auto;
+  font-size:14px; line-height:1.5; margin:0 0 1em; }
+main.article pre code { background:none; border:0; padding:0; font-size:inherit; color:inherit; }
+main.article .note { margin:0 0 1em; } main.article .note p:last-child { margin-bottom:0; }
+.toc li { margin-bottom:.35em; }
+.docs-layout { display:grid; grid-template-columns:250px minmax(0,1fr); gap:40px; align-items:start; }
+.docs-side { position:sticky; top:76px; max-height:calc(100vh - 92px); overflow-y:auto; font-size:15px;
+  line-height:1.4; padding-right:8px; border-right:1px solid var(--line); }
+.docs-side ol, .docs-toc ol { list-style:none; padding:0; margin:0 0 14px; }
+.docs-side li, .docs-toc li { margin:0; }
+.docs-side a, .docs-toc a { display:block; padding:4px 8px; border-radius:6px; text-decoration:none; color:var(--ink); }
+.docs-side a:hover, .docs-toc a:hover { background:var(--card); }
+.docs-side li.cur > a, .docs-toc li.cur > a { background:var(--card); font-weight:600; box-shadow:inset 3px 0 0 var(--accent); }
+.docs-side ul, .docs-toc ul { list-style:none; padding:2px 0 6px 12px; margin:0; }
+.docs-side ul a, .docs-toc ul a { font-size:14px; color:var(--muted); padding:3px 8px; }
+.docs-side .soon, .docs-toc .soon { padding:4px 8px; color:var(--muted); opacity:.7; }
+.docs-group { font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.6px; color:var(--muted);
+  margin:14px 8px 6px; }
+.docs-home { margin:0 0 4px; font-weight:600; } .docs-home a { padding:4px 8px; }
+.docs-toc { display:none; background:var(--card); border:1px solid var(--line); border-radius:10px; margin:0 0 20px; }
+.docs-toc summary { cursor:pointer; padding:10px 14px; font-weight:600; }
+.docs-toc[open] summary { border-bottom:1px solid var(--line); }
+.docs-toc > p, .docs-toc > ol { margin-left:8px; margin-right:8px; }
+@media (max-width:960px) {
+  .docs-layout { display:block; }
+  .docs-side { display:none; }
+  .docs-toc { display:block; }
+}
+.doc-nav { display:flex; flex-wrap:wrap; gap:8px 24px; justify-content:space-between; font-size:15px;
+  border-top:1px solid var(--line); padding-top:16px; margin-top:32px; }
+p, ul, ol, table { margin:0 0 1em; }
+.wrap { max-width:1080px; margin:0 auto; padding:0 16px; }
+header.top { background:var(--ink); color:var(--paper); position:sticky; top:0; z-index:10; }
+header.top .wrap { display:flex; align-items:center; gap:16px; min-height:60px; }
+header.top a { color:var(--paper); text-decoration:none; }
+.brand { font-family:'Rubik', Arial, sans-serif; font-weight:700; font-size:20px; margin-right:auto; }
+.brand span { color:var(--accent); }
+nav.main { display:flex; gap:14px; font-size:15px; }
+nav.main a { opacity:.85; white-space:nowrap; } nav.main a[aria-current] { opacity:1; border-bottom:2px solid var(--accent); }
+details.menu { display:none; order:3; }
+details.menu summary { list-style:none; cursor:pointer; width:44px; height:44px; margin-right:-10px;
+  display:flex; align-items:center; justify-content:center; }
+details.menu summary::-webkit-details-marker { display:none; }
+.burger, .burger::before, .burger::after { display:block; width:22px; height:2px; background:var(--paper);
+  border-radius:2px; position:relative; transition:transform .2s, background .2s; }
+.burger::before, .burger::after { content:""; position:absolute; left:0; }
+.burger::before { top:-7px; } .burger::after { top:7px; }
+details.menu[open] .burger { background:transparent; }
+details.menu[open] .burger::before { transform:translateY(7px) rotate(45deg); }
+details.menu[open] .burger::after { transform:translateY(-7px) rotate(-45deg); }
+details.menu nav { position:absolute; left:0; right:0; top:100%; background:var(--ink);
+  border-top:1px solid var(--dark2); box-shadow:0 12px 24px rgba(0,0,0,.25); padding:6px 0 12px; }
+details.menu nav a { display:block; padding:12px 16px; font-size:17px; opacity:.9; }
+details.menu nav a[aria-current] { opacity:1; color:var(--accent); }
+details.lang { position:relative; font-size:15px; }
+details.lang summary { list-style:none; cursor:pointer; border:1px solid var(--accent); color:var(--accent);
+  padding:3px 12px; border-radius:999px; }
+details.lang summary::-webkit-details-marker { display:none; }
+details.lang summary:empty { min-width:6em; height:calc(1.6em + 8px); box-sizing:border-box; }
+details.lang ul { position:absolute; right:0; top:34px; background:var(--card); color:var(--ink); list-style:none;
+  padding:8px 0; margin:0; border-radius:10px; box-shadow:0 8px 24px rgba(0,0,0,.2); min-width:160px; }
+details.lang li a { color:var(--ink); display:block; padding:6px 16px; }
+@media (max-width:960px) {
+  nav.main { display:none; }
+  details.menu { display:block; }
+  header.top .wrap { min-height:56px; gap:12px; }
+  details.lang li a { padding:10px 16px; }
+}
+.hero { background:var(--ink); color:var(--paper); padding:56px 0 64px; }
+.hero p.lead { font-size:clamp(18px,2.2vw,22px); color:var(--soft); max-width:760px; }
+.eyebrow { font-size:14px; letter-spacing:3px; text-transform:uppercase; color:var(--accent); margin-bottom:12px; }
+.btns { display:flex; gap:12px; flex-wrap:wrap; margin-top:24px; }
+.btn { display:inline-block; padding:12px 22px; border-radius:10px; text-decoration:none; font-weight:600; }
+.btn.primary { background:var(--accent); color:var(--ink); } .btn.ghost { border:1px solid var(--soft); color:var(--paper); }
+main { padding:40px 0 56px; }
+.grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:16px; margin:16px 0 8px; }
+.card { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:20px; }
+.card h3 { margin-bottom:6px; } .card p { margin:0; color:var(--muted); }
+.status td:first-child { font-weight:600; }
+.tbl { overflow-x:auto; }
+table { border-collapse:collapse; width:100%; background:var(--card); border:1px solid var(--line); border-radius:12px; }
+th, td { text-align:left; padding:10px 12px; border-bottom:1px solid var(--line); vertical-align:top; }
+th { background:var(--ink); color:var(--paper); font-weight:600; }
+.note { background:#FBF3D6; border-left:4px solid var(--accent); padding:14px 16px; border-radius:8px; }
+.legal h2 { font-size:22px; }
+.ncard { display:flex; gap:20px; align-items:flex-start; background:var(--card); border:1px solid var(--line);
+  border-radius:14px; padding:20px; margin:8px 0 16px; }
+.ncard-qr { flex:0 0 220px; } .ncard-qr svg { display:block; width:100%; height:auto; }
+.ncard-body { min-width:0; } .ncard-body h3 { margin-bottom:6px; } .ncard-body p { color:var(--muted); }
+.ncard code { display:block; font-size:12px; line-height:1.45; word-break:break-all; background:var(--paper);
+  border:1px solid var(--line); border-radius:8px; padding:8px 10px; margin:0 0 12px; user-select:all; }
+.ncard .btn { border:0; cursor:pointer; font:inherit; font-weight:600; }
+@media (max-width:640px) { .ncard { flex-direction:column; align-items:stretch; } .ncard-qr { flex-basis:auto; width:220px; margin:0 auto; } }
+footer.site { background:var(--ink); color:var(--soft); font-size:14px; padding:28px 0; }
+footer.site a { color:var(--soft); }
+footer.site .wrap { display:flex; flex-wrap:wrap; gap:8px 24px; justify-content:space-between; }
+@media (max-width:640px) {
+  body { font-size:16px; }
+  .hero { padding:36px 0 44px; }
+  main { padding:28px 0 40px; }
+  .btns .btn { flex:1 1 auto; text-align:center; }
+  .card { padding:16px; }
+  /* Wide tables (4+ columns) become one card per row: the first cell is the row title,
+     every other cell is prefixed with its column header (data-label, added by stack_tables). */
+  table.stack, table.stack tbody, table.stack tr, table.stack td { display:block; width:auto !important; }
+  table.stack { background:none; border:0; }
+  table.stack tr:first-child { display:none; }
+  table.stack tr { background:var(--card); border:1px solid var(--line); border-radius:12px; margin-bottom:12px; overflow:hidden; }
+  table.stack td { border-bottom:1px solid var(--line); padding:8px 14px; }
+  table.stack td:last-child { border-bottom:0; }
+  table.stack td:first-child { background:var(--ink); color:var(--paper); font-weight:600; }
+  table.stack td:not(:first-child)::before { content:attr(data-label); display:block; font-size:13px;
+    font-weight:600; color:var(--muted); text-transform:uppercase; letter-spacing:.5px; }
+  footer.site .wrap { flex-direction:column; }
+}
+</style>
+</head>
+<body>
+<header class="top"><div class="wrap">
+<a class="brand" href="/xx/">Nevod<span>.</span></a>
+<nav class="main"><a href="/xx/">Главная</a><a href="/xx/manifesto/">Манифест ZKI</a><a href="/xx/compare/">Сравнение</a><a href="/xx/security/">Безопасность</a><a href="/xx/docs/" aria-current="page">Документация</a><a href="/xx/download/">Скачать</a><a href="/xx/publications/">Публикации</a><a href="/xx/about/">О проекте</a></nav>
+<details class="menu"><summary aria-label="Меню"><span class="burger"></span></summary><nav><a href="/xx/">Главная</a><a href="/xx/manifesto/">Манифест ZKI</a><a href="/xx/compare/">Сравнение</a><a href="/xx/security/">Безопасность</a><a href="/xx/docs/" aria-current="page">Документация</a><a href="/xx/download/">Скачать</a><a href="/xx/publications/">Публикации</a><a href="/xx/about/">О проекте</a></nav></details>
+<details class="lang"><summary></summary><ul><li><a href="/uk/docs/node-install/" hreflang="uk" lang="uk">Українська</a></li><li><a href="/en/docs/node-install/" hreflang="en" lang="en">English</a></li><li><a href="/de/docs/node-install/" hreflang="de" lang="de">Deutsch</a></li><li><a href="/tr/docs/node-install/" hreflang="tr" lang="tr">Türkçe</a></li><li><a href="/es/docs/node-install/" hreflang="es" lang="es">Español</a></li><li><a href="/it/docs/node-install/" hreflang="it" lang="it">Italiano</a></li><li><a href="/fr/docs/node-install/" hreflang="fr" lang="fr">Français</a></li></ul></details>
+</div></header>
+<main class="article"><div class="wrap docs-layout"><aside class="docs-side"><p class="docs-home"><a href="/xx/docs/">Документация</a></p><p class="docs-group">Для пользователей</p><ol><li><a href="/xx/docs/start/">Первые шаги</a></li><li><a href="/xx/docs/contacts/">Контакты</a></li><li><a href="/xx/docs/messages/">Сообщения и файлы</a></li><li><a href="/xx/docs/calls/">Звонки</a></li><li><a href="/xx/docs/bots/">Боты и AI-ассистенты</a></li><li><a href="/xx/docs/security/">Безопасность и резервные копии</a></li><li><a href="/xx/docs/faq/">Вопросы и проблемы</a></li></ol><p class="docs-group">Для владельцев узлов</p><ol><li><a href="/xx/docs/node-how/">Как устроен узел</a></li><li class="cur"><a href="/xx/docs/node-install/" aria-current="page">Установка шаг за шагом</a><ul><li><a href="#s1">1. Арендуйте сервер</a></li><li><a href="#s2">2. Направьте домен на сервер</a></li><li><a href="#s3">3. Подключитесь к серверу</a></li><li><a href="#s4">4. Установите Docker и git</a></li><li><a href="#s5">5. Включите файрвол</a></li><li><a href="#s6">6. Скачайте Nevod</a></li><li><a href="#s7">7. Заполните настройки</a></li><li><a href="#s8">8. Запустите узел</a></li><li><a href="#s9">9. Проверьте, что всё работает</a></li><li><a href="#s10">10. По желанию: закройте панель от интернета</a></li><li><a href="#s11">Если что-то не так</a></li></ul></li><li><a href="/xx/docs/node-panel/">Первая настройка в панели администратора</a></li><li><a href="/xx/docs/node-invite/">Как позвать людей</a></li><li><a href="/xx/docs/node-network/">Подключение к общей сети Nevod</a></li><li><a href="/xx/docs/node-turn/">Звонки через свой узел</a></li><li><a href="/xx/docs/node-maintenance/">Обслуживание</a></li><li><a href="/xx/docs/node-admin/">Панель администратора: все страницы и настройки</a></li></ol></aside><div class="docs-main"><details class="docs-toc"><summary>Содержание</summary><p class="docs-home"><a href="/xx/docs/">Документация</a></p><p class="docs-group">Для пользователей</p><ol><li><a href="/xx/docs/start/">Первые шаги</a></li><li><a href="/xx/docs/contacts/">Контакты</a></li><li><a href="/xx/docs/messages/">Сообщения и файлы</a></li><li><a href="/xx/docs/calls/">Звонки</a></li><li><a href="/xx/docs/bots/">Боты и AI-ассистенты</a></li><li><a href="/xx/docs/security/">Безопасность и резервные копии</a></li><li><a href="/xx/docs/faq/">Вопросы и проблемы</a></li></ol><p class="docs-group">Для владельцев узлов</p><ol><li><a href="/xx/docs/node-how/">Как устроен узел</a></li><li class="cur"><a href="/xx/docs/node-install/" aria-current="page">Установка шаг за шагом</a><ul><li><a href="#s1">1. Арендуйте сервер</a></li><li><a href="#s2">2. Направьте домен на сервер</a></li><li><a href="#s3">3. Подключитесь к серверу</a></li><li><a href="#s4">4. Установите Docker и git</a></li><li><a href="#s5">5. Включите файрвол</a></li><li><a href="#s6">6. Скачайте Nevod</a></li><li><a href="#s7">7. Заполните настройки</a></li><li><a href="#s8">8. Запустите узел</a></li><li><a href="#s9">9. Проверьте, что всё работает</a></li><li><a href="#s10">10. По желанию: закройте панель от интернета</a></li><li><a href="#s11">Если что-то не так</a></li></ul></li><li><a href="/xx/docs/node-panel/">Первая настройка в панели администратора</a></li><li><a href="/xx/docs/node-invite/">Как позвать людей</a></li><li><a href="/xx/docs/node-network/">Подключение к общей сети Nevod</a></li><li><a href="/xx/docs/node-turn/">Звонки через свой узел</a></li><li><a href="/xx/docs/node-maintenance/">Обслуживание</a></li><li><a href="/xx/docs/node-admin/">Панель администратора: все страницы и настройки</a></li></ol></details><h1>Установка шаг за шагом</h1>
+<p>Как поставить узел Nevod на арендованный сервер с нуля: от покупки сервера до первого входа в панель администратора. Пример — сервер с Ubuntu 26.04 и домен <code>node.example.org</code>; вместо него везде подставляйте свой.</p>
+<p>Все команды ниже вводятся в терминале сервера, их можно копировать целиком. Что такое узел и что он хранит — в разделе <a href="../node-how/">Как устроен узел</a>.</p>
+<h2 id="s1">1. Арендуйте сервер</h2>
+<p>Подойдёт любой VPS у любого провайдера: 1 процессор, 1 ГБ памяти, 10 ГБ диска, система <b>Ubuntu 24.04</b> или <b>26.04</b>. При заказе провайдер выдаст <b>IP-адрес</b> сервера и пароль пользователя <code>root</code> (или попросит загрузить SSH-ключ).</p>
+<p>Если у провайдера есть свой сетевой файрвол в панели управления (например, Firewalls у Hetzner, Security groups у других), откройте в нём входящие порты <b>22, 80, 443 и 8765</b> (TCP).</p>
+<h2 id="s2">2. Направьте домен на сервер</h2>
+<p>Для узла нужен свой домен или поддомен, например <code>node.example.org</code>. Без него не обойтись по двум причинам:</p>
+<ul><li><b>Телефоны подключаются к узлу по адресу <code>https://домен/nevod-ws</code>.</b> Сертификат HTTPS, которому iPhone доверяет без всяких настроек, Caddy получает от Let's Encrypt на доменное имя.</li><li><b>Адрес узла хранится у всех:</b> в телефонах пользователей, в их контактных карточках, у других узлов сети. Если вы переедете на другой сервер или провайдер сменит IP-адрес, достаточно поправить одну DNS-запись — пользователи ничего не заметят. С голым IP-адресом после переезда связь пропала бы у всех, и приглашения пришлось бы рассылать заново.</li></ul>
+<p>Если своего домена ещё нет, его можно купить у любого регистратора (Cloudflare, Namecheap, Porkbun, Gandi и другие) — обычно это несколько долларов или евро в год. Для узла достаточно одного поддомена, а сам домен можно использовать и для чего-то ещё.</p>
+<p>В панели управления вашим доменом создайте <b>A-запись</b>: имя — например <code>node</code> (получится <code>node.example.org</code>), значение — IP-адрес сервера.</p>
+<p>Подождите несколько минут и проверьте с любого компьютера:</p>
+<pre><code>ping node.example.org</code></pre>
+<p>В ответе должен быть IP-адрес вашего сервера. Пока этого нет, дальше идти бессмысленно: сертификат HTTPS выдаётся только домену, который уже указывает на сервер.</p>
+<div class="note"><p>Если домен обслуживает Cloudflare, отключите для этой записи проксирование (серое облако, «DNS only»). Иначе телефоны и другие узлы будут подключаться к Cloudflare, а не к вашему серверу.</p></div>
+<h2 id="s3">3. Подключитесь к серверу</h2>
+<p>На своём компьютере откройте терминал (на Windows — PowerShell, на Mac — «Терминал») и введите:</p>
+<pre><code>ssh root@node.example.org</code></pre>
+<p>При первом подключении ответьте <code>yes</code> и введите пароль от провайдера.</p>
+<h2 id="s4">4. Установите Docker и git</h2>
+<pre><code>apt update &amp;&amp; apt upgrade -y
+apt install -y git
+curl -fsSL https://get.docker.com | sh</code></pre>
+<p>Последняя команда — официальный установщик Docker. Проверьте, что всё на месте:</p>
+<pre><code>docker compose version</code></pre>
+<p>Должна появиться строка вида <code>Docker Compose version v…</code>.</p>
+<div class="note"><p>Если после обновления на экране или при следующем входе появилась надпись <code>*** System restart required ***</code>, перезагрузите сервер командой <code>reboot</code>, через минуту подключитесь снова (шаг 3) и продолжайте.</p></div>
+<h2 id="s5">5. Включите файрвол</h2>
+<pre><code>ufw allow OpenSSH
+ufw allow 80/tcp
+ufw allow 443/tcp
+ufw allow 8765/tcp
+ufw enable</code></pre>
+<p>На вопрос ответьте <code>y</code>. Порты 80 и 443 нужны для HTTPS (телефоны и панель), 8765 — для связи с другими узлами.</p>
+<div class="note"><p>Docker открывает порты своих контейнеров сам, в обход <code>ufw</code>. Поэтому в нашем комплекте панель администратора (порт 8766) опубликована только для самого сервера — не меняйте это в <code>docker-compose.yml</code>.</p></div>
+<h2 id="s6">6. Скачайте Nevod</h2>
+<div class="note"><p>Все команды дальше вводятся на сервере: слева в строке ввода должно быть <code>root@…</code>. Если там <code>PS C:\…&gt;</code> или имя вашего компьютера, соединение с сервером закрылось — подключитесь снова (шаг 3).</p></div>
+<pre><code>git clone https://github.com/avk0978/nevod-messenger.git /opt/nevod
+cd /opt/nevod/installer/docker</code></pre>
+<h2 id="s7">7. Заполните настройки</h2>
+<p>Создайте файл настроек из образца:</p>
+<pre><code>cp .env.example .env</code></pre>
+<p>Придумайте пароль для панели администратора. Удобнее всего сгенерировать длинный случайный:</p>
+<pre><code>openssl rand -base64 24</code></pre>
+<p>Скопируйте результат и сохраните его в надёжном месте — например, в менеджере паролей (Bitwarden, KeePass, «Пароли» на iPhone и Mac). Теперь откройте файл настроек:</p>
+<pre><code>nano .env</code></pre>
+<p>Измените две строки:</p>
+<pre><code>NEVOD_DOMAIN=node.example.org
+NEVOD_ADMIN_PASSWORD=сюда-сгенерированный-пароль</code></pre>
+<p>Остальное оставьте как есть. Сохраните файл: <b>Ctrl+O</b>, затем <b>Enter</b>, выход — <b>Ctrl+X</b>.</p>
+<div class="tbl"><table><tr><th>Настройка</th><th>Что значит</th></tr><tr><td><code>NEVOD_DOMAIN</code></td><td>Домен узла. Телефоны подключаются к <code>https://домен/nevod-ws</code>, другие узлы — к <code>домен:8765</code>.</td></tr><tr><td><code>NEVOD_ADMIN_PASSWORD</code></td><td>Пароль панели администратора. Без него узел не запустится.</td></tr><tr><td><code>NEVOD_ADMIN_PUBLIC</code></td><td><code>true</code> — панель открывается в браузере по адресу <code>https://домен/nevod-admin</code>; <code>false</code> — панель закрыта для интернета (см. шаг 10).</td></tr><tr><td><code>TURN_SECRET</code></td><td>Только если вы ставите свой ретранслятор звонков, см. <a href="../node-turn/">Звонки через свой узел</a>. Обычно пусто.</td></tr></table></div>
+<h2 id="s8">8. Запустите узел</h2>
+<pre><code>docker compose up -d --build</code></pre>
+<p>Первый запуск занимает несколько минут: Docker собирает образ узла и скачивает Caddy. Когда команда закончится, проверьте:</p>
+<pre><code>docker compose ps</code></pre>
+<p>Оба контейнера — <code>nevod_node</code> и <code>nevod_caddy</code> — должны быть в состоянии <code>Up</code> (или <code>running</code>).</p>
+<h2 id="s9">9. Проверьте, что всё работает</h2>
+<p>Откройте в браузере <code>https://node.example.org</code> — должна появиться строка «Nevod node — <a href="https://nevod.network»">https://nevod.network»</a>, а браузер не должен ругаться на сертификат.</p>
+<p>Теперь откройте <code>https://node.example.org/nevod-admin</code>. Браузер спросит логин и пароль: логин — любой, пароль — тот, что вы вписали в <code>.env</code>. Откроется панель администратора. Что в ней сделать в первую очередь — в разделе <a href="../node-panel/">Первая настройка в панели администратора</a>.</p>
+<div class="note"><p>Пять неверных паролей подряд с одного адреса закрывают вход в панель для этого адреса на 15 минут. Если это случилось — просто подождите.</p></div>
+<h2 id="s10">10. По желанию: закройте панель от интернета</h2>
+<p>Если вы не хотите, чтобы адрес панели вообще открывался из интернета, замените в <code>.env</code> строку <code>NEVOD_ADMIN_PUBLIC=true</code> на <code>NEVOD_ADMIN_PUBLIC=false</code> и примените:</p>
+<pre><code>docker compose up -d</code></pre>
+<p>Тогда панель доступна только через SSH-туннель. На своём компьютере выполните</p>
+<pre><code>ssh -L 8766:127.0.0.1:8766 root@node.example.org</code></pre>
+<p>и, пока это окно открыто, откройте в браузере <code>http://localhost:8766/nevod-admin</code>.</p>
+<p>Если на вашем компьютере порт 8766 уже занят (например, там работает другой узел Nevod), возьмите другой: <code>ssh -L 18766:127.0.0.1:8766 root@node.example.org</code> и <code>http://localhost:18766/nevod-admin</code>. Первое число — порт на вашем компьютере, второе — порт панели на сервере, его не меняйте.</p>
+<h2 id="s11">Если что-то не так</h2>
+<div class="tbl"><table><tr><th>Что видите</th><th>В чём обычно дело</th></tr><tr><td>Браузер пишет, что сертификат недействителен, или сайт не открывается</td><td>Домен ещё не указывает на сервер (шаг 2) или закрыт порт 80/443 (шаги 1 и 5). Посмотрите журнал Caddy: <code>docker compose logs caddy</code>. Когда причина устранена, Caddy сам повторит попытку.</td></tr><tr><td><code>docker compose up</code> пишет <code>address already in use</code></td><td>На сервере уже работает другой веб-сервер (часто Apache или nginx от провайдера). Остановите его: <code>systemctl disable --now apache2</code> или <code>systemctl disable --now nginx</code>.</td></tr><tr><td>Ошибка <code>set NEVOD_ADMIN_PASSWORD in .env</code> или <code>set NEVOD_DOMAIN in .env</code></td><td>Не заполнена эта строка в <code>.env</code> (шаг 7).</td></tr><tr><td>Ошиблись в домене в <code>.env</code> (сертификат не выдаётся, в журнале Caddy — <code>NXDOMAIN</code>)</td><td>Остановите узел: <code>docker compose down</code>, исправьте <code>NEVOD_DOMAIN</code> в <code>.env</code>, удалите папку данных: <code>rm -rf data</code>, и запустите снова: <code>docker compose up -d</code>. Удалять <code>data</code> можно, только пока на узле никто не зарегистрирован, — иначе узел останется со старым адресом, а исправлять его придётся вручную.</td></tr><tr><td>Панель снова и снова спрашивает пароль</td><td>Неверный пароль. Посмотреть, какой записан: <code>grep PASSWORD .env</code>.</td></tr><tr><td>Панель отвечает «Too many failed logins»</td><td>Сработала защита от подбора пароля — подождите 15 минут.</td></tr><tr><td><code>nevod_node</code> всё время перезапускается</td><td>Журнал узла покажет причину: <code>docker compose logs --tail 50 nevod_node</code>.</td></tr></table></div>
+<p>Журналы обоих контейнеров целиком: <code>docker compose logs</code>. Все команды <code>docker compose</code> выполняются из папки <code>/opt/nevod/installer/docker</code>.</p><p class="doc-nav"><a href="/xx/docs/node-how/">← Как устроен узел</a><a href="/xx/docs/">↑ Документация</a><a href="/xx/docs/node-panel/">Первая настройка в панели администратора →</a></p></div></div></main>
+<footer class="site"><div class="wrap">
+<div>© 2026 Nevod · Колпаков Андрей Валериевич</div>
+<div><a href="/xx/support/">Поддержка</a> · <a href="/xx/privacy/">Конфиденциальность</a> · <a href="/xx/terms/">Условия использования</a> · <a href="/xx/node/">Свой узел</a> · <a href="https://github.com/avk0978/nevod-messenger">Исходный код</a></div>
+</div></footer>
+</body>
+</html>

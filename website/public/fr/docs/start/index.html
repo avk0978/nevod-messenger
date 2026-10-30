@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Premiers pas — Nevod</title>
+<meta name="description" content="Comment installer Nevod, vous inscrire et écrire votre premier message. Cela prend quelques minutes, sans numéro de téléphone ni adresse e-mail.">
+<link rel="canonical" href="https://nevod.network/fr/docs/start/">
+<link rel="alternate" hreflang="uk" href="https://nevod.network/uk/docs/start/"><link rel="alternate" hreflang="en" href="https://nevod.network/en/docs/start/"><link rel="alternate" hreflang="de" href="https://nevod.network/de/docs/start/"><link rel="alternate" hreflang="tr" href="https://nevod.network/tr/docs/start/"><link rel="alternate" hreflang="es" href="https://nevod.network/es/docs/start/"><link rel="alternate" hreflang="it" href="https://nevod.network/it/docs/start/"><link rel="alternate" hreflang="fr" href="https://nevod.network/fr/docs/start/">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik:wght@500..700&family=IBM+Plex+Sans:wght@400;600&display=swap">
+<style>
+:root { --ink:#14213D; --paper:#F7F6F1; --card:#FFFFFF; --line:#DCDFE6; --muted:#4A5568;
+        --accent:#F2C230; --accent-ink:#8A6A00; --dark2:#1E2F55; --soft:#C9D3E6; }
+* { box-sizing:border-box; }
+html { -webkit-text-size-adjust:100%; }
+body { margin:0; background:var(--paper); color:var(--ink); font:17px/1.6 'IBM Plex Sans', Arial, sans-serif; }
+a { color:#1F4E9E; }
+h1,h2,h3 { font-family:'Rubik', Arial, sans-serif; line-height:1.15; margin:0 0 .5em;
+  overflow-wrap:break-word; hyphens:auto; }
+main, .hero { overflow-wrap:break-word; }
+h1 { font-size:clamp(28px,5vw,56px); } h2 { font-size:clamp(24px,3.2vw,34px); margin-top:1.4em; } h3 { font-size:20px; }
+[id] { scroll-margin-top:76px; }  /* sticky header must not cover an anchor target */
+main.article h2 { margin-top:1.6em; } main.article h1 { font-size:clamp(26px,4vw,44px); }
+main.article hr { border:0; border-top:1px solid var(--line); margin:28px 0; }
+main.article code { font-size:.9em; background:var(--card); border:1px solid var(--line); border-radius:4px; padding:0 4px; }
+main.article ol li, main.article ul li { margin-bottom:.35em; overflow-wrap:anywhere; }
+.pub { margin:16px 0; } .pub h3 a { text-decoration:none; } .pub-date { font-size:14px; color:var(--muted); }
+.pub-back { font-size:15px; }
+main.article pre { background:var(--ink); color:var(--paper); border-radius:8px; padding:12px 14px; overflow-x:auto;
+  font-size:14px; line-height:1.5; margin:0 0 1em; }
+main.article pre code { background:none; border:0; padding:0; font-size:inherit; color:inherit; }
+main.article .note { margin:0 0 1em; } main.article .note p:last-child { margin-bottom:0; }
+.toc li { margin-bottom:.35em; }
+.docs-layout { display:grid; grid-template-columns:250px minmax(0,1fr); gap:40px; align-items:start; }
+.docs-side { position:sticky; top:76px; max-height:calc(100vh - 92px); overflow-y:auto; font-size:15px;
+  line-height:1.4; padding-right:8px; border-right:1px solid var(--line); }
+.docs-side ol, .docs-toc ol { list-style:none; padding:0; margin:0 0 14px; }
+.docs-side li, .docs-toc li { margin:0; }
+.docs-side a, .docs-toc a { display:block; padding:4px 8px; border-radius:6px; text-decoration:none; color:var(--ink); }
+.docs-side a:hover, .docs-toc a:hover { background:var(--card); }
+.docs-side li.cur > a, .docs-toc li.cur > a { background:var(--card); font-weight:600; box-shadow:inset 3px 0 0 var(--accent); }
+.docs-side ul, .docs-toc ul { list-style:none; padding:2px 0 6px 12px; margin:0; }
+.docs-side ul a, .docs-toc ul a { font-size:14px; color:var(--muted); padding:3px 8px; }
+.docs-side .soon, .docs-toc .soon { padding:4px 8px; color:var(--muted); opacity:.7; }
+.docs-group { font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.6px; color:var(--muted);
+  margin:14px 8px 6px; }
+.docs-home { margin:0 0 4px; font-weight:600; } .docs-home a { padding:4px 8px; }
+.docs-toc { display:none; background:var(--card); border:1px solid var(--line); border-radius:10px; margin:0 0 20px; }
+.docs-toc summary { cursor:pointer; padding:10px 14px; font-weight:600; }
+.docs-toc[open] summary { border-bottom:1px solid var(--line); }
+.docs-toc > p, .docs-toc > ol { margin-left:8px; margin-right:8px; }
+@media (max-width:960px) {
+  .docs-layout { display:block; }
+  .docs-side { display:none; }
+  .docs-toc { display:block; }
+}
+.doc-nav { display:flex; flex-wrap:wrap; gap:8px 24px; justify-content:space-between; font-size:15px;
+  border-top:1px solid var(--line); padding-top:16px; margin-top:32px; }
+p, ul, ol, table { margin:0 0 1em; }
+.wrap { max-width:1080px; margin:0 auto; padding:0 16px; }
+header.top { background:var(--ink); color:var(--paper); position:sticky; top:0; z-index:10; }
+header.top .wrap { display:flex; align-items:center; gap:16px; min-height:60px; }
+header.top a { color:var(--paper); text-decoration:none; }
+.brand { font-family:'Rubik', Arial, sans-serif; font-weight:700; font-size:20px; margin-right:auto; }
+.brand span { color:var(--accent); }
+nav.main { display:flex; gap:14px; font-size:15px; }
+nav.main a { opacity:.85; white-space:nowrap; } nav.main a[aria-current] { opacity:1; border-bottom:2px solid var(--accent); }
+details.menu { display:none; order:3; }
+details.menu summary { list-style:none; cursor:pointer; width:44px; height:44px; margin-right:-10px;
+  display:flex; align-items:center; justify-content:center; }
+details.menu summary::-webkit-details-marker { display:none; }
+.burger, .burger::before, .burger::after { display:block; width:22px; height:2px; background:var(--paper);
+  border-radius:2px; position:relative; transition:transform .2s, background .2s; }
+.burger::before, .burger::after { content:""; position:absolute; left:0; }
+.burger::before { top:-7px; } .burger::after { top:7px; }
+details.menu[open] .burger { background:transparent; }
+details.menu[open] .burger::before { transform:translateY(7px) rotate(45deg); }
+details.menu[open] .burger::after { transform:translateY(-7px) rotate(-45deg); }
+details.menu nav { position:absolute; left:0; right:0; top:100%; background:var(--ink);
+  border-top:1px solid var(--dark2); box-shadow:0 12px 24px rgba(0,0,0,.25); padding:6px 0 12px; }
+details.menu nav a { display:block; padding:12px 16px; font-size:17px; opacity:.9; }
+details.menu nav a[aria-current] { opacity:1; color:var(--accent); }
+details.lang { position:relative; font-size:15px; }
+details.lang summary { list-style:none; cursor:pointer; border:1px solid var(--accent); color:var(--accent);
+  padding:3px 12px; border-radius:999px; }
+details.lang summary::-webkit-details-marker { display:none; }
+details.lang summary:empty { min-width:6em; height:calc(1.6em + 8px); box-sizing:border-box; }
+details.lang ul { position:absolute; right:0; top:34px; background:var(--card); color:var(--ink); list-style:none;
+  padding:8px 0; margin:0; border-radius:10px; box-shadow:0 8px 24px rgba(0,0,0,.2); min-width:160px; }
+details.lang li a { color:var(--ink); display:block; padding:6px 16px; }
+@media (max-width:960px) {
+  nav.main { display:none; }
+  details.menu { display:block; }
+  header.top .wrap { min-height:56px; gap:12px; }
+  details.lang li a { padding:10px 16px; }
+}
+.hero { background:var(--ink); color:var(--paper); padding:56px 0 64px; }
+.hero p.lead { font-size:clamp(18px,2.2vw,22px); color:var(--soft); max-width:760px; }
+.eyebrow { font-size:14px; letter-spacing:3px; text-transform:uppercase; color:var(--accent); margin-bottom:12px; }
+.btns { display:flex; gap:12px; flex-wrap:wrap; margin-top:24px; }
+.btn { display:inline-block; padding:12px 22px; border-radius:10px; text-decoration:none; font-weight:600; }
+.btn.primary { background:var(--accent); color:var(--ink); } .btn.ghost { border:1px solid var(--soft); color:var(--paper); }
+main { padding:40px 0 56px; }
+.grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:16px; margin:16px 0 8px; }
+.card { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:20px; }
+.card h3 { margin-bottom:6px; } .card p { margin:0; color:var(--muted); }
+.status td:first-child { font-weight:600; }
+.tbl { overflow-x:auto; }
+table { border-collapse:collapse; width:100%; background:var(--card); border:1px solid var(--line); border-radius:12px; }
+th, td { text-align:left; padding:10px 12px; border-bottom:1px solid var(--line); vertical-align:top; }
+th { background:var(--ink); color:var(--paper); font-weight:600; }
+.note { background:#FBF3D6; border-left:4px solid var(--accent); padding:14px 16px; border-radius:8px; }
+.legal h2 { font-size:22px; }
+.ncard { display:flex; gap:20px; align-items:flex-start; background:var(--card); border:1px solid var(--line);
+  border-radius:14px; padding:20px; margin:8px 0 16px; }
+.ncard-qr { flex:0 0 220px; } .ncard-qr svg { display:block; width:100%; height:auto; }
+.ncard-body { min-width:0; } .ncard-body h3 { margin-bottom:6px; } .ncard-body p { color:var(--muted); }
+.ncard code { display:block; font-size:12px; line-height:1.45; word-break:break-all; background:var(--paper);
+  border:1px solid var(--line); border-radius:8px; padding:8px 10px; margin:0 0 12px; user-select:all; }
+.ncard .btn { border:0; cursor:pointer; font:inherit; font-weight:600; }
+@media (max-width:640px) { .ncard { flex-direction:column; align-items:stretch; } .ncard-qr { flex-basis:auto; width:220px; margin:0 auto; } }
+footer.site { background:var(--ink); color:var(--soft); font-size:14px; padding:28px 0; }
+footer.site a { color:var(--soft); }
+footer.site .wrap { display:flex; flex-wrap:wrap; gap:8px 24px; justify-content:space-between; }
+@media (max-width:640px) {
+  body { font-size:16px; }
+  .hero { padding:36px 0 44px; }
+  main { padding:28px 0 40px; }
+  .btns .btn { flex:1 1 auto; text-align:center; }
+  .card { padding:16px; }
+  /* Wide tables (4+ columns) become one card per row: the first cell is the row title,
+     every other cell is prefixed with its column header (data-label, added by stack_tables). */
+  table.stack, table.stack tbody, table.stack tr, table.stack td { display:block; width:auto !important; }
+  table.stack { background:none; border:0; }
+  table.stack tr:first-child { display:none; }
+  table.stack tr { background:var(--card); border:1px solid var(--line); border-radius:12px; margin-bottom:12px; overflow:hidden; }
+  table.stack td { border-bottom:1px solid var(--line); padding:8px 14px; }
+  table.stack td:last-child { border-bottom:0; }
+  table.stack td:first-child { background:var(--ink); color:var(--paper); font-weight:600; }
+  table.stack td:not(:first-child)::before { content:attr(data-label); display:block; font-size:13px;
+    font-weight:600; color:var(--muted); text-transform:uppercase; letter-spacing:.5px; }
+  footer.site .wrap { flex-direction:column; }
+}
+</style>
+</head>
+<body>
+<header class="top"><div class="wrap">
+<a class="brand" href="/fr/">Nevod<span>.</span></a>
+<nav class="main"><a href="/fr/">Accueil</a><a href="/fr/manifesto/">Manifeste ZKI</a><a href="/fr/compare/">Comparaison</a><a href="/fr/security/">Sécurité</a><a href="/fr/docs/" aria-current="page">Documentation</a><a href="/fr/download/">Télécharger</a><a href="/fr/publications/">Publications</a><a href="/fr/about/">Le projet</a></nav>
+<details class="menu"><summary aria-label="Menu"><span class="burger"></span></summary><nav><a href="/fr/">Accueil</a><a href="/fr/manifesto/">Manifeste ZKI</a><a href="/fr/compare/">Comparaison</a><a href="/fr/security/">Sécurité</a><a href="/fr/docs/" aria-current="page">Documentation</a><a href="/fr/download/">Télécharger</a><a href="/fr/publications/">Publications</a><a href="/fr/about/">Le projet</a></nav></details>
+<details class="lang"><summary>Français</summary><ul><li><a href="/uk/docs/start/" hreflang="uk" lang="uk">Українська</a></li><li><a href="/en/docs/start/" hreflang="en" lang="en">English</a></li><li><a href="/de/docs/start/" hreflang="de" lang="de">Deutsch</a></li><li><a href="/tr/docs/start/" hreflang="tr" lang="tr">Türkçe</a></li><li><a href="/es/docs/start/" hreflang="es" lang="es">Español</a></li><li><a href="/it/docs/start/" hreflang="it" lang="it">Italiano</a></li><li><a href="/fr/docs/start/" hreflang="fr" lang="fr">Français</a></li></ul></details>
+</div></header>
+<main class="article"><div class="wrap docs-layout"><aside class="docs-side"><p class="docs-home"><a href="/fr/docs/">Documentation</a></p><p class="docs-group">Pour les utilisateurs</p><ol><li class="cur"><a href="/fr/docs/start/" aria-current="page">Premiers pas</a><ul><li><a href="#s1">Ce qu'il vous faut</a></li><li><a href="#s2">Cellule et nœud en deux mots</a></li><li><a href="#s3">Inscription</a></li><li><a href="#s4">Si vous avez été invité sur un nœud</a></li><li><a href="#s5">Où trouver quoi dans l'app</a></li><li><a href="#s6">Votre premier message</a></li><li><a href="#s7">Et ensuite</a></li></ul></li><li><a href="/fr/docs/contacts/">Contacts</a></li><li><a href="/fr/docs/messages/">Messages et fichiers</a></li><li><a href="/fr/docs/calls/">Appels</a></li><li><a href="/fr/docs/bots/">Bots et assistants IA</a></li><li><a href="/fr/docs/security/">Sécurité et sauvegardes</a></li><li><a href="/fr/docs/faq/">Questions et problèmes</a></li></ol><p class="docs-group">Pour les propriétaires de nœuds</p><ol><li><a href="/fr/docs/node-how/">Comment fonctionne un nœud</a></li><li><a href="/fr/docs/node-install/">Installation pas à pas</a></li><li><a href="/fr/docs/node-panel/">Premiers réglages dans le panneau d&#x27;administration</a></li><li><a href="/fr/docs/node-invite/">Inviter des personnes</a></li><li><a href="/fr/docs/node-network/">Rejoindre le réseau Nevod</a></li><li><a href="/fr/docs/node-turn/">Appels via votre propre nœud</a></li><li><a href="/fr/docs/node-maintenance/">Maintenance</a></li><li><a href="/fr/docs/node-admin/">Le panneau d&#x27;administration : toutes les pages et tous les réglages</a></li></ol></aside><div class="docs-main"><details class="docs-toc"><summary>Sommaire</summary><p class="docs-home"><a href="/fr/docs/">Documentation</a></p><p class="docs-group">Pour les utilisateurs</p><ol><li class="cur"><a href="/fr/docs/start/" aria-current="page">Premiers pas</a><ul><li><a href="#s1">Ce qu'il vous faut</a></li><li><a href="#s2">Cellule et nœud en deux mots</a></li><li><a href="#s3">Inscription</a></li><li><a href="#s4">Si vous avez été invité sur un nœud</a></li><li><a href="#s5">Où trouver quoi dans l'app</a></li><li><a href="#s6">Votre premier message</a></li><li><a href="#s7">Et ensuite</a></li></ul></li><li><a href="/fr/docs/contacts/">Contacts</a></li><li><a href="/fr/docs/messages/">Messages et fichiers</a></li><li><a href="/fr/docs/calls/">Appels</a></li><li><a href="/fr/docs/bots/">Bots et assistants IA</a></li><li><a href="/fr/docs/security/">Sécurité et sauvegardes</a></li><li><a href="/fr/docs/faq/">Questions et problèmes</a></li></ol><p class="docs-group">Pour les propriétaires de nœuds</p><ol><li><a href="/fr/docs/node-how/">Comment fonctionne un nœud</a></li><li><a href="/fr/docs/node-install/">Installation pas à pas</a></li><li><a href="/fr/docs/node-panel/">Premiers réglages dans le panneau d&#x27;administration</a></li><li><a href="/fr/docs/node-invite/">Inviter des personnes</a></li><li><a href="/fr/docs/node-network/">Rejoindre le réseau Nevod</a></li><li><a href="/fr/docs/node-turn/">Appels via votre propre nœud</a></li><li><a href="/fr/docs/node-maintenance/">Maintenance</a></li><li><a href="/fr/docs/node-admin/">Le panneau d&#x27;administration : toutes les pages et tous les réglages</a></li></ol></details><h1>Premiers pas</h1>
+<p>Comment installer Nevod, vous inscrire et écrire votre premier message. Cela prend quelques minutes, sans numéro de téléphone ni adresse e-mail.</p>
+<h2 id="s1">Ce qu'il vous faut</h2>
+<p>Un iPhone ou un iPad sous iOS 17.2 ou plus récent. L'app s'appelle <b>Nevod</b> et se trouve sur l'App Store. Une version Android est en développement.</p>
+<h2 id="s2">Cellule et nœud en deux mots</h2>
+<ul><li>Une <b>cellule</b>, c'est vous dans Nevod : une paire de clés de chiffrement que l'app crée sur votre téléphone. Les clés ne quittent jamais l'appareil, si bien que personne d'autre que vous et votre interlocuteur ne peut lire vos messages.</li><li>Un <b>nœud</b> est un serveur que l'app utilise pour acheminer les messages. Une cellule s'inscrit sur un nœud : son <b>nœud d'attache</b>. Il existe des nœuds publics, comme <b>Nevod Open</b>, et des nœuds privés : d'une famille, d'une organisation, d'une communauté. Un nœud voit à qui vous écrivez et quand, mais pas ce que vous écrivez.</li></ul>
+<p>Vous pouvez écrire aux personnes de n'importe quel nœud du réseau, pas seulement du vôtre.</p>
+<h2 id="s3">Inscription</h2>
+<ol><li>Ouvrez Nevod. L'app demande l'autorisation d'envoyer des notifications : acceptez, sinon vous ne saurez rien des messages et des appels tant que Nevod est fermé.</li><li>Lisez l'essentiel des Conditions d'utilisation, activez <b>J'accepte les Conditions d'utilisation</b> et touchez <b>Continuer</b>.</li><li><b>Explorer le réseau</b> s'ouvre : une liste de nœuds ouverts. Vous pouvez y jeter un œil : les nœuds, leurs bots et leurs pages sont accessibles sans inscription. Tant que vous n'êtes inscrit sur aucun nœud, la liste ne montre que les nœuds du projet Nevod ; les autres nœuds ouverts du réseau apparaissent après l'inscription, car l'app reçoit leur liste de votre nœud.</li><li>Touchez <b>Commencer à discuter</b> (en haut à droite).</li><li>Saisissez <b>Votre nom affiché</b> : c'est ainsi que les autres vous verront. Touchez <b>Commencer</b>.</li></ol>
+<p>C'est fait : vous êtes inscrit sur le nœud <b>Nevod Open</b>. Dans quelques secondes, vous recevrez un message de bienvenue de <b>administrator</b>, le compte de l'administration du nœud. Un badge bleu ✓ figure à côté de son nom.</p>
+<div class="note"><p>Le nom doit être libre sur ce nœud. Si l'app indique que le nom est déjà pris, choisissez-en un autre. Des noms comme administrator, admin, support ou Nevod ne peuvent pas être pris : ainsi, personne ne peut se faire passer pour l'administration. Vous pourrez changer de nom plus tard dans le <b>Profil</b>.</p></div>
+<div class="note"><p><b>Les comptes de service sont signalés.</b> Chaque nœud a son propre compte <b>administrator</b>. Sur les nœuds du projet Nevod, comme Nevod Open, il porte un badge bleu ✓ : c'est l'administration de Nevod, et le badge est confirmé par la signature du projet. Sur un nœud privé — d'une famille, d'une organisation, d'une communauté —, administrator porte la mention <b>Administrateur du nœud</b> avec le nom du nœud, confirmée par la clé de ce nœud lui-même. Ni le badge ni la mention ne peuvent être falsifiés. Si un nom ressemble à un nom de service — administrator, admin, support, Nevod, « Administrateur du réseau », etc. — mais n'a ni le badge ✓ ni la mention, un ⚠ orange apparaît à côté du nom et la discussion affiche l'avertissement « Ce n'est pas un compte officiel Nevod ». Ne donnez à cette personne ni mot de passe, ni clé, ni code.</p></div>
+<h2 id="s4">Si vous avez été invité sur un nœud</h2>
+<p>Si vous avez reçu un lien ou un code QR d'invitation — par exemple pour le nœud de votre famille ou de votre organisation :</p>
+<ol><li>Installez Nevod et acceptez les Conditions (étape 1 ci-dessus).</li><li>Ouvrez le lien ou scannez le code QR avec l'appareil photo du téléphone. Sur la page d'invitation, touchez <b>Ouvrir dans Nevod</b>.</li><li>L'app s'ouvre avec l'adresse du nœud et le code déjà remplis : saisissez votre nom et touchez <b>Commencer</b>.</li></ol>
+<p>Si « Ouvrir dans Nevod » n'a pas fonctionné : dans l'app, touchez <b>Commencer à discuter</b>, saisissez votre nom, touchez <b>Vous avez un code d'invitation ?</b> et collez le lien dans le champ du code (ou scannez le code QR avec l'icône à côté du champ).</p>
+<p>Un code d'invitation ne sert qu'une fois et pour une durée limitée. Si l'app indique « Code invalide ou expiré — demandez-en un nouveau », demandez une nouvelle invitation.</p>
+<p>Si Nevod est déjà inscrit sur un autre nœud sur ce téléphone, l'invitation ne vous y transfère pas d'elle-même : une identité a un seul nœud d'attache. Que faire : voir <a href="../contacts/">Contacts</a>, « Personnes d'autres nœuds ».</p>
+<p>Certains nœuds admettent sur demande : l'app affiche alors <b>En attente d'approbation</b> ; l'administrateur du nœud examinera votre demande et vous recevrez une notification.</p>
+<h2 id="s5">Où trouver quoi dans l'app</h2>
+<div class="tbl"><table><tr><th>Onglet</th><th>Ce qu'il contient</th></tr><tr><td><b>Discussions</b></td><td>Vos conversations.</td></tr><tr><td><b>Appels</b></td><td>L'historique des appels.</td></tr><tr><td><b>Contacts</b></td><td>Vos interlocuteurs ; c'est aussi là que se trouve <b>Ajouter un contact</b>.</td></tr><tr><td><b>Nœuds</b></td><td>Explorer le réseau : les nœuds, leurs bots et leurs pages.</td></tr><tr><td><b>Profil</b></td><td>Votre nom et votre avatar, votre carte pour échanger vos coordonnées, les invitations, la sécurité.</td></tr></table></div>
+<h2 id="s6">Votre premier message</h2>
+<p>Pour écrire à quelqu'un, échangez vos contacts :</p>
+<ol><li>L'un de vous : <b>Profil → Partager ma carte</b> ; un code QR apparaît.</li><li>L'autre : <b>Contacts → Ajouter un contact</b>, puis scanne le code QR (ou colle le texte de la carte s'il l'a reçue).</li><li>Ouvrez le contact et écrivez un message.</li></ol>
+<p>Plus de détails dans <a href="../contacts/">Contacts</a>.</p>
+<h2 id="s7">Et ensuite</h2>
+<ul><li><a href="../contacts/">Contacts</a> : cartes, invitations, personnes d'autres nœuds.</li><li><a href="../messages/">Messages et fichiers</a> : photos, vidéos, messages vocaux, suppression pour tous.</li><li><a href="../security/">Sécurité et sauvegardes</a> : que faire si vous changez ou perdez de téléphone.</li></ul><p class="doc-nav"><a href="/fr/docs/">↑ Documentation</a><a href="/fr/docs/contacts/">Contacts →</a></p></div></div></main>
+<footer class="site"><div class="wrap">
+<div>© 2026 Nevod · Kolpakov Andrey</div>
+<div><a href="/fr/support/">Assistance</a> · <a href="/fr/privacy/">Confidentialité</a> · <a href="/fr/terms/">Conditions d'utilisation</a> · <a href="/fr/node/">Votre nœud</a> · <a href="https://github.com/avk0978/nevod-messenger">Code source</a></div>
+</div></footer>
+</body>
+</html>

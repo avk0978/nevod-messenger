@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Calls — Nevod</title>
+<meta name="description" content="How to call, answer, turn on video, and what to do if a call doesn&#x27;t connect.">
+<link rel="canonical" href="https://nevod.network/en/docs/calls/">
+<link rel="alternate" hreflang="uk" href="https://nevod.network/uk/docs/calls/"><link rel="alternate" hreflang="en" href="https://nevod.network/en/docs/calls/"><link rel="alternate" hreflang="de" href="https://nevod.network/de/docs/calls/"><link rel="alternate" hreflang="tr" href="https://nevod.network/tr/docs/calls/"><link rel="alternate" hreflang="es" href="https://nevod.network/es/docs/calls/"><link rel="alternate" hreflang="it" href="https://nevod.network/it/docs/calls/"><link rel="alternate" hreflang="fr" href="https://nevod.network/fr/docs/calls/">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik:wght@500..700&family=IBM+Plex+Sans:wght@400;600&display=swap">
+<style>
+:root { --ink:#14213D; --paper:#F7F6F1; --card:#FFFFFF; --line:#DCDFE6; --muted:#4A5568;
+        --accent:#F2C230; --accent-ink:#8A6A00; --dark2:#1E2F55; --soft:#C9D3E6; }
+* { box-sizing:border-box; }
+html { -webkit-text-size-adjust:100%; }
+body { margin:0; background:var(--paper); color:var(--ink); font:17px/1.6 'IBM Plex Sans', Arial, sans-serif; }
+a { color:#1F4E9E; }
+h1,h2,h3 { font-family:'Rubik', Arial, sans-serif; line-height:1.15; margin:0 0 .5em;
+  overflow-wrap:break-word; hyphens:auto; }
+main, .hero { overflow-wrap:break-word; }
+h1 { font-size:clamp(28px,5vw,56px); } h2 { font-size:clamp(24px,3.2vw,34px); margin-top:1.4em; } h3 { font-size:20px; }
+[id] { scroll-margin-top:76px; }  /* sticky header must not cover an anchor target */
+main.article h2 { margin-top:1.6em; } main.article h1 { font-size:clamp(26px,4vw,44px); }
+main.article hr { border:0; border-top:1px solid var(--line); margin:28px 0; }
+main.article code { font-size:.9em; background:var(--card); border:1px solid var(--line); border-radius:4px; padding:0 4px; }
+main.article ol li, main.article ul li { margin-bottom:.35em; overflow-wrap:anywhere; }
+.pub { margin:16px 0; } .pub h3 a { text-decoration:none; } .pub-date { font-size:14px; color:var(--muted); }
+.pub-back { font-size:15px; }
+main.article pre { background:var(--ink); color:var(--paper); border-radius:8px; padding:12px 14px; overflow-x:auto;
+  font-size:14px; line-height:1.5; margin:0 0 1em; }
+main.article pre code { background:none; border:0; padding:0; font-size:inherit; color:inherit; }
+main.article .note { margin:0 0 1em; } main.article .note p:last-child { margin-bottom:0; }
+.toc li { margin-bottom:.35em; }
+.docs-layout { display:grid; grid-template-columns:250px minmax(0,1fr); gap:40px; align-items:start; }
+.docs-side { position:sticky; top:76px; max-height:calc(100vh - 92px); overflow-y:auto; font-size:15px;
+  line-height:1.4; padding-right:8px; border-right:1px solid var(--line); }
+.docs-side ol, .docs-toc ol { list-style:none; padding:0; margin:0 0 14px; }
+.docs-side li, .docs-toc li { margin:0; }
+.docs-side a, .docs-toc a { display:block; padding:4px 8px; border-radius:6px; text-decoration:none; color:var(--ink); }
+.docs-side a:hover, .docs-toc a:hover { background:var(--card); }
+.docs-side li.cur > a, .docs-toc li.cur > a { background:var(--card); font-weight:600; box-shadow:inset 3px 0 0 var(--accent); }
+.docs-side ul, .docs-toc ul { list-style:none; padding:2px 0 6px 12px; margin:0; }
+.docs-side ul a, .docs-toc ul a { font-size:14px; color:var(--muted); padding:3px 8px; }
+.docs-side .soon, .docs-toc .soon { padding:4px 8px; color:var(--muted); opacity:.7; }
+.docs-group { font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.6px; color:var(--muted);
+  margin:14px 8px 6px; }
+.docs-home { margin:0 0 4px; font-weight:600; } .docs-home a { padding:4px 8px; }
+.docs-toc { display:none; background:var(--card); border:1px solid var(--line); border-radius:10px; margin:0 0 20px; }
+.docs-toc summary { cursor:pointer; padding:10px 14px; font-weight:600; }
+.docs-toc[open] summary { border-bottom:1px solid var(--line); }
+.docs-toc > p, .docs-toc > ol { margin-left:8px; margin-right:8px; }
+@media (max-width:960px) {
+  .docs-layout { display:block; }
+  .docs-side { display:none; }
+  .docs-toc { display:block; }
+}
+.doc-nav { display:flex; flex-wrap:wrap; gap:8px 24px; justify-content:space-between; font-size:15px;
+  border-top:1px solid var(--line); padding-top:16px; margin-top:32px; }
+p, ul, ol, table { margin:0 0 1em; }
+.wrap { max-width:1080px; margin:0 auto; padding:0 16px; }
+header.top { background:var(--ink); color:var(--paper); position:sticky; top:0; z-index:10; }
+header.top .wrap { display:flex; align-items:center; gap:16px; min-height:60px; }
+header.top a { color:var(--paper); text-decoration:none; }
+.brand { font-family:'Rubik', Arial, sans-serif; font-weight:700; font-size:20px; margin-right:auto; }
+.brand span { color:var(--accent); }
+nav.main { display:flex; gap:14px; font-size:15px; }
+nav.main a { opacity:.85; white-space:nowrap; } nav.main a[aria-current] { opacity:1; border-bottom:2px solid var(--accent); }
+details.menu { display:none; order:3; }
+details.menu summary { list-style:none; cursor:pointer; width:44px; height:44px; margin-right:-10px;
+  display:flex; align-items:center; justify-content:center; }
+details.menu summary::-webkit-details-marker { display:none; }
+.burger, .burger::before, .burger::after { display:block; width:22px; height:2px; background:var(--paper);
+  border-radius:2px; position:relative; transition:transform .2s, background .2s; }
+.burger::before, .burger::after { content:""; position:absolute; left:0; }
+.burger::before { top:-7px; } .burger::after { top:7px; }
+details.menu[open] .burger { background:transparent; }
+details.menu[open] .burger::before { transform:translateY(7px) rotate(45deg); }
+details.menu[open] .burger::after { transform:translateY(-7px) rotate(-45deg); }
+details.menu nav { position:absolute; left:0; right:0; top:100%; background:var(--ink);
+  border-top:1px solid var(--dark2); box-shadow:0 12px 24px rgba(0,0,0,.25); padding:6px 0 12px; }
+details.menu nav a { display:block; padding:12px 16px; font-size:17px; opacity:.9; }
+details.menu nav a[aria-current] { opacity:1; color:var(--accent); }
+details.lang { position:relative; font-size:15px; }
+details.lang summary { list-style:none; cursor:pointer; border:1px solid var(--accent); color:var(--accent);
+  padding:3px 12px; border-radius:999px; }
+details.lang summary::-webkit-details-marker { display:none; }
+details.lang summary:empty { min-width:6em; height:calc(1.6em + 8px); box-sizing:border-box; }
+details.lang ul { position:absolute; right:0; top:34px; background:var(--card); color:var(--ink); list-style:none;
+  padding:8px 0; margin:0; border-radius:10px; box-shadow:0 8px 24px rgba(0,0,0,.2); min-width:160px; }
+details.lang li a { color:var(--ink); display:block; padding:6px 16px; }
+@media (max-width:960px) {
+  nav.main { display:none; }
+  details.menu { display:block; }
+  header.top .wrap { min-height:56px; gap:12px; }
+  details.lang li a { padding:10px 16px; }
+}
+.hero { background:var(--ink); color:var(--paper); padding:56px 0 64px; }
+.hero p.lead { font-size:clamp(18px,2.2vw,22px); color:var(--soft); max-width:760px; }
+.eyebrow { font-size:14px; letter-spacing:3px; text-transform:uppercase; color:var(--accent); margin-bottom:12px; }
+.btns { display:flex; gap:12px; flex-wrap:wrap; margin-top:24px; }
+.btn { display:inline-block; padding:12px 22px; border-radius:10px; text-decoration:none; font-weight:600; }
+.btn.primary { background:var(--accent); color:var(--ink); } .btn.ghost { border:1px solid var(--soft); color:var(--paper); }
+main { padding:40px 0 56px; }
+.grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:16px; margin:16px 0 8px; }
+.card { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:20px; }
+.card h3 { margin-bottom:6px; } .card p { margin:0; color:var(--muted); }
+.status td:first-child { font-weight:600; }
+.tbl { overflow-x:auto; }
+table { border-collapse:collapse; width:100%; background:var(--card); border:1px solid var(--line); border-radius:12px; }
+th, td { text-align:left; padding:10px 12px; border-bottom:1px solid var(--line); vertical-align:top; }
+th { background:var(--ink); color:var(--paper); font-weight:600; }
+.note { background:#FBF3D6; border-left:4px solid var(--accent); padding:14px 16px; border-radius:8px; }
+.legal h2 { font-size:22px; }
+.ncard { display:flex; gap:20px; align-items:flex-start; background:var(--card); border:1px solid var(--line);
+  border-radius:14px; padding:20px; margin:8px 0 16px; }
+.ncard-qr { flex:0 0 220px; } .ncard-qr svg { display:block; width:100%; height:auto; }
+.ncard-body { min-width:0; } .ncard-body h3 { margin-bottom:6px; } .ncard-body p { color:var(--muted); }
+.ncard code { display:block; font-size:12px; line-height:1.45; word-break:break-all; background:var(--paper);
+  border:1px solid var(--line); border-radius:8px; padding:8px 10px; margin:0 0 12px; user-select:all; }
+.ncard .btn { border:0; cursor:pointer; font:inherit; font-weight:600; }
+@media (max-width:640px) { .ncard { flex-direction:column; align-items:stretch; } .ncard-qr { flex-basis:auto; width:220px; margin:0 auto; } }
+footer.site { background:var(--ink); color:var(--soft); font-size:14px; padding:28px 0; }
+footer.site a { color:var(--soft); }
+footer.site .wrap { display:flex; flex-wrap:wrap; gap:8px 24px; justify-content:space-between; }
+@media (max-width:640px) {
+  body { font-size:16px; }
+  .hero { padding:36px 0 44px; }
+  main { padding:28px 0 40px; }
+  .btns .btn { flex:1 1 auto; text-align:center; }
+  .card { padding:16px; }
+  /* Wide tables (4+ columns) become one card per row: the first cell is the row title,
+     every other cell is prefixed with its column header (data-label, added by stack_tables). */
+  table.stack, table.stack tbody, table.stack tr, table.stack td { display:block; width:auto !important; }
+  table.stack { background:none; border:0; }
+  table.stack tr:first-child { display:none; }
+  table.stack tr { background:var(--card); border:1px solid var(--line); border-radius:12px; margin-bottom:12px; overflow:hidden; }
+  table.stack td { border-bottom:1px solid var(--line); padding:8px 14px; }
+  table.stack td:last-child { border-bottom:0; }
+  table.stack td:first-child { background:var(--ink); color:var(--paper); font-weight:600; }
+  table.stack td:not(:first-child)::before { content:attr(data-label); display:block; font-size:13px;
+    font-weight:600; color:var(--muted); text-transform:uppercase; letter-spacing:.5px; }
+  footer.site .wrap { flex-direction:column; }
+}
+</style>
+</head>
+<body>
+<header class="top"><div class="wrap">
+<a class="brand" href="/en/">Nevod<span>.</span></a>
+<nav class="main"><a href="/en/">Home</a><a href="/en/manifesto/">ZKI Manifesto</a><a href="/en/compare/">Compare</a><a href="/en/security/">Security</a><a href="/en/docs/" aria-current="page">Docs</a><a href="/en/download/">Download</a><a href="/en/publications/">Publications</a><a href="/en/about/">About</a></nav>
+<details class="menu"><summary aria-label="Menu"><span class="burger"></span></summary><nav><a href="/en/">Home</a><a href="/en/manifesto/">ZKI Manifesto</a><a href="/en/compare/">Compare</a><a href="/en/security/">Security</a><a href="/en/docs/" aria-current="page">Docs</a><a href="/en/download/">Download</a><a href="/en/publications/">Publications</a><a href="/en/about/">About</a></nav></details>
+<details class="lang"><summary>English</summary><ul><li><a href="/uk/docs/calls/" hreflang="uk" lang="uk">Українська</a></li><li><a href="/en/docs/calls/" hreflang="en" lang="en">English</a></li><li><a href="/de/docs/calls/" hreflang="de" lang="de">Deutsch</a></li><li><a href="/tr/docs/calls/" hreflang="tr" lang="tr">Türkçe</a></li><li><a href="/es/docs/calls/" hreflang="es" lang="es">Español</a></li><li><a href="/it/docs/calls/" hreflang="it" lang="it">Italiano</a></li><li><a href="/fr/docs/calls/" hreflang="fr" lang="fr">Français</a></li></ul></details>
+</div></header>
+<main class="article"><div class="wrap docs-layout"><aside class="docs-side"><p class="docs-home"><a href="/en/docs/">Docs</a></p><p class="docs-group">For users</p><ol><li><a href="/en/docs/start/">Getting started</a></li><li><a href="/en/docs/contacts/">Contacts</a></li><li><a href="/en/docs/messages/">Messages and files</a></li><li class="cur"><a href="/en/docs/calls/" aria-current="page">Calls</a><ul><li><a href="#s1">Make a call</a></li><li><a href="#s2">Answer</a></li><li><a href="#s3">During a call</a></li><li><a href="#s4">If a call doesn't connect</a></li><li><a href="#s5">Call history</a></li></ul></li><li><a href="/en/docs/bots/">Bots and AI assistants</a></li><li><a href="/en/docs/security/">Security and backups</a></li><li><a href="/en/docs/faq/">Questions and problems</a></li></ol><p class="docs-group">For node owners</p><ol><li><a href="/en/docs/node-how/">How a node works</a></li><li><a href="/en/docs/node-install/">Installation step by step</a></li><li><a href="/en/docs/node-panel/">First setup in the admin panel</a></li><li><a href="/en/docs/node-invite/">Inviting people</a></li><li><a href="/en/docs/node-network/">Joining the Nevod network</a></li><li><a href="/en/docs/node-turn/">Calls through your own node</a></li><li><a href="/en/docs/node-maintenance/">Maintenance</a></li><li><a href="/en/docs/node-admin/">The admin panel: every page and setting</a></li></ol></aside><div class="docs-main"><details class="docs-toc"><summary>Contents</summary><p class="docs-home"><a href="/en/docs/">Docs</a></p><p class="docs-group">For users</p><ol><li><a href="/en/docs/start/">Getting started</a></li><li><a href="/en/docs/contacts/">Contacts</a></li><li><a href="/en/docs/messages/">Messages and files</a></li><li class="cur"><a href="/en/docs/calls/" aria-current="page">Calls</a><ul><li><a href="#s1">Make a call</a></li><li><a href="#s2">Answer</a></li><li><a href="#s3">During a call</a></li><li><a href="#s4">If a call doesn't connect</a></li><li><a href="#s5">Call history</a></li></ul></li><li><a href="/en/docs/bots/">Bots and AI assistants</a></li><li><a href="/en/docs/security/">Security and backups</a></li><li><a href="/en/docs/faq/">Questions and problems</a></li></ol><p class="docs-group">For node owners</p><ol><li><a href="/en/docs/node-how/">How a node works</a></li><li><a href="/en/docs/node-install/">Installation step by step</a></li><li><a href="/en/docs/node-panel/">First setup in the admin panel</a></li><li><a href="/en/docs/node-invite/">Inviting people</a></li><li><a href="/en/docs/node-network/">Joining the Nevod network</a></li><li><a href="/en/docs/node-turn/">Calls through your own node</a></li><li><a href="/en/docs/node-maintenance/">Maintenance</a></li><li><a href="/en/docs/node-admin/">The admin panel: every page and setting</a></li></ol></details><h1>Calls</h1>
+<p>How to call, answer, turn on video, and what to do if a call doesn't connect.</p>
+<p>Calls in Nevod are encrypted from phone to phone. Sound and video go directly between the phones, and if a direct connection isn't possible, through the node's relay, which can't decrypt them either.</p>
+<h2 id="s1">Make a call</h2>
+<ul><li>in a chat — the handset icon at the top right;</li><li>in the <b>Contacts</b> tab — the handset icon in the contact's row;</li><li>in the <b>Calls</b> tab — tap a call in the history to call back.</li></ul>
+<p>You can call any contact, including someone on another node.</p>
+<p>When Nevod asks for microphone access for the first time (and camera access for video), allow it — a call is impossible without it.</p>
+<h2 id="s2">Answer</h2>
+<p>An incoming call appears on the regular iPhone call screen — just like a phone call, even if the phone is locked and Nevod is closed. If the app is open, the Nevod screen appears with <b>Accept</b> and <b>Decline</b> buttons.</p>
+<h2 id="s3">During a call</h2>
+<div class="tbl"><table><tr><th>Button</th><th>What it does</th></tr><tr><td><b>Off</b> / <b>On</b> (microphone)</td><td>turn your microphone off and back on</td></tr><tr><td><b>Speaker</b></td><td>speakerphone</td></tr><tr><td><b>Bluetooth</b></td><td>choose where the sound goes: the phone, headphones or a Bluetooth headset. Highlighted in blue when the sound goes through Bluetooth</td></tr><tr><td><b>Video</b></td><td>turn on the camera — the call becomes a video call</td></tr><tr><td><b>Camera</b></td><td>in a video call — switch between the front and back camera</td></tr><tr><td><b>End</b></td><td>hang up</td></tr></table></div>
+<p>The top of the screen shows how the connection is going — <b>Calling…</b>, <b>Connecting…</b> — and, once the conversation has started, the call quality: <b>Good</b>, <b>Fair</b> or <b>Poor</b>.</p>
+<p>A video call starts as a regular one: call, and when the other person answers, tap <b>Video</b>.</p>
+<p><b>During a call, file transfer is paused</b> so the call isn't disturbed, and it resumes after the call.</p>
+<h2 id="s4">If a call doesn't connect</h2>
+<div class="tbl"><table><tr><th>What you see</th><th>What to do</th></tr><tr><td><b>Busy</b></td><td>the other person is already on a call — call later</td></tr><tr><td><b>Connecting…</b> stays on for a long time</td><td>one of you has a poor connection. Try switching from mobile data to Wi-Fi or the other way round and call again</td></tr><tr><td>the call connected, but one of you can't be heard</td><td>check that Nevod is allowed to use the microphone: <b>iPhone Settings → Nevod → Microphone</b></td></tr><tr><td>incoming calls don't arrive while Nevod is closed</td><td>check that Do Not Disturb or another Focus mode isn't on. If you are on a private node, its administrator should check that the node is <a href="../node-network/">connected to the network</a> — without that, a call can't "wake up" the phone</td></tr></table></div>
+<h2 id="s5">Call history</h2>
+<p>The <b>Calls</b> tab lists all the calls you made and received. Tap a row to call back. The history is stored only on your phone.</p><p class="doc-nav"><a href="/en/docs/messages/">← Messages and files</a><a href="/en/docs/">↑ Docs</a><a href="/en/docs/bots/">Bots and AI assistants →</a></p></div></div></main>
+<footer class="site"><div class="wrap">
+<div>© 2026 Nevod · Kolpakov Andrey</div>
+<div><a href="/en/support/">Support</a> · <a href="/en/privacy/">Privacy</a> · <a href="/en/terms/">Terms of Use</a> · <a href="/en/node/">Run a node</a> · <a href="https://github.com/avk0978/nevod-messenger">Source code</a></div>
+</div></footer>
+</body>
+</html>

@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Installazione passo per passo — Nevod</title>
+<meta name="description" content="Come installare da zero un nodo Nevod su un server a noleggio: dall&#x27;acquisto del server al primo accesso al pannello di amministrazione. L&#x27;esempio usa un server con Ubuntu 26.04 e il dominio node.example.org; sostituiscilo ovunque con il tuo.">
+<link rel="canonical" href="https://nevod.network/it/docs/node-install/">
+<link rel="alternate" hreflang="uk" href="https://nevod.network/uk/docs/node-install/"><link rel="alternate" hreflang="en" href="https://nevod.network/en/docs/node-install/"><link rel="alternate" hreflang="de" href="https://nevod.network/de/docs/node-install/"><link rel="alternate" hreflang="tr" href="https://nevod.network/tr/docs/node-install/"><link rel="alternate" hreflang="es" href="https://nevod.network/es/docs/node-install/"><link rel="alternate" hreflang="it" href="https://nevod.network/it/docs/node-install/"><link rel="alternate" hreflang="fr" href="https://nevod.network/fr/docs/node-install/">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik:wght@500..700&family=IBM+Plex+Sans:wght@400;600&display=swap">
+<style>
+:root { --ink:#14213D; --paper:#F7F6F1; --card:#FFFFFF; --line:#DCDFE6; --muted:#4A5568;
+        --accent:#F2C230; --accent-ink:#8A6A00; --dark2:#1E2F55; --soft:#C9D3E6; }
+* { box-sizing:border-box; }
+html { -webkit-text-size-adjust:100%; }
+body { margin:0; background:var(--paper); color:var(--ink); font:17px/1.6 'IBM Plex Sans', Arial, sans-serif; }
+a { color:#1F4E9E; }
+h1,h2,h3 { font-family:'Rubik', Arial, sans-serif; line-height:1.15; margin:0 0 .5em;
+  overflow-wrap:break-word; hyphens:auto; }
+main, .hero { overflow-wrap:break-word; }
+h1 { font-size:clamp(28px,5vw,56px); } h2 { font-size:clamp(24px,3.2vw,34px); margin-top:1.4em; } h3 { font-size:20px; }
+[id] { scroll-margin-top:76px; }  /* sticky header must not cover an anchor target */
+main.article h2 { margin-top:1.6em; } main.article h1 { font-size:clamp(26px,4vw,44px); }
+main.article hr { border:0; border-top:1px solid var(--line); margin:28px 0; }
+main.article code { font-size:.9em; background:var(--card); border:1px solid var(--line); border-radius:4px; padding:0 4px; }
+main.article ol li, main.article ul li { margin-bottom:.35em; overflow-wrap:anywhere; }
+.pub { margin:16px 0; } .pub h3 a { text-decoration:none; } .pub-date { font-size:14px; color:var(--muted); }
+.pub-back { font-size:15px; }
+main.article pre { background:var(--ink); color:var(--paper); border-radius:8px; padding:12px 14px; overflow-x:auto;
+  font-size:14px; line-height:1.5; margin:0 0 1em; }
+main.article pre code { background:none; border:0; padding:0; font-size:inherit; color:inherit; }
+main.article .note { margin:0 0 1em; } main.article .note p:last-child { margin-bottom:0; }
+.toc li { margin-bottom:.35em; }
+.docs-layout { display:grid; grid-template-columns:250px minmax(0,1fr); gap:40px; align-items:start; }
+.docs-side { position:sticky; top:76px; max-height:calc(100vh - 92px); overflow-y:auto; font-size:15px;
+  line-height:1.4; padding-right:8px; border-right:1px solid var(--line); }
+.docs-side ol, .docs-toc ol { list-style:none; padding:0; margin:0 0 14px; }
+.docs-side li, .docs-toc li { margin:0; }
+.docs-side a, .docs-toc a { display:block; padding:4px 8px; border-radius:6px; text-decoration:none; color:var(--ink); }
+.docs-side a:hover, .docs-toc a:hover { background:var(--card); }
+.docs-side li.cur > a, .docs-toc li.cur > a { background:var(--card); font-weight:600; box-shadow:inset 3px 0 0 var(--accent); }
+.docs-side ul, .docs-toc ul { list-style:none; padding:2px 0 6px 12px; margin:0; }
+.docs-side ul a, .docs-toc ul a { font-size:14px; color:var(--muted); padding:3px 8px; }
+.docs-side .soon, .docs-toc .soon { padding:4px 8px; color:var(--muted); opacity:.7; }
+.docs-group { font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.6px; color:var(--muted);
+  margin:14px 8px 6px; }
+.docs-home { margin:0 0 4px; font-weight:600; } .docs-home a { padding:4px 8px; }
+.docs-toc { display:none; background:var(--card); border:1px solid var(--line); border-radius:10px; margin:0 0 20px; }
+.docs-toc summary { cursor:pointer; padding:10px 14px; font-weight:600; }
+.docs-toc[open] summary { border-bottom:1px solid var(--line); }
+.docs-toc > p, .docs-toc > ol { margin-left:8px; margin-right:8px; }
+@media (max-width:960px) {
+  .docs-layout { display:block; }
+  .docs-side { display:none; }
+  .docs-toc { display:block; }
+}
+.doc-nav { display:flex; flex-wrap:wrap; gap:8px 24px; justify-content:space-between; font-size:15px;
+  border-top:1px solid var(--line); padding-top:16px; margin-top:32px; }
+p, ul, ol, table { margin:0 0 1em; }
+.wrap { max-width:1080px; margin:0 auto; padding:0 16px; }
+header.top { background:var(--ink); color:var(--paper); position:sticky; top:0; z-index:10; }
+header.top .wrap { display:flex; align-items:center; gap:16px; min-height:60px; }
+header.top a { color:var(--paper); text-decoration:none; }
+.brand { font-family:'Rubik', Arial, sans-serif; font-weight:700; font-size:20px; margin-right:auto; }
+.brand span { color:var(--accent); }
+nav.main { display:flex; gap:14px; font-size:15px; }
+nav.main a { opacity:.85; white-space:nowrap; } nav.main a[aria-current] { opacity:1; border-bottom:2px solid var(--accent); }
+details.menu { display:none; order:3; }
+details.menu summary { list-style:none; cursor:pointer; width:44px; height:44px; margin-right:-10px;
+  display:flex; align-items:center; justify-content:center; }
+details.menu summary::-webkit-details-marker { display:none; }
+.burger, .burger::before, .burger::after { display:block; width:22px; height:2px; background:var(--paper);
+  border-radius:2px; position:relative; transition:transform .2s, background .2s; }
+.burger::before, .burger::after { content:""; position:absolute; left:0; }
+.burger::before { top:-7px; } .burger::after { top:7px; }
+details.menu[open] .burger { background:transparent; }
+details.menu[open] .burger::before { transform:translateY(7px) rotate(45deg); }
+details.menu[open] .burger::after { transform:translateY(-7px) rotate(-45deg); }
+details.menu nav { position:absolute; left:0; right:0; top:100%; background:var(--ink);
+  border-top:1px solid var(--dark2); box-shadow:0 12px 24px rgba(0,0,0,.25); padding:6px 0 12px; }
+details.menu nav a { display:block; padding:12px 16px; font-size:17px; opacity:.9; }
+details.menu nav a[aria-current] { opacity:1; color:var(--accent); }
+details.lang { position:relative; font-size:15px; }
+details.lang summary { list-style:none; cursor:pointer; border:1px solid var(--accent); color:var(--accent);
+  padding:3px 12px; border-radius:999px; }
+details.lang summary::-webkit-details-marker { display:none; }
+details.lang summary:empty { min-width:6em; height:calc(1.6em + 8px); box-sizing:border-box; }
+details.lang ul { position:absolute; right:0; top:34px; background:var(--card); color:var(--ink); list-style:none;
+  padding:8px 0; margin:0; border-radius:10px; box-shadow:0 8px 24px rgba(0,0,0,.2); min-width:160px; }
+details.lang li a { color:var(--ink); display:block; padding:6px 16px; }
+@media (max-width:960px) {
+  nav.main { display:none; }
+  details.menu { display:block; }
+  header.top .wrap { min-height:56px; gap:12px; }
+  details.lang li a { padding:10px 16px; }
+}
+.hero { background:var(--ink); color:var(--paper); padding:56px 0 64px; }
+.hero p.lead { font-size:clamp(18px,2.2vw,22px); color:var(--soft); max-width:760px; }
+.eyebrow { font-size:14px; letter-spacing:3px; text-transform:uppercase; color:var(--accent); margin-bottom:12px; }
+.btns { display:flex; gap:12px; flex-wrap:wrap; margin-top:24px; }
+.btn { display:inline-block; padding:12px 22px; border-radius:10px; text-decoration:none; font-weight:600; }
+.btn.primary { background:var(--accent); color:var(--ink); } .btn.ghost { border:1px solid var(--soft); color:var(--paper); }
+main { padding:40px 0 56px; }
+.grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:16px; margin:16px 0 8px; }
+.card { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:20px; }
+.card h3 { margin-bottom:6px; } .card p { margin:0; color:var(--muted); }
+.status td:first-child { font-weight:600; }
+.tbl { overflow-x:auto; }
+table { border-collapse:collapse; width:100%; background:var(--card); border:1px solid var(--line); border-radius:12px; }
+th, td { text-align:left; padding:10px 12px; border-bottom:1px solid var(--line); vertical-align:top; }
+th { background:var(--ink); color:var(--paper); font-weight:600; }
+.note { background:#FBF3D6; border-left:4px solid var(--accent); padding:14px 16px; border-radius:8px; }
+.legal h2 { font-size:22px; }
+.ncard { display:flex; gap:20px; align-items:flex-start; background:var(--card); border:1px solid var(--line);
+  border-radius:14px; padding:20px; margin:8px 0 16px; }
+.ncard-qr { flex:0 0 220px; } .ncard-qr svg { display:block; width:100%; height:auto; }
+.ncard-body { min-width:0; } .ncard-body h3 { margin-bottom:6px; } .ncard-body p { color:var(--muted); }
+.ncard code { display:block; font-size:12px; line-height:1.45; word-break:break-all; background:var(--paper);
+  border:1px solid var(--line); border-radius:8px; padding:8px 10px; margin:0 0 12px; user-select:all; }
+.ncard .btn { border:0; cursor:pointer; font:inherit; font-weight:600; }
+@media (max-width:640px) { .ncard { flex-direction:column; align-items:stretch; } .ncard-qr { flex-basis:auto; width:220px; margin:0 auto; } }
+footer.site { background:var(--ink); color:var(--soft); font-size:14px; padding:28px 0; }
+footer.site a { color:var(--soft); }
+footer.site .wrap { display:flex; flex-wrap:wrap; gap:8px 24px; justify-content:space-between; }
+@media (max-width:640px) {
+  body { font-size:16px; }
+  .hero { padding:36px 0 44px; }
+  main { padding:28px 0 40px; }
+  .btns .btn { flex:1 1 auto; text-align:center; }
+  .card { padding:16px; }
+  /* Wide tables (4+ columns) become one card per row: the first cell is the row title,
+     every other cell is prefixed with its column header (data-label, added by stack_tables). */
+  table.stack, table.stack tbody, table.stack tr, table.stack td { display:block; width:auto !important; }
+  table.stack { background:none; border:0; }
+  table.stack tr:first-child { display:none; }
+  table.stack tr { background:var(--card); border:1px solid var(--line); border-radius:12px; margin-bottom:12px; overflow:hidden; }
+  table.stack td { border-bottom:1px solid var(--line); padding:8px 14px; }
+  table.stack td:last-child { border-bottom:0; }
+  table.stack td:first-child { background:var(--ink); color:var(--paper); font-weight:600; }
+  table.stack td:not(:first-child)::before { content:attr(data-label); display:block; font-size:13px;
+    font-weight:600; color:var(--muted); text-transform:uppercase; letter-spacing:.5px; }
+  footer.site .wrap { flex-direction:column; }
+}
+</style>
+</head>
+<body>
+<header class="top"><div class="wrap">
+<a class="brand" href="/it/">Nevod<span>.</span></a>
+<nav class="main"><a href="/it/">Home</a><a href="/it/manifesto/">Manifesto ZKI</a><a href="/it/compare/">Confronto</a><a href="/it/security/">Sicurezza</a><a href="/it/docs/" aria-current="page">Documentazione</a><a href="/it/download/">Scarica</a><a href="/it/publications/">Pubblicazioni</a><a href="/it/about/">Il progetto</a></nav>
+<details class="menu"><summary aria-label="Menu"><span class="burger"></span></summary><nav><a href="/it/">Home</a><a href="/it/manifesto/">Manifesto ZKI</a><a href="/it/compare/">Confronto</a><a href="/it/security/">Sicurezza</a><a href="/it/docs/" aria-current="page">Documentazione</a><a href="/it/download/">Scarica</a><a href="/it/publications/">Pubblicazioni</a><a href="/it/about/">Il progetto</a></nav></details>
+<details class="lang"><summary>Italiano</summary><ul><li><a href="/uk/docs/node-install/" hreflang="uk" lang="uk">Українська</a></li><li><a href="/en/docs/node-install/" hreflang="en" lang="en">English</a></li><li><a href="/de/docs/node-install/" hreflang="de" lang="de">Deutsch</a></li><li><a href="/tr/docs/node-install/" hreflang="tr" lang="tr">Türkçe</a></li><li><a href="/es/docs/node-install/" hreflang="es" lang="es">Español</a></li><li><a href="/it/docs/node-install/" hreflang="it" lang="it">Italiano</a></li><li><a href="/fr/docs/node-install/" hreflang="fr" lang="fr">Français</a></li></ul></details>
+</div></header>
+<main class="article"><div class="wrap docs-layout"><aside class="docs-side"><p class="docs-home"><a href="/it/docs/">Documentazione</a></p><p class="docs-group">Per gli utenti</p><ol><li><a href="/it/docs/start/">Primi passi</a></li><li><a href="/it/docs/contacts/">Contatti</a></li><li><a href="/it/docs/messages/">Messaggi e file</a></li><li><a href="/it/docs/calls/">Chiamate</a></li><li><a href="/it/docs/bots/">Bot e assistenti IA</a></li><li><a href="/it/docs/security/">Sicurezza e backup</a></li><li><a href="/it/docs/faq/">Domande e problemi</a></li></ol><p class="docs-group">Per chi gestisce un nodo</p><ol><li><a href="/it/docs/node-how/">Come funziona un nodo</a></li><li class="cur"><a href="/it/docs/node-install/" aria-current="page">Installazione passo per passo</a><ul><li><a href="#s1">1. Noleggia un server</a></li><li><a href="#s2">2. Fai puntare il dominio al server</a></li><li><a href="#s3">3. Collegati al server</a></li><li><a href="#s4">4. Installa Docker e git</a></li><li><a href="#s5">5. Attiva il firewall</a></li><li><a href="#s6">6. Scarica Nevod</a></li><li><a href="#s7">7. Compila le impostazioni</a></li><li><a href="#s8">8. Avvia il nodo</a></li><li><a href="#s9">9. Verifica che tutto funzioni</a></li><li><a href="#s10">10. Facoltativo: chiudi il pannello a internet</a></li><li><a href="#s11">Se qualcosa non va</a></li></ul></li><li><a href="/it/docs/node-panel/">Prima configurazione nel pannello di amministrazione</a></li><li><a href="/it/docs/node-invite/">Invitare le persone</a></li><li><a href="/it/docs/node-network/">Collegarsi alla rete Nevod</a></li><li><a href="/it/docs/node-turn/">Chiamate tramite il proprio nodo</a></li><li><a href="/it/docs/node-maintenance/">Manutenzione</a></li><li><a href="/it/docs/node-admin/">Il pannello di amministrazione: tutte le pagine e le impostazioni</a></li></ol></aside><div class="docs-main"><details class="docs-toc"><summary>Indice</summary><p class="docs-home"><a href="/it/docs/">Documentazione</a></p><p class="docs-group">Per gli utenti</p><ol><li><a href="/it/docs/start/">Primi passi</a></li><li><a href="/it/docs/contacts/">Contatti</a></li><li><a href="/it/docs/messages/">Messaggi e file</a></li><li><a href="/it/docs/calls/">Chiamate</a></li><li><a href="/it/docs/bots/">Bot e assistenti IA</a></li><li><a href="/it/docs/security/">Sicurezza e backup</a></li><li><a href="/it/docs/faq/">Domande e problemi</a></li></ol><p class="docs-group">Per chi gestisce un nodo</p><ol><li><a href="/it/docs/node-how/">Come funziona un nodo</a></li><li class="cur"><a href="/it/docs/node-install/" aria-current="page">Installazione passo per passo</a><ul><li><a href="#s1">1. Noleggia un server</a></li><li><a href="#s2">2. Fai puntare il dominio al server</a></li><li><a href="#s3">3. Collegati al server</a></li><li><a href="#s4">4. Installa Docker e git</a></li><li><a href="#s5">5. Attiva il firewall</a></li><li><a href="#s6">6. Scarica Nevod</a></li><li><a href="#s7">7. Compila le impostazioni</a></li><li><a href="#s8">8. Avvia il nodo</a></li><li><a href="#s9">9. Verifica che tutto funzioni</a></li><li><a href="#s10">10. Facoltativo: chiudi il pannello a internet</a></li><li><a href="#s11">Se qualcosa non va</a></li></ul></li><li><a href="/it/docs/node-panel/">Prima configurazione nel pannello di amministrazione</a></li><li><a href="/it/docs/node-invite/">Invitare le persone</a></li><li><a href="/it/docs/node-network/">Collegarsi alla rete Nevod</a></li><li><a href="/it/docs/node-turn/">Chiamate tramite il proprio nodo</a></li><li><a href="/it/docs/node-maintenance/">Manutenzione</a></li><li><a href="/it/docs/node-admin/">Il pannello di amministrazione: tutte le pagine e le impostazioni</a></li></ol></details><h1>Installazione passo per passo</h1>
+<p>Come installare da zero un nodo Nevod su un server a noleggio: dall'acquisto del server al primo accesso al pannello di amministrazione. L'esempio usa un server con Ubuntu 26.04 e il dominio <code>node.example.org</code>; sostituiscilo ovunque con il tuo.</p>
+<p>Tutti i comandi qui sotto si digitano nel terminale del server; puoi copiarli per intero. Cos'è un nodo e cosa conserva: in <a href="../node-how/">Come funziona un nodo</a>.</p>
+<h2 id="s1">1. Noleggia un server</h2>
+<p>Va bene qualsiasi VPS di qualsiasi provider: 1 CPU, 1 GB di memoria, 10 GB di disco, <b>Ubuntu 24.04</b> o <b>26.04</b>. Al momento dell'ordine il provider ti dà l'<b>indirizzo IP</b> del server e la password dell'utente <code>root</code> (oppure ti chiede di caricare una chiave SSH).</p>
+<p>Se il provider ha un proprio firewall di rete nel pannello di controllo (per esempio Firewalls su Hetzner, Security groups altrove), apri lì le porte in ingresso <b>22, 80, 443 e 8765</b> (TCP).</p>
+<h2 id="s2">2. Fai puntare il dominio al server</h2>
+<p>Il nodo ha bisogno di un dominio o sottodominio proprio, per esempio <code>node.example.org</code>. Non può farne a meno per due motivi:</p>
+<ul><li><b>I telefoni si collegano al nodo all'indirizzo <code>https://dominio/nevod-ws</code>.</b> Caddy ottiene da Let's Encrypt, per un nome di dominio, il certificato HTTPS di cui un iPhone si fida senza alcuna configurazione.</li><li><b>L'indirizzo del nodo è salvato ovunque:</b> nei telefoni degli utenti, nelle loro schede contatto, negli altri nodi della rete. Se ti sposti su un altro server o il provider cambia l'indirizzo IP, basta correggere un record DNS e gli utenti non si accorgono di nulla. Con un semplice indirizzo IP, un trasloco lascerebbe tutti senza collegamento e dovresti inviare di nuovo gli inviti.</li></ul>
+<p>Se non hai ancora un dominio, puoi acquistarlo da un qualsiasi registrar (Cloudflare, Namecheap, Porkbun, Gandi e altri): di solito costa pochi dollari o euro all'anno. Per il nodo basta un sottodominio, e il dominio stesso può servirti anche per altro.</p>
+<p>Nel pannello di gestione del tuo dominio crea un <b>record A</b>: nome — per esempio <code>node</code> (diventa <code>node.example.org</code>) —, valore: l'indirizzo IP del server.</p>
+<p>Aspetta qualche minuto e verifica da un computer qualsiasi:</p>
+<pre><code>ping node.example.org</code></pre>
+<p>La risposta deve mostrare l'indirizzo IP del tuo server. Finché non è così, non ha senso andare avanti: un certificato HTTPS viene emesso solo per un dominio che punta già al server.</p>
+<div class="note"><p>Se il dominio è gestito da Cloudflare, disattiva il proxy per questo record (nuvola grigia, «DNS only»). Altrimenti i telefoni e gli altri nodi si collegheranno a Cloudflare invece che al tuo server.</p></div>
+<h2 id="s3">3. Collegati al server</h2>
+<p>Sul tuo computer apri un terminale (su Windows PowerShell, su Mac Terminale) e digita:</p>
+<pre><code>ssh root@node.example.org</code></pre>
+<p>Al primo collegamento rispondi <code>yes</code> e inserisci la password del provider.</p>
+<h2 id="s4">4. Installa Docker e git</h2>
+<pre><code>apt update &amp;&amp; apt upgrade -y
+apt install -y git
+curl -fsSL https://get.docker.com | sh</code></pre>
+<p>L'ultimo comando è l'installatore ufficiale di Docker. Verifica che sia tutto a posto:</p>
+<pre><code>docker compose version</code></pre>
+<p>Dovrebbe comparire una riga come <code>Docker Compose version v…</code>.</p>
+<div class="note"><p>Se dopo l'aggiornamento compare <code>*** System restart required ***</code> (sullo schermo o al prossimo accesso), riavvia il server con <code>reboot</code>, ricollegati dopo un minuto (passo 3) e prosegui.</p></div>
+<h2 id="s5">5. Attiva il firewall</h2>
+<pre><code>ufw allow OpenSSH
+ufw allow 80/tcp
+ufw allow 443/tcp
+ufw allow 8765/tcp
+ufw enable</code></pre>
+<p>Rispondi <code>y</code> alla domanda. Le porte 80 e 443 servono per HTTPS (telefoni e pannello), la 8765 per comunicare con gli altri nodi.</p>
+<div class="note"><p>Docker apre da solo le porte dei suoi container, scavalcando <code>ufw</code>. Per questo nel nostro kit il pannello di amministrazione (porta 8766) è pubblicato solo per il server stesso: non cambiarlo in <code>docker-compose.yml</code>.</p></div>
+<h2 id="s6">6. Scarica Nevod</h2>
+<div class="note"><p>Tutti i comandi seguenti si digitano sul server: a sinistra nella riga di comando deve esserci <code>root@…</code>. Se vedi <code>PS C:\…&gt;</code> o il nome del tuo computer, la connessione al server si è chiusa: ricollegati (passo 3).</p></div>
+<pre><code>git clone https://github.com/avk0978/nevod-messenger.git /opt/nevod
+cd /opt/nevod/installer/docker</code></pre>
+<h2 id="s7">7. Compila le impostazioni</h2>
+<p>Crea il file delle impostazioni dal modello:</p>
+<pre><code>cp .env.example .env</code></pre>
+<p>Scegli una password per il pannello di amministrazione. La cosa più comoda è generarne una lunga e casuale:</p>
+<pre><code>openssl rand -base64 24</code></pre>
+<p>Copia il risultato e salvalo in un posto sicuro, per esempio in un gestore di password (Bitwarden, KeePass, Password su iPhone e Mac). Ora apri il file delle impostazioni:</p>
+<pre><code>nano .env</code></pre>
+<p>Modifica due righe:</p>
+<pre><code>NEVOD_DOMAIN=node.example.org
+NEVOD_ADMIN_PASSWORD=qui-la-password-generata</code></pre>
+<p>Lascia il resto com'è. Salva il file: <b>Ctrl+O</b>, poi <b>Invio</b>; per uscire <b>Ctrl+X</b>.</p>
+<div class="tbl"><table><tr><th>Impostazione</th><th>Cosa significa</th></tr><tr><td><code>NEVOD_DOMAIN</code></td><td>Il dominio del nodo. I telefoni si collegano a <code>https://dominio/nevod-ws</code>, gli altri nodi a <code>dominio:8765</code>.</td></tr><tr><td><code>NEVOD_ADMIN_PASSWORD</code></td><td>La password del pannello di amministrazione. Senza, il nodo non si avvia.</td></tr><tr><td><code>NEVOD_ADMIN_PUBLIC</code></td><td><code>true</code>: il pannello si apre nel browser all'indirizzo <code>https://dominio/nevod-admin</code>; <code>false</code>: il pannello è chiuso a internet (vedi il passo 10).</td></tr><tr><td><code>TURN_SECRET</code></td><td>Solo se installi un tuo relay per le chiamate; vedi <a href="../node-turn/">Chiamate tramite il proprio nodo</a>. Di solito vuoto.</td></tr></table></div>
+<h2 id="s8">8. Avvia il nodo</h2>
+<pre><code>docker compose up -d --build</code></pre>
+<p>Il primo avvio richiede qualche minuto: Docker costruisce l'immagine del nodo e scarica Caddy. Quando il comando termina, verifica:</p>
+<pre><code>docker compose ps</code></pre>
+<p>Entrambi i container — <code>nevod_node</code> e <code>nevod_caddy</code> — devono essere nello stato <code>Up</code> (o <code>running</code>).</p>
+<h2 id="s9">9. Verifica che tutto funzioni</h2>
+<p>Apri <code>https://node.example.org</code> nel browser: deve comparire la riga «Nevod node — <a href="https://nevod.network»">https://nevod.network»</a>, e il browser non deve lamentarsi del certificato.</p>
+<p>Ora apri <code>https://node.example.org/nevod-admin</code>. Il browser chiede nome utente e password: un nome utente qualsiasi, e la password che hai scritto in <code>.env</code>. Si apre il pannello di amministrazione. Cosa fare per prima cosa: in <a href="../node-panel/">Prima configurazione nel pannello di amministrazione</a>.</p>
+<div class="note"><p>Cinque password sbagliate di fila dallo stesso indirizzo bloccano il pannello per quell'indirizzo per 15 minuti. Se succede, aspetta e basta.</p></div>
+<h2 id="s10">10. Facoltativo: chiudi il pannello a internet</h2>
+<p>Se non vuoi che l'indirizzo del pannello si apra da internet, cambia in <code>.env</code> la riga <code>NEVOD_ADMIN_PUBLIC=true</code> in <code>NEVOD_ADMIN_PUBLIC=false</code> e applicala:</p>
+<pre><code>docker compose up -d</code></pre>
+<p>Allora il pannello è raggiungibile solo tramite un tunnel SSH. Sul tuo computer esegui</p>
+<pre><code>ssh -L 8766:127.0.0.1:8766 root@node.example.org</code></pre>
+<p>e, finché quella finestra resta aperta, apri nel browser <code>http://localhost:8766/nevod-admin</code>.</p>
+<p>Se sul tuo computer la porta 8766 è già occupata (per esempio perché lì gira un altro nodo Nevod), usane un'altra: <code>ssh -L 18766:127.0.0.1:8766 root@node.example.org</code> e <code>http://localhost:18766/nevod-admin</code>. Il primo numero è la porta sul tuo computer, il secondo quella del pannello sul server: quella non cambiarla.</p>
+<h2 id="s11">Se qualcosa non va</h2>
+<div class="tbl"><table><tr><th>Cosa vedi</th><th>Di solito la causa è</th></tr><tr><td>Il browser dice che il certificato non è valido, o il sito non si apre</td><td>Il dominio non punta ancora al server (passo 2), oppure la porta 80/443 è chiusa (passi 1 e 5). Guarda il log di Caddy: <code>docker compose logs caddy</code>. Una volta eliminata la causa, Caddy riprova da solo.</td></tr><tr><td><code>docker compose up</code> dice <code>address already in use</code></td><td>Sul server è già attivo un altro server web (spesso Apache o nginx del provider). Fermalo: <code>systemctl disable --now apache2</code> oppure <code>systemctl disable --now nginx</code>.</td></tr><tr><td>L'errore <code>set NEVOD_ADMIN_PASSWORD in .env</code> o <code>set NEVOD_DOMAIN in .env</code></td><td>Quella riga di <code>.env</code> non è compilata (passo 7).</td></tr><tr><td>Hai sbagliato a scrivere il dominio in <code>.env</code> (nessun certificato, nel log di Caddy compare <code>NXDOMAIN</code>)</td><td>Ferma il nodo: <code>docker compose down</code>, correggi <code>NEVOD_DOMAIN</code> in <code>.env</code>, cancella la cartella dei dati: <code>rm -rf data</code>, e riavvialo: <code>docker compose up -d</code>. Cancella <code>data</code> solo finché nessuno si è registrato sul nodo: altrimenti il nodo resta con l'indirizzo vecchio e dovresti correggerlo a mano.</td></tr><tr><td>Il pannello chiede la password in continuazione</td><td>Password sbagliata. Per vedere quale è impostata: <code>grep PASSWORD .env</code>.</td></tr><tr><td>Il pannello risponde «Too many failed logins»</td><td>È scattata la protezione contro i tentativi di indovinare la password: aspetta 15 minuti.</td></tr><tr><td><code>nevod_node</code> si riavvia di continuo</td><td>Il log del nodo mostra il motivo: <code>docker compose logs --tail 50 nevod_node</code>.</td></tr></table></div>
+<p>I log completi di entrambi i container: <code>docker compose logs</code>. Tutti i comandi <code>docker compose</code> si eseguono dalla cartella <code>/opt/nevod/installer/docker</code>.</p><p class="doc-nav"><a href="/it/docs/node-how/">← Come funziona un nodo</a><a href="/it/docs/">↑ Documentazione</a><a href="/it/docs/node-panel/">Prima configurazione nel pannello di amministrazione →</a></p></div></div></main>
+<footer class="site"><div class="wrap">
+<div>© 2026 Nevod · Kolpakov Andrey</div>
+<div><a href="/it/support/">Supporto</a> · <a href="/it/privacy/">Privacy</a> · <a href="/it/terms/">Condizioni d'uso</a> · <a href="/it/node/">Il tuo nodo</a> · <a href="https://github.com/avk0978/nevod-messenger">Codice sorgente</a></div>
+</div></footer>
+</body>
+</html>

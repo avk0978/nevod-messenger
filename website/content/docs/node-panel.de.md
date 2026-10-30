@@ -54,7 +54,7 @@ Jeder Code gilt einmal. Erstelle für jede Person einen eigenen — mehr unter [
 **Einstellungen → Sichtbarkeit in „Netzwerk erkunden“**:
 
 - `closed` (Standard) — der Node wird Nutzern anderer Nodes in „Netzwerk erkunden“ nicht angezeigt. Passt für Familie, Organisation, jede geschlossene Gruppe.
-- `open` — der Node erscheint in „Netzwerk erkunden“, und Nutzer anderer Nodes können ihn finden. Passt für eine offene Community.
+- `open` — der Node erscheint in „Netzwerk erkunden“, und Nutzer anderer Nodes können ihn finden. Passt für eine offene Community. Der Node ist sichtbar, solange er mit dem Netz verbunden ist, und nur für Leute, die schon auf irgendeinem Node registriert sind: Vor der Registrierung zeigt die App nur die Nodes des Projekts.
 
 Diese Wahl öffnet nicht die Registrierung: Wen du zulässt, entscheidet weiterhin der Zulassungsmodus für Zellen (Schritt 2). Den goldenen Ring eines geprüften Nodes in „Netzwerk erkunden“ haben derzeit nur Nodes des Nevod-Projekts.
 

@@ -1,6 +1,6 @@
 # Sécurité et sauvegardes
 
-Ce que Nevod protège de lui-même, comment il vous protège des escrocs et des attaques, ce que vous devriez faire, comment vous protéger des inconnus, comment verrouiller une discussion par mot de passe, comment bloquer et signaler — et pourquoi Nevod ne sauvegarde pas les conversations.
+Ce que Nevod protège de lui-même, comment il vous protège des escrocs et des attaques, ce que vous devriez faire, comment verrouiller une discussion par mot de passe, comment bloquer et signaler — et pourquoi Nevod ne sauvegarde pas les conversations.
 
 ## Ce qui est protégé sans que vous ayez à intervenir
 
@@ -44,17 +44,6 @@ Vous pouvez verrouiller une discussion par mot de passe : même quelqu'un qui ti
 3. Les mots de passe doivent être différents. Pour les changer, au même endroit : **Changer les mots de passe**.
 
 > Le mot de passe de la discussion n'est conservé que sur ce téléphone, et pas le mot de passe lui-même mais son empreinte (hash). **Un mot de passe oublié ne peut pas être récupéré**, ni par vous ni par les développeurs, et la discussion ne pourra plus être ouverte. Choisissez un mot de passe que vous n'oublierez pas. Le mot de passe de contrainte ne supprime la conversation que chez vous : votre interlocuteur la conserve.
-
-## Protection contre les inconnus
-
-Les personnes à qui vous avez donné votre carte ne sont pas les seules à pouvoir vous écrire et vous appeler. Sur un nœud ouvert comme Nevod Open, n'importe qui peut s'inscrire, et les membres du nœud se voient dans **Contacts → Sur ce nœud**. De plus, quelqu'un avec qui vous échangez peut transmettre votre carte à un autre. Un inconnu, ici, c'est quelqu'un qui n'est pas dans vos contacts.
-
-**Profil → Sécurité** propose deux réglages. Les activer ou non, c'est vous qui décidez ; au départ, ils sont tous deux désactivés :
-
-- **Appels des contacts uniquement** : un appel de quelqu'un qui n'est pas dans vos contacts est refusé en silence, le téléphone ne sonne pas. L'appel apparaît dans l'historique comme manqué.
-- **Images d'inconnus — au toucher** : les photos et vidéos de quelqu'un qui n'est pas dans vos contacts ne s'affichent pas tout de suite : la discussion montre un emplacement **Afficher**, et l'app n'ouvre le fichier qu'après que vous l'avez touché. Ainsi, même une image piégée ne peut pas se déclencher toute seule.
-
-Sur un nœud fermé, où l'administrateur connaît tous les membres, ces réglages sont généralement inutiles. Sur un nœud ouvert, il vaut la peine de les activer.
 
 ## Bloquer et signaler
 

@@ -40,7 +40,6 @@ Una videochiamata comincia come una chiamata normale: chiama e, quando l'altra p
 | Cosa vedi | Cosa fare |
 |---|---|
 | **Occupato** | l'altra persona è già in chiamata: richiama più tardi |
-| la chiamata non passa, ma i messaggi sì | forse l'altra persona ha attivato **Chiamate solo dai contatti** e tu non sei tra i suoi contatti. Chiedile di aggiungerti; vedi [Sicurezza](../security/), «Protezione dagli sconosciuti» |
 | **Connessione…** resta a lungo | uno dei due ha una connessione scarsa. Prova a passare dalla rete cellulare al Wi-Fi o viceversa e richiama |
 | la chiamata è collegata, ma uno dei due non si sente | controlla che Nevod abbia il permesso per il microfono: **Impostazioni dell'iPhone → Nevod → Microfono** |
 | le chiamate in arrivo non arrivano quando Nevod è chiuso | controlla che non sia attivo Non disturbare o un'altra modalità Full immersion. Se sei su un nodo privato, il suo amministratore dovrebbe verificare che il nodo sia [collegato alla rete](../node-network/): senza, una chiamata non può «svegliare» il telefono |

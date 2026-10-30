@@ -33,15 +33,29 @@ from .protocol import (Packet, T, pack, unpack, encode_payload, decode_payload,
                         make_node_register, make_node_cert, make_push_relay_request,
                         make_node_list_response, make_reachability_probe,
                         make_reachability_result, make_node_cells_response,
-                        make_join_request_ack, make_join_request_resolved)
+                        make_join_request_ack, make_join_request_resolved,
+                        node_admin_message)
+from .crypto import sign
 from . import push as _push
-from .names import is_reserved_name, is_reserved_node_name, official_cell_ids
+from . import blocklist as _blocklist
+from .relays import PROJECT_RELAY_NODE_IDS
+from .names import is_reserved_name, is_reserved_node_name, official_cell_ids, relayed_push_title
 from .limits import new_cells_limiter, open_node_joins_limiter
 
 log = logging.getLogger(__name__)
 
 # Diagnostic logs sent to the administrator from the app — see Node._store_diag_log and
 # DiagnosticReport.inAppPrefix on iOS (keep the prefix in sync).
+# Push relay for nodes without APNs credentials (_handle_push_relay_request): at most one
+# alert per device per RELAY_PUSH_TOKEN_SECS (the requester already rate-limits per
+# recipient+sender, this is only a backstop), and a ceiling per requesting node per minute
+# against a looping or hostile node — far above what a real node's users generate.
+RELAY_PUSH_TOKEN_SECS = 3.0
+RELAY_PUSH_PER_NODE_PER_MIN = 600
+# The only body we ever put into a relayed alert — never the requester's text, so nobody can
+# send "your account is blocked, open this link" through our key. The phone translates it.
+RELAY_PUSH_BODY = "New message"
+
 DIAG_LOG_PREFIX = "nevod-log:"
 DIAG_LOG_MAX_PACKED = 4 * 1024 * 1024
 DIAG_LOG_MAX_RAW = 8 * 1024 * 1024
@@ -99,9 +113,11 @@ class Node:
         # keyed by peer node_id — one in-flight join() per Node instance is all
         # that's ever needed, so no separate request-id correlation is required
         self._pending_node_cert: dict[str, asyncio.Future] = {}
-        # push-relay abuse guard: (requesting node_id) → monotonic time of last
-        # relay we performed for them. Mirrors router.py's own push rate-limit.
-        self._relay_times: dict[str, float] = {}
+        # push-relay abuse guards: (requesting node_id, push token) → monotonic time of
+        # the last alert we relayed to that device, and requesting node_id → monotonic
+        # times of relays in the last minute (alert + voip). See RELAY_PUSH_*.
+        self._relay_token_times: dict[tuple[str, str], float] = {}
+        self._relay_node_times: dict[str, list[float]] = {}
         # same idea for TURN relay requests we serve for other nodes
         self._turn_relay_times: dict[str, float] = {}
         # request_id → Future, for our own outstanding TURN_RELAY_REQUESTs
@@ -109,6 +125,17 @@ class Node:
         # peer_node_id → Future, for our own outstanding REACHABILITY_PROBEs — one
         # in-flight probe per peer is all self-diagnostics ever needs at once
         self._pending_reachability: dict[str, asyncio.Future] = {}
+        # node_ids the operator blocked (storage blocked_nodes) — loaded in start(), checked
+        # on every connection and routed packet, so kept in memory.
+        self._blocked_nodes: set[str] = set()
+        self.transport.is_blocked = self.is_node_blocked
+        # The curator-signed project blocklist (node/blocklist.py): node_id → reason, the
+        # version we hold, and where the last accepted document is kept across restarts.
+        self._project_blocked: dict[str, str] = {}
+        self.project_blocklist_version = 0
+        self._blocklist_path = (os.path.join(os.path.dirname(identity_path) or ".",
+                                             "project_blocklist.json") if identity_path else None)
+        self._blocklist_task: Optional[asyncio.Task] = None
 
     @classmethod
     async def create(cls, identity_path: str, db_path: str,
@@ -124,11 +151,12 @@ class Node:
                               node_type: str = "permanent",
                               parent_node_id: str = "",
                               name: str = "",
-                              on_message: Optional[MessageCallback] = None) -> "Node":
+                              on_message: Optional[MessageCallback] = None,
+                              invite_mode: str = "open") -> "Node":
         """Create and persist the first node in the network."""
         identity = NodeIdentity.generate(
             address, node_type=node_type, access=access,
-            parent_node_id=parent_node_id, name=name,
+            parent_node_id=parent_node_id, name=name, invite_mode=invite_mode,
         )
         identity.save(identity_path)
 
@@ -157,6 +185,14 @@ class Node:
 
     async def start(self):
         import os
+        self._blocked_nodes = {b["node_id"] for b in await self.storage.list_blocked_nodes()}
+        if self._blocklist_path:
+            saved = _blocklist.load_saved(self._blocklist_path)
+            if saved:
+                await self.apply_project_blocklist(saved, persist=False)
+            url = os.environ.get("NEVOD_PROJECT_BLOCKLIST_URL", _blocklist.DEFAULT_URL).strip()
+            if url and url != "off":
+                self._blocklist_task = asyncio.create_task(self._blocklist_loop(url), name="blocklist")
         host, port = _split_address(self.identity.address)
         bind_host = os.environ.get("NEVOD_BIND", host)
         await self.transport.start(bind_host, port)
@@ -232,6 +268,8 @@ class Node:
         )
 
     async def stop(self):
+        if self._blocklist_task:
+            self._blocklist_task.cancel()
         if self.ai_bots:
             await self.ai_bots.stop()
         self.gossip.stop()
@@ -367,7 +405,7 @@ class Node:
             await self.gossip.handle_pong(pkt)
 
         elif t == T.GOSSIP:
-            await self.gossip.handle_gossip(pkt)
+            await self.gossip.handle_gossip(pkt, conn)
 
         elif t == T.MSG or t == T.MSG_CHUNK or t == T.MSG_SILENT:
             if await self._maybe_handle_registrar_reply(pkt):
@@ -421,10 +459,10 @@ class Node:
             await self._handle_group_members_request(pkt, conn)
 
         elif t == T.NODE_REMOVE:
-            await self._handle_node_remove(pkt)
+            await self._handle_node_remove(pkt, conn)
 
         elif t == T.NODE_LEAVING:
-            await self._handle_node_leaving(pkt)
+            await self._handle_node_leaving(pkt, conn)
 
         elif t == T.NODE_REGISTER:
             await self._handle_node_register(pkt, conn)
@@ -485,19 +523,27 @@ class Node:
         else:
             log.debug("unhandled packet type: %s from %s", t, pkt.from_addr[:16])
 
-    async def _handle_node_remove(self, pkt: Packet):
+    async def _handle_node_remove(self, pkt: Packet, conn: PeerConnection):
+        """A node may remove only itself from our table (same as NODE_LEAVING) — nobody
+        else's word takes a node out of the network; offline nodes expire after 72 hours."""
         try:
             data = decode_payload(pkt.payload)
             node_id = data["node_id"]
         except Exception:
             return
+        if node_id != conn.peer_node_id:
+            log.info("node_remove for %s from %s ignored", str(node_id)[:8], conn.peer_node_id[:8])
+            return
         await self.storage.remove_node(node_id)
-        log.info("removed node %s (network broadcast)", node_id[:8])
+        log.info("removed node %s (its own request)", node_id[:8])
 
-    async def _handle_node_leaving(self, pkt: Packet):
-        node_id = pkt.from_addr
+    async def _handle_node_leaving(self, pkt: Packet, conn: PeerConnection):
+        # The authenticated sender, not pkt.from_addr — anyone could write another node's id there.
+        node_id = conn.peer_node_id
+        if await self.storage.get_node(node_id) is None:
+            return
         await self.storage.remove_node(node_id)
-        await self.transport.connections.remove(node_id)
+        await self.transport.connections.remove(node_id, conn)
         log.info("node %s left gracefully", node_id[:8])
 
     async def _handle_node_register(self, pkt: Packet, conn: PeerConnection):
@@ -890,6 +936,101 @@ class Node:
             except ValueError:
                 pass
 
+    # --- blocked nodes (admin panel "Узлы" → Заблокировать) ---
+
+    def is_node_blocked(self, node_id: Optional[str]) -> bool:
+        if not node_id:
+            return False
+        node_id = node_id.lower()
+        return node_id in self._blocked_nodes or (
+            node_id in self._project_blocked and self.project_blocklist_on())
+
+    def project_blocklist_on(self) -> bool:
+        mode = self.identity.project_blocklist
+        if mode in ("on", "off"):
+            return mode == "on"
+        return self.identity.node_id in PROJECT_RELAY_NODE_IDS
+
+    def project_blocked_nodes(self) -> dict:
+        return dict(self._project_blocked)
+
+    async def _cut_off(self, node_id: str):
+        await self.storage.forget_node(node_id)
+        conn = await self.transport.connections.get(node_id)
+        if conn:
+            await conn.close()
+
+    async def apply_project_blocklist(self, doc: dict, persist: bool = True) -> bool:
+        """Take a newer curator-signed list. Anything else — bad signature, malformed, or a
+        version not above the one we hold — is ignored, so an old list can't be replayed
+        to lift a block."""
+        verified = _blocklist.verify_doc(doc)
+        if not verified:
+            log.warning("project blocklist: rejected (not signed by the curator or malformed)")
+            return False
+        version, nodes = verified
+        if version <= self.project_blocklist_version:
+            return False
+        nodes.pop(self.identity.node_id, None)  # never cut ourselves off
+        added = set(nodes) - set(self._project_blocked)
+        self._project_blocked = nodes
+        self.project_blocklist_version = version
+        if persist and self._blocklist_path:
+            _blocklist.save(self._blocklist_path, doc)
+        if self.project_blocklist_on():
+            for node_id in added:
+                await self._cut_off(node_id)
+        log.info("project blocklist: version %d, %d node(s), %d new, applied=%s",
+                 version, len(nodes), len(added), self.project_blocklist_on())
+        return True
+
+    async def set_project_blocklist(self, mode: str):
+        """"on" | "off" | "" (default for this node). Switching it on cuts off the listed
+        nodes right away; switching it off lets them come back the usual way."""
+        self.identity.project_blocklist = mode
+        if self._identity_path:
+            self.identity.save(self._identity_path)
+        if self.project_blocklist_on():
+            for node_id in self._project_blocked:
+                await self._cut_off(node_id)
+
+    async def _blocklist_loop(self, url: str):
+        while True:
+            doc = await _blocklist.fetch(url)
+            if doc is not None:
+                try:
+                    await self.apply_project_blocklist(doc)
+                except Exception as e:
+                    log.error("project blocklist: apply failed: %s", e)
+            await asyncio.sleep(_blocklist.FETCH_INTERVAL)
+
+    async def block_node(self, node_id: str, reason: str = "") -> bool:
+        """Cut a node off: dropped from node_table and its cells' presence, its live
+        connection closed, never connected to or accepted again (Transport.is_blocked),
+        its gossip entries ignored so it can't come back through other nodes, and nothing
+        routed from or to its cells (Router.route). Our own node can't be blocked."""
+        node_id = node_id.strip().lower()
+        if len(node_id) != 64 or any(c not in "0123456789abcdef" for c in node_id) \
+                or node_id == self.identity.node_id:
+            return False
+        entry = await self.storage.get_node(node_id)
+        await self.storage.block_node(node_id, name=entry.name if entry else "",
+                                      address=entry.address if entry else "", reason=reason)
+        self._blocked_nodes.add(node_id)
+        await self._cut_off(node_id)
+        log.info("node %s blocked by the operator", node_id[:8])
+        return True
+
+    async def unblock_node(self, node_id: str) -> bool:
+        """Lift the block. The node isn't re-added here: it comes back through gossip or a
+        new join like any node we don't know yet."""
+        node_id = node_id.strip().lower()
+        self._blocked_nodes.discard(node_id)
+        ok = await self.storage.unblock_node(node_id)
+        if ok:
+            log.info("node %s unblocked by the operator", node_id[:8])
+        return ok
+
     # --- built-in administrator (appeals / complaints) ---
 
     async def _ensure_administrator(self):
@@ -925,6 +1066,19 @@ class Node:
             return None
         return {"cell_id": a.cell_id, "enc_pub": a.encryption.public.hex(),
                 "node_id": self.identity.node_id}
+
+    def administrator_record(self) -> Optional[dict]:
+        """This node's administrator, signed with the node's own key — the app's "Node
+        administrator" mark for private nodes (no curator involved). node_id IS the node's
+        Ed25519 public key, so the app verifies against the node it is talking to, and no
+        other node can sign for this node_id. The blue ✓ stays curator-only (official.json)."""
+        a = self._administrator_identity
+        if not a:
+            return None
+        rec = {"cell_id": a.cell_id, "enc_pub": a.encryption.public.hex(),
+               "node_id": self.identity.node_id, "node_name": self.identity.name or ""}
+        rec["sig"] = sign(node_admin_message(**rec), self.identity.signing).hex()
+        return rec
 
     def _is_administrator_address(self, addr: str) -> bool:
         if not self._administrator_identity:
@@ -1504,11 +1658,14 @@ class Node:
         """Another node has no push credentials for this platform and is asking
         us to send on its behalf — see router.py's _send_push / _relay_voip_push.
         We only help nodes we already know (admitted to the network at some
-        point, either directly or via gossip), and rate-limit per requester so
-        one node can't burn through our push quota. VoIP (kind="voip") is
-        exempt from the rate limit — same reasoning as the direct-send path in
-        router.py: a call offer is a one-off event, not part of a flood, and
-        delaying it means a missed call."""
+        point, either directly or via gossip). The requester's text is never
+        used: the body is always RELAY_PUSH_BODY and the title (sender / caller
+        name) goes through names.relayed_push_title. Alerts are limited per
+        device (RELAY_PUSH_TOKEN_SECS), not per node — a node with many users
+        must not lose all but one notification a minute. VoIP (kind="voip") is
+        exempt from the per-device limit — same reasoning as the direct-send
+        path in router.py: a call offer is a one-off event, and delaying it
+        means a missed call. Both count toward RELAY_PUSH_PER_NODE_PER_MIN."""
         requester_id = conn.peer_node_id
         if self.apns is None:
             return
@@ -1520,8 +1677,7 @@ class Node:
             d = decode_payload(pkt.payload)
             platform  = str(d.get("platform", ""))
             token     = str(d.get("push_token", "")).strip()
-            title     = str(d.get("title", "Nevod"))[:64]
-            body      = str(d.get("body", "New message"))[:120]
+            title     = relayed_push_title(str(d.get("title", "")))
             kind      = str(d.get("kind", "alert"))
             caller_id = str(d.get("caller_id", ""))
         except Exception:
@@ -1530,20 +1686,35 @@ class Node:
             log.info("push-relay: unsupported platform=%r from %s", platform, requester_id[:8])
             return
 
+        now = time.monotonic()
+        recent = [t for t in self._relay_node_times.get(requester_id, []) if now - t < 60.0]
+        if len(recent) >= RELAY_PUSH_PER_NODE_PER_MIN:
+            self._relay_node_times[requester_id] = recent
+            log.info("push-relay: node %s over %d/min, dropping %s push",
+                     requester_id[:8], RELAY_PUSH_PER_NODE_PER_MIN, kind)
+            return
+
         if kind == "voip":
+            recent.append(now)
+            self._relay_node_times[requester_id] = recent
             ok = await self.apns.send_voip(token, caller_id=caller_id, caller_name=title)
             log.info("push-relay: relayed VOIP push for node %s to %s… result=%s",
                      requester_id[:8], token[:8], ok)
             return
 
-        now = time.time()
-        last = self._relay_times.get(requester_id, 0.0)
-        if now - last < 60.0:
-            log.info("push-relay: rate-limited request from %s (%.1fs since last)",
-                     requester_id[:8], now - last)
+        key = (requester_id, token)
+        last = self._relay_token_times.get(key)
+        if last is not None and now - last < RELAY_PUSH_TOKEN_SECS:
+            log.info("push-relay: rate-limited push from %s to %s… (%.1fs since last)",
+                     requester_id[:8], token[:8], now - last)
             return
-        self._relay_times[requester_id] = now
-        ok = await self.apns.send(token, title=title, body=body, sender_cell_id=caller_id)
+        if len(self._relay_token_times) > 10_000:
+            self._relay_token_times = {k: t for k, t in self._relay_token_times.items()
+                                       if now - t < RELAY_PUSH_TOKEN_SECS}
+        self._relay_token_times[key] = now
+        recent.append(now)
+        self._relay_node_times[requester_id] = recent
+        ok = await self.apns.send(token, title=title, body=RELAY_PUSH_BODY, sender_cell_id=caller_id)
         log.info("push-relay: relayed push for node %s to %s… result=%s",
                  requester_id[:8], token[:8], ok)
 
@@ -1651,6 +1822,7 @@ class Node:
             from_node=self.identity.node_id,
             to_addr=pkt.from_addr,
             members=members,
+            administrator=self.administrator_record(),
         )
         await self.transport.send_via(conn, resp)
 

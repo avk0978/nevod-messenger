@@ -135,8 +135,23 @@ class Router:
             await self._notify_undeliverable(pkt)
             return
 
+        # A node our operator blocked (Node.block_node): nothing from its cells and nothing
+        # to them, even when a third node passes the packet along. The sender of a message
+        # to such a cell gets the same "failed" as for a cell that doesn't exist.
+        _, from_node_id = parse_addr(pkt.from_addr)
+        if self.node.is_node_blocked(from_node_id):
+            log.info("router: dropping %s %s — sender's node %s is blocked",
+                     pkt.type, pkt.id[:8], from_node_id[:8])
+            return
+
         # cell message: resolve presence
         presence = await self.node.storage.get_presence(cell_id)
+        if self.node.is_node_blocked(to_node_id) or (presence is not None and (
+                self.node.is_node_blocked(presence.home_node_id)
+                or self.node.is_node_blocked(presence.visiting_node_id))):
+            log.info("router: dropping %s %s — recipient's node is blocked", pkt.type, pkt.id[:8])
+            await self._notify_undeliverable(pkt)
+            return
         if pkt.type == T.MSG:
             log.info("router: routing MSG id=%s from=%s to=%s presence=%s",
                      pkt.id[:8], pkt.from_addr[:24], pkt.to_addr[:24],

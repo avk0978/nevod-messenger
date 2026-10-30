@@ -9,6 +9,11 @@ from node.storage import Storage
 from node.node import Node
 
 
+# A started node would fetch the project blocklist from node1 (node/blocklist.py) —
+# tests never go to the network; test_blocklist.py drives it directly.
+os.environ.setdefault("NEVOD_PROJECT_BLOCKLIST_URL", "off")
+
+
 # Ports used by integration tests — picked high to avoid conflicts
 BASE_PORT = 19200
 

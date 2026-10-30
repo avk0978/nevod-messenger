@@ -214,3 +214,125 @@ class TestJoinRequestsPageData:
             assert any(req["display_name"] == "Anechka" for req in data["requests"])
         finally:
             await client.close()
+
+
+def _wrong_auth():
+    token = base64.b64encode(b":wrong-password").decode()
+    return {"Authorization": f"Basic {token}"}
+
+
+class TestAdminLoginGuard:
+    async def test_locked_after_five_wrong_passwords(self, genesis_node):
+        client = await _client(genesis_node)
+        try:
+            for _ in range(5):
+                assert (await client.get("/nevod-admin/", headers=_wrong_auth())).status == 401
+            # Locked: even the right password is refused without being checked.
+            assert (await client.get("/nevod-admin/", headers=_auth_header())).status == 429
+        finally:
+            await client.close()
+
+    async def test_login_dialog_requests_dont_count(self, genesis_node):
+        client = await _client(genesis_node)
+        try:
+            for _ in range(10):
+                assert (await client.get("/nevod-admin/")).status == 401
+            assert (await client.get("/nevod-admin/", headers=_auth_header())).status == 200
+        finally:
+            await client.close()
+
+    async def test_correct_password_clears_failures(self, genesis_node):
+        client = await _client(genesis_node)
+        try:
+            for _ in range(4):
+                await client.get("/nevod-admin/", headers=_wrong_auth())
+            assert (await client.get("/nevod-admin/", headers=_auth_header())).status == 200
+            for _ in range(4):
+                await client.get("/nevod-admin/", headers=_wrong_auth())
+            assert (await client.get("/nevod-admin/", headers=_auth_header())).status == 200
+        finally:
+            await client.close()
+
+    async def test_real_ip_from_proxy_is_used(self, genesis_node):
+        # Behind nginx/Caddy every request comes from the proxy's address — the lockout
+        # must hit the attacker's X-Real-IP, not everyone behind the same proxy.
+        client = await _client(genesis_node)
+        try:
+            for _ in range(5):
+                await client.get("/nevod-admin/", headers={**_wrong_auth(), "X-Real-IP": "203.0.113.7"})
+            r = await client.get("/nevod-admin/", headers={**_auth_header(), "X-Real-IP": "203.0.113.7"})
+            assert r.status == 429
+            r = await client.get("/nevod-admin/", headers={**_auth_header(), "X-Real-IP": "198.51.100.9"})
+            assert r.status == 200
+        finally:
+            await client.close()
+
+    async def test_public_card_lookup_not_guarded(self, genesis_node):
+        client = await _client(genesis_node)
+        try:
+            for _ in range(5):
+                await client.get("/nevod-admin/", headers=_wrong_auth())
+            assert (await client.get("/nevod-card/nonexistent")).status != 429
+        finally:
+            await client.close()
+
+
+class TestJoinNetwork:
+    """The Nodes page's "Join the Nevod network" button (POST /nevod-admin/api/join-network):
+    an invite-less join through the network entry node (Nevod Open in production)."""
+
+    async def _nodes(self, tmp_path, entry_join_mode="open"):
+        from node.identity import NodeIdentity
+        from node.node import Node
+        nodes = []
+        for i, mode in enumerate((entry_join_mode, "invite")):
+            path = str(tmp_path / f"j{i}.json")
+            idt = NodeIdentity.generate(f"127.0.0.1:{20450 + i}")
+            idt.node_join_mode = mode
+            idt.save(path)
+            node = await Node.create(path, str(tmp_path / f"j{i}.db"))
+            await node.start()
+            nodes.append(node)
+        return nodes
+
+    async def test_joins_entry_node(self, tmp_path, monkeypatch):
+        entry, mine = await self._nodes(tmp_path)
+        monkeypatch.setenv("NEVOD_NETWORK_ENTRY",
+                           f"{entry.identity.address}|{entry.identity.tls_fingerprint}")
+        client = await _client(mine)
+        try:
+            r = await client.post("/nevod-admin/api/join-network", headers=_auth_header())
+            assert r.status == 200 and (await r.json())["ok"]
+            # Both sides now know each other — the entry node gossips us on to the network.
+            assert await mine.storage.get_node(entry.identity.node_id) is not None
+            assert await entry.storage.get_node(mine.identity.node_id) is not None
+            data = await (await client.get("/nevod-admin/api/nodes", headers=_auth_header())).json()
+            assert data["self_id"] == mine.identity.node_id
+        finally:
+            await client.close()
+            await mine.stop(); await entry.stop()
+
+    async def test_entry_that_requires_invite_refuses(self, tmp_path, monkeypatch):
+        entry, mine = await self._nodes(tmp_path, entry_join_mode="invite")
+        monkeypatch.setenv("NEVOD_NETWORK_ENTRY",
+                           f"{entry.identity.address}|{entry.identity.tls_fingerprint}")
+        client = await _client(mine)
+        try:
+            r = await client.post("/nevod-admin/api/join-network", headers=_auth_header())
+            body = await r.json()
+            assert r.status == 400 and not body["ok"]
+        finally:
+            await client.close()
+            await mine.stop(); await entry.stop()
+
+    async def test_wrong_fingerprint_refused(self, tmp_path, monkeypatch):
+        entry, mine = await self._nodes(tmp_path)
+        monkeypatch.setenv("NEVOD_NETWORK_ENTRY", f"{entry.identity.address}|{'00' * 32}")
+        client = await _client(mine)
+        try:
+            r = await client.post("/nevod-admin/api/join-network", headers=_auth_header())
+            assert r.status == 400
+            assert await entry.storage.get_node(mine.identity.node_id) is None
+        finally:
+            await client.close()
+            await mine.stop(); await entry.stop()

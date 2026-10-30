@@ -27,8 +27,10 @@ INDEX = """
 </div>
 <p class="note">ZKI is the foundation of Nevod's development. Every technical decision is checked against one question: does the infrastructure's creator gain access to the content? <a href="/en/manifesto/">The Zero Knowledge Infrastructure manifesto →</a></p>
 <h2>Low-load distributed network</h2>
-<p>Each Nevod node's load is bounded by its own circle (family, home, team), not by the size of the whole network: a million new users elsewhere add not a single byte to your node. A node runs on ordinary home hardware, the network has no center, and the node itself carries only ciphertext.</p>
+<p><b>Nevod is an encrypted distributed messenger of class LL-0: the load on each node depends only on its own circle (family, home, team), not on the size of the network.</b> Among the networks of this class, Nevod is the only one designed as a full messenger for ordinary people, with voice and video calls.</p>
+<p>A million new users elsewhere add not a single byte to your node. A node runs on ordinary home hardware, the network has no center, and the node itself carries only ciphertext.</p>
 <p><a href="/en/compare/#low-load">A comparison of Nevod with 14 other networks, from FidoNet to Signal →</a></p>
+<p><a href="/en/publications/low-load-networks/">The article “Low-Load Distributed Data Networks” (DOI 10.5281/zenodo.23621073) →</a></p>
 <h2>What Nevod does</h2>
 <div class="grid">
 <div class="card"><h3>🔒 End-to-end encryption</h3><p>Every message, photo, voice message and call is encrypted on the phone. Nodes only ever see encrypted data.</p></div>
@@ -39,7 +41,7 @@ INDEX = """
 <h2>Project status</h2>
 <div class="tbl"><table class="status">
 <tr><th style="width:34%">Area</th><th>Status</th></tr>
-<tr><td>iPhone app</td><td>Closed testing (TestFlight); App Store release in preparation</td></tr>
+<tr><td>iPhone app</td><td>Published in the <a href="https://apps.apple.com/app/id6805214654">App Store</a></td></tr>
 <tr><td>Android app</td><td>In development</td></tr>
 <tr><td>Network nodes</td><td>Running, deployed with Docker</td></tr>
 <tr><td>App languages</td><td>8: Ukrainian, English, Russian, German, Turkish, Spanish, Italian, French</td></tr>
@@ -129,6 +131,7 @@ COMPARE = """
 <p>ZKI asks a different question: <b>what could the infrastructure's creator get, even in theory?</b> In Nevod the answer is built into the architecture: keys never leave the device, there's no master key and no backups, no central server and no register of people by phone number.</p>
 <h2 id="low-load">Low-load distributed network: a comparison</h2>
 <p>We rate networks against six traits of a low-load distributed network: each node's load is bounded by its own circle of people, not by the size of the whole network. The traits come from Nevod's own principles, so the comparison naturally favors it.</p>
+<p><a href="/en/publications/low-load-networks/">In detail — the concept, six traits, classes LL-0…LL-3 and a comparison of 15 networks — in the article “Low-Load Distributed Data Networks” (Zenodo, DOI 10.5281/zenodo.23621073) →</a></p>
 <ol>
 <li>Own circle: a node's load grows with its circle (family, home, team), not with the whole network.</li>
 <li>Ordinary hardware: a home computer, mini-server or router; no data center needed.</li>
@@ -137,7 +140,7 @@ COMPARE = """
 <li>No center: no single point of failure, blocking or seizure.</li>
 <li>Blind node: a node carries only ciphertext and cannot read it.</li>
 </ol>
-<p class="note">1: yes, ½: partly, 0: no. Year: first public release. Class: LL-0, a node's load is bounded by its circle; LL-1, plus bounded transit for others; LL-3, load grows with the whole network or depends on outside users. More: <a href="/en/publications/low-load-networks/">the article</a>.</p>
+<p class="note">1: yes, ½: partly, 0: no. Year: first public release. Class: LL-0, a node's load is bounded by its circle; LL-1, plus bounded transit for others; LL-3, load grows with the whole network or depends on outside users.</p>
 <div class="tbl"><table>
 <tr><th>Network</th><th>Year</th><th>Own circle</th><th>Ordinary hardware</th><th>Economy</th><th>Delays</th><th>No center</th><th>Blind node</th><th>Class</th></tr>
 <tr><td>Secure Scuttlebutt</td><td>2014</td><td>1</td><td>1</td><td>½</td><td>1</td><td>1</td><td>0</td><td>LL-0</td></tr>
@@ -170,7 +173,7 @@ COMPARE = """
 <h2>What we acknowledge</h2>
 <ul>
 <li>A node technically processes only delivery data — which encrypted packet goes to whom — and never sees the content. Nothing stops you from running your own node: then even that delivery data stays with you.</li>
-<li>Signal's protocol is open and thoroughly reviewed — a strength we acknowledge. Nevod's code is closed for now; opening it is planned.</li>
+<li>Signal's protocol is open and thoroughly reviewed — a strength we acknowledge. Nevod's code is <a href="https://github.com/avk0978/nevod-messenger">open</a> (AGPL-3.0), but it has not been independently audited yet.</li>
 </ul>
 </div></main>
 """
@@ -234,9 +237,10 @@ DOWNLOAD = """
 <main><div class="wrap">
 <h1>Download Nevod</h1>
 <div class="grid">
-<div class="card"><h3>📱 iPhone and iPad</h3><p>Currently in closed testing via TestFlight; the App Store release is in preparation. To join the testing, write to <a href="mailto:support@nevod.network">support@nevod.network</a>.</p></div>
+<div class="card"><h3>📱 iPhone and iPad</h3><p>Nevod is available in the App Store for iPhone and iPad with iOS 17.2 or later. Free, with no in-app purchases.</p><p><a class="btn primary" href="https://apps.apple.com/app/id6805214654">Download on the App Store</a></p></div>
 <div class="card"><h3>🤖 Android</h3><p>The app is in development. We'll announce it here as soon as it's ready for testing.</p></div>
 <div class="card"><h3>🖥️ Network node</h3><p>A Nevod node runs on a server or an ordinary computer with Docker. See <a href="/en/node/">Run a node</a>.</p></div>
+<div class="card"><h3>💻 Source code</h3><p>The code of the app, the node and this site is open under the AGPL-3.0 license: <a href="https://github.com/avk0978/nevod-messenger">github.com/avk0978/nevod-messenger</a>.</p></div>
 </div>
 </div></main>
 """

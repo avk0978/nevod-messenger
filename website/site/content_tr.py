@@ -26,8 +26,10 @@ INDEX = """
 </div>
 <p class="note">ZKI, Nevod'un geliştirilmesinin temelidir. Her teknik karar tek bir soruyla sınanır: altyapının yaratıcısı içeriğe erişim kazanıyor mu? <a href="/tr/manifesto/">Zero Knowledge Infrastructure Manifestosu →</a></p>
 <h2>Az yüklü dağıtık ağ</h2>
-<p>Her Nevod düğümünün yükü tüm ağın büyüklüğüyle değil, kendi çevresiyle (aile, ev, ekip) sınırlıdır: başka bir yerdeki bir milyon yeni kullanıcı düğümünüze tek bir bayt bile eklemez. Düğüm sıradan ev donanımında çalışır, ağın merkezi yoktur ve düğümün kendisi yalnızca şifreli metin taşır.</p>
+<p><b>Nevod, LL-0 sınıfından şifreli ve dağıtık bir mesajlaşma uygulamasıdır: her düğümün yükü ağın büyüklüğüne değil, yalnızca kendi çevresine (aile, ev, ekip) bağlıdır.</b> Bu sınıftaki ağlar arasında Nevod, sıradan insanlar için sesli ve görüntülü aramalarıyla tam bir mesajlaşma uygulaması olarak tasarlanmış tek ağdır.</p>
+<p>Başka bir yerdeki bir milyon yeni kullanıcı düğümünüze tek bir bayt bile eklemez. Düğüm sıradan ev donanımında çalışır, ağın merkezi yoktur ve düğümün kendisi yalnızca şifreli metin taşır.</p>
 <p><a href="/tr/compare/#low-load">Nevod'un FidoNet'ten Signal'e 14 başka ağla karşılaştırması →</a></p>
+<p><a href="/tr/publications/low-load-networks/">“Low-Load Distributed Data Networks” makalesi (DOI 10.5281/zenodo.23621073) →</a></p>
 <h2>Nevod neler yapar</h2>
 <div class="grid">
 <div class="card"><h3>🔒 Uçtan uca şifreleme</h3><p>Her mesaj, fotoğraf, sesli mesaj ve arama telefonda şifrelenir. Düğümler yalnızca şifreli veriyi görür.</p></div>
@@ -38,7 +40,7 @@ INDEX = """
 <h2>Proje durumu</h2>
 <div class="tbl"><table class="status">
 <tr><th style="width:34%">Alan</th><th>Durum</th></tr>
-<tr><td>iPhone uygulaması</td><td>Kapalı test (TestFlight); App Store yayını hazırlanıyor</td></tr>
+<tr><td>iPhone uygulaması</td><td>Yayında: <a href="https://apps.apple.com/app/id6805214654">App Store</a></td></tr>
 <tr><td>Android uygulaması</td><td>Geliştirme aşamasında</td></tr>
 <tr><td>Ağ düğümleri</td><td>Çalışıyor, Docker ile kuruluyor</td></tr>
 <tr><td>Uygulama dilleri</td><td>8 dil: Ukraynaca, İngilizce, Rusça, Almanca, Türkçe, İspanyolca, İtalyanca, Fransızca</td></tr>
@@ -129,6 +131,7 @@ COMPARE = """
 <p>ZKI farklı bir soru sorar: <b>altyapının yaratıcısı, teoride bile, neyi elde edebilir?</b> Nevod'da cevap mimaride yatar: anahtarlar cihazı asla terk etmez, ana anahtar ve yedek yoktur, merkezi sunucu ve telefon numarasına göre insan kaydı yoktur.</p>
 <h2 id="low-load">Az yüklü dağıtık ağ: bir karşılaştırma</h2>
 <p>Ağları, az yüklü dağıtık ağın altı özelliğine göre değerlendiriyoruz: her düğümün yükü tüm ağın büyüklüğüyle değil, kendi kullanıcı çevresiyle sınırlıdır. Bu özellikler Nevod'un kendi ilkelerinden türetildi, bu yüzden karşılaştırma baştan Nevod'un lehine.</p>
+<p><a href="/tr/publications/low-load-networks/">Ayrıntılı olarak — kavram, altı özellik, LL-0…LL-3 sınıfları ve 15 ağın karşılaştırması — “Low-Load Distributed Data Networks” makalesinde (Zenodo, DOI 10.5281/zenodo.23621073) →</a></p>
 <ol>
 <li>Kendi çevresi: düğümün yükü tüm ağla değil, kendi çevresiyle (aile, ev, ekip) büyür.</li>
 <li>Sıradan donanım: ev bilgisayarı, mini sunucu veya yönlendirici; veri merkezi gerekmez.</li>
@@ -137,7 +140,7 @@ COMPARE = """
 <li>Merkez yok: tek bir arıza, engelleme veya el koyma noktası yok.</li>
 <li>Kör düğüm: düğüm yalnızca şifreli metin taşır ve onu okuyamaz.</li>
 </ol>
-<p class="note">1: evet, ½: kısmen, 0: hayır. Yıl: ilk herkese açık sürüm. Sınıf: LL-0, düğüm yükü kendi çevresiyle sınırlıdır; LL-1, ayrıca sınırlı yabancı transit; LL-3, yük tüm ağla artar ya da yabancı kullanıcılara bağlıdır. Ayrıntılar: <a href="/tr/publications/low-load-networks/">makale</a>.</p>
+<p class="note">1: evet, ½: kısmen, 0: hayır. Yıl: ilk herkese açık sürüm. Sınıf: LL-0, düğüm yükü kendi çevresiyle sınırlıdır; LL-1, ayrıca sınırlı yabancı transit; LL-3, yük tüm ağla artar ya da yabancı kullanıcılara bağlıdır.</p>
 <div class="tbl"><table>
 <tr><th>Ağ</th><th>Yıl</th><th>Kendi çevresi</th><th>Sıradan donanım</th><th>Tasarruf</th><th>Gecikmeler</th><th>Merkez yok</th><th>Kör düğüm</th><th>Sınıf</th></tr>
 <tr><td>Secure Scuttlebutt</td><td>2014</td><td>1</td><td>1</td><td>½</td><td>1</td><td>1</td><td>0</td><td>LL-0</td></tr>
@@ -170,7 +173,7 @@ COMPARE = """
 <h2>Kabul ettiklerimiz</h2>
 <ul>
 <li>Bir düğüm teknik olarak yalnızca teslimat verisini işler — hangi şifreli paketin kime gideceğini — ve içeriği asla görmez. Kimse kendi düğümünüzü çalıştırmanızı engellemez: o zaman bu teslimat verisi bile sizde kalır.</li>
-<li>Signal'in protokolü açık ve kapsamlı biçimde incelenmiştir — bunu bir güçlü yan olarak kabul ediyoruz. Nevod'un kodu şimdilik kapalıdır; açılması planlanmaktadır.</li>
+<li>Signal'in protokolü açık ve kapsamlı biçimde incelenmiştir — bunu bir güçlü yan olarak kabul ediyoruz. Nevod'un kodu <a href="https://github.com/avk0978/nevod-messenger">açıktır</a> (AGPL-3.0), ancak henüz bağımsız bir denetimden geçmemiştir.</li>
 </ul>
 </div></main>
 """
@@ -234,9 +237,10 @@ DOWNLOAD = """
 <main><div class="wrap">
 <h1>Nevod'u indirin</h1>
 <div class="grid">
-<div class="card"><h3>📱 iPhone ve iPad</h3><p>Şu anda TestFlight üzerinden kapalı testte; App Store yayını hazırlanıyor. Teste katılmak için <a href="mailto:support@nevod.network">support@nevod.network</a> adresine yazın.</p></div>
+<div class="card"><h3>📱 iPhone ve iPad</h3><p>Nevod, iOS 17.2 veya üstü yüklü iPhone ve iPad için App Store'da. Ücretsiz, uygulama içi satın alma yok.</p><p><a class="btn primary" href="https://apps.apple.com/app/id6805214654">App Store'dan indirin</a></p></div>
 <div class="card"><h3>🤖 Android</h3><p>Uygulama geliştirme aşamasında. Teste hazır olduğunda burada duyuracağız.</p></div>
 <div class="card"><h3>🖥️ Ağ düğümü</h3><p>Bir Nevod düğümü Docker ile bir sunucuda veya sıradan bir bilgisayarda çalışır. Bkz. <a href="/tr/node/">Kendi düğümün</a>.</p></div>
+<div class="card"><h3>💻 Kaynak kodu</h3><p>Uygulamanın, düğümün ve bu sitenin kodu AGPL-3.0 lisansıyla açıktır: <a href="https://github.com/avk0978/nevod-messenger">github.com/avk0978/nevod-messenger</a>.</p></div>
 </div>
 </div></main>
 """

@@ -83,7 +83,7 @@ class TestCatalog:
                 for ch in UNSAFE:
                     assert text.count(ch) <= src.count(ch), (src, lang, ch)
                 if lang not in ("uk", "ru"):
-                    assert not CYRILLIC.search(text.replace("Толмач", "")), (src, lang)
+                    assert not CYRILLIC.search(text), (src, lang)
                 # Russian source phrases are left as-is only where the word really is the same
                 if lang == "uk":
                     assert not RUSSIAN_ONLY.search(text), (src, text)
@@ -144,7 +144,7 @@ async def test_every_page_in_every_language(genesis_node, lang):
                 if lang == "uk":
                     assert not RUSSIAN_ONLY.search(body), (path, RUSSIAN_ONLY.findall(body)[:5])
             else:
-                left = sorted(set(m.group() for m in re.finditer(r"[^\s<>'\"]*[А-Яа-яЁё][^\s<>'\"]*", body)) - {"Толмач", *LANG_NAMES.values()})
+                left = sorted(set(m.group() for m in re.finditer(r"[^\s<>'\"]*[А-Яа-яЁё][^\s<>'\"]*", body)) - set(LANG_NAMES.values()))
                 assert not left, (path, left[:10])
     finally:
         await client.close()
@@ -163,3 +163,17 @@ async def test_error_replies_and_diagnostics_follow_the_language(genesis_node):
         assert checks and all(not CYRILLIC.search(c["label"] + c["detail"]) for c in checks)
     finally:
         await client.close()
+
+
+@pytest.mark.skipif(not __import__("shutil").which("node"), reason="needs node for the JS check")
+@pytest.mark.parametrize("lang", LANGS)
+def test_page_scripts_parse(tmp_path, lang):
+    """Every panel script, localized, is valid JS — a raw newline inside a string literal
+    (a "\\n" written with one backslash in admin.py) broke the whole Nodes page on avk
+    2026-10-29: no known nodes listed."""
+    import subprocess
+    for name in (n for n in dir(admin) if n.startswith("_SCRIPT")):
+        path = tmp_path / f"{name}.js"
+        path.write_text(localize(getattr(admin, name), lang))
+        r = subprocess.run(["node", "--check", str(path)], capture_output=True, text=True)
+        assert r.returncode == 0, (name, lang, r.stderr[:300])

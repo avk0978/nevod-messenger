@@ -93,6 +93,9 @@ class NodeIdentity:
     # — only the node's service cells (administrator, registrar, published bots, official
     # cells) are listed; people find each other by contact card as usual.
     members_visibility: str = "all"    # all | service
+    # The curator-signed project node blocklist (node/blocklist.py): "on" | "off", or ""
+    # = the default — on for the project's own nodes (node/relays.py), off for any other.
+    project_blocklist: str = ""
     # cell_ids treated as "administrators" for invite_mode="admin" — each gets a
     # notification (via the registrar identity, see node.py) when a JOIN_REQUEST
     # arrives, and admin.py's approve/deny endpoints are meant to be operated by
@@ -150,6 +153,7 @@ class NodeIdentity:
             "node_join_mode":  self.node_join_mode,
             "cells_visibility": self.cells_visibility,
             "members_visibility": self.members_visibility,
+            "project_blocklist": self.project_blocklist,
             "admin_cell_ids":  self.admin_cell_ids,
             "parent_node_id":  self.parent_node_id,
             "name":            self.name,
@@ -192,6 +196,7 @@ class NodeIdentity:
             node_join_mode=data.get("node_join_mode", "invite"),
             cells_visibility=data.get("cells_visibility", "members"),
             members_visibility=data.get("members_visibility", "all"),
+            project_blocklist=data.get("project_blocklist", ""),
             admin_cell_ids=data.get("admin_cell_ids", []),
             parent_node_id=data.get("parent_node_id", ""),
             name=data.get("name", ""),

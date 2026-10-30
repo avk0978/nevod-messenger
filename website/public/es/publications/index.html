@@ -26,6 +26,36 @@ main.article code { font-size:.9em; background:var(--card); border:1px solid var
 main.article ol li, main.article ul li { margin-bottom:.35em; overflow-wrap:anywhere; }
 .pub { margin:16px 0; } .pub h3 a { text-decoration:none; } .pub-date { font-size:14px; color:var(--muted); }
 .pub-back { font-size:15px; }
+main.article pre { background:var(--ink); color:var(--paper); border-radius:8px; padding:12px 14px; overflow-x:auto;
+  font-size:14px; line-height:1.5; margin:0 0 1em; }
+main.article pre code { background:none; border:0; padding:0; font-size:inherit; color:inherit; }
+main.article .note { margin:0 0 1em; } main.article .note p:last-child { margin-bottom:0; }
+.toc li { margin-bottom:.35em; }
+.docs-layout { display:grid; grid-template-columns:250px minmax(0,1fr); gap:40px; align-items:start; }
+.docs-side { position:sticky; top:76px; max-height:calc(100vh - 92px); overflow-y:auto; font-size:15px;
+  line-height:1.4; padding-right:8px; border-right:1px solid var(--line); }
+.docs-side ol, .docs-toc ol { list-style:none; padding:0; margin:0 0 14px; }
+.docs-side li, .docs-toc li { margin:0; }
+.docs-side a, .docs-toc a { display:block; padding:4px 8px; border-radius:6px; text-decoration:none; color:var(--ink); }
+.docs-side a:hover, .docs-toc a:hover { background:var(--card); }
+.docs-side li.cur > a, .docs-toc li.cur > a { background:var(--card); font-weight:600; box-shadow:inset 3px 0 0 var(--accent); }
+.docs-side ul, .docs-toc ul { list-style:none; padding:2px 0 6px 12px; margin:0; }
+.docs-side ul a, .docs-toc ul a { font-size:14px; color:var(--muted); padding:3px 8px; }
+.docs-side .soon, .docs-toc .soon { padding:4px 8px; color:var(--muted); opacity:.7; }
+.docs-group { font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.6px; color:var(--muted);
+  margin:14px 8px 6px; }
+.docs-home { margin:0 0 4px; font-weight:600; } .docs-home a { padding:4px 8px; }
+.docs-toc { display:none; background:var(--card); border:1px solid var(--line); border-radius:10px; margin:0 0 20px; }
+.docs-toc summary { cursor:pointer; padding:10px 14px; font-weight:600; }
+.docs-toc[open] summary { border-bottom:1px solid var(--line); }
+.docs-toc > p, .docs-toc > ol { margin-left:8px; margin-right:8px; }
+@media (max-width:960px) {
+  .docs-layout { display:block; }
+  .docs-side { display:none; }
+  .docs-toc { display:block; }
+}
+.doc-nav { display:flex; flex-wrap:wrap; gap:8px 24px; justify-content:space-between; font-size:15px;
+  border-top:1px solid var(--line); padding-top:16px; margin-top:32px; }
 p, ul, ol, table { margin:0 0 1em; }
 .wrap { max-width:1080px; margin:0 auto; padding:0 16px; }
 header.top { background:var(--ink); color:var(--paper); position:sticky; top:0; z-index:10; }
@@ -116,11 +146,11 @@ footer.site .wrap { display:flex; flex-wrap:wrap; gap:8px 24px; justify-content:
 <body>
 <header class="top"><div class="wrap">
 <a class="brand" href="/es/">Nevod<span>.</span></a>
-<nav class="main"><a href="/es/">Inicio</a><a href="/es/manifesto/">Manifiesto ZKI</a><a href="/es/compare/">Comparación</a><a href="/es/security/">Seguridad</a><a href="/es/cities/">Para ciudades</a><a href="/es/download/">Descargar</a><a href="/es/publications/" aria-current="page">Publicaciones</a><a href="/es/about/">Sobre el proyecto</a></nav>
-<details class="menu"><summary aria-label="Menú"><span class="burger"></span></summary><nav><a href="/es/">Inicio</a><a href="/es/manifesto/">Manifiesto ZKI</a><a href="/es/compare/">Comparación</a><a href="/es/security/">Seguridad</a><a href="/es/cities/">Para ciudades</a><a href="/es/download/">Descargar</a><a href="/es/publications/" aria-current="page">Publicaciones</a><a href="/es/about/">Sobre el proyecto</a></nav></details>
+<nav class="main"><a href="/es/">Inicio</a><a href="/es/manifesto/">Manifiesto ZKI</a><a href="/es/compare/">Comparación</a><a href="/es/security/">Seguridad</a><a href="/es/docs/">Documentación</a><a href="/es/download/">Descargar</a><a href="/es/publications/" aria-current="page">Publicaciones</a><a href="/es/about/">Sobre el proyecto</a></nav>
+<details class="menu"><summary aria-label="Menú"><span class="burger"></span></summary><nav><a href="/es/">Inicio</a><a href="/es/manifesto/">Manifiesto ZKI</a><a href="/es/compare/">Comparación</a><a href="/es/security/">Seguridad</a><a href="/es/docs/">Documentación</a><a href="/es/download/">Descargar</a><a href="/es/publications/" aria-current="page">Publicaciones</a><a href="/es/about/">Sobre el proyecto</a></nav></details>
 <details class="lang"><summary>Español</summary><ul><li><a href="/uk/publications/" hreflang="uk" lang="uk">Українська</a></li><li><a href="/en/publications/" hreflang="en" lang="en">English</a></li><li><a href="/de/publications/" hreflang="de" lang="de">Deutsch</a></li><li><a href="/tr/publications/" hreflang="tr" lang="tr">Türkçe</a></li><li><a href="/es/publications/" hreflang="es" lang="es">Español</a></li><li><a href="/it/publications/" hreflang="it" lang="it">Italiano</a></li><li><a href="/fr/publications/" hreflang="fr" lang="fr">Français</a></li></ul></details>
 </div></header>
-<main><div class="wrap"><h1>Publicaciones</h1><p>Artículos e investigación surgidos del trabajo en Nevod.</p><div class="card pub"><h3><a href="/es/publications/low-load-networks/">Redes distribuidas de datos de baja carga: concepto, clasificación y análisis comparativo</a></h3><p class="pub-date">Publicado: 2026-09-30</p><p>El artículo introduce el concepto de red distribuida de datos de baja carga: una red en la que la carga de cada nodo (tráfico, almacenamiento, estado de servicio) está limitada por el círculo de participantes de ese nodo y no crece a medida que crece la red en su conjunto. Se muestra que las clasificaciones de carga de la teoría de las comunicaciones (factor de utilización, erlangs, los puntos de «rodilla» (knee) y «acantilado» (cliff) en la curva de caudal frente a carga, clases de calidad de servicio) describen el estado de una red en un momento dado y no una propiedad de su arquitectura, por lo que no distinguen redes según este rasgo. Se proponen seis rasgos de una red de baja carga y una clasificación LL-0…LL-3 según la asintótica de la carga por nodo. Se comparan quince redes, desde FidoNet (1984) hasta Nevod (2026), y se señalan sus predecesores en la literatura: redes de amigo a amigo (F2F), redes tolerantes a retrasos (DTN), tablas hash distribuidas, software local-first y redes comunitarias (community networks).</p><p><a href="/es/publications/low-load-networks/">Leer el artículo →</a></p></div></div></main>
+<main><div class="wrap"><h1>Publicaciones</h1><p>Artículos e investigación surgidos del trabajo en Nevod.</p><div class="card pub"><h3><a href="/es/publications/low-load-networks/">Low-Load Distributed Data Networks: Concept, Classification and Comparative Analysis</a></h3><p class="pub-date">Publicado: 2026-10-24</p><p>This article introduces the concept of a low-load distributed data network: a network in which the load on each node (traffic, storage, service state) is bounded by that node&#x27;s own circle of participants and does not grow as the network grows. We show that the load classifications used in communications theory (utilization, erlangs, the &quot;knee&quot; and &quot;cliff&quot; points on the throughput-versus-load curve, quality-of-service classes) describe the state of a network at a given moment rather than a property of its architecture, and therefore cannot distinguish networks by this trait. We propose six traits of a low-load network and a classification LL-0…LL-3 by the asymptotic load on a node. We compare fifteen networks, from FidoNet (1984) to Nevod (2026), and name their predecessors in the literature: friend-to-friend (F2F) networks, delay-tolerant networks (DTN), distributed hash tables, local-first software and community networks.</p><p><a href="/es/publications/low-load-networks/">Leer el artículo →</a></p></div></div></main>
 <footer class="site"><div class="wrap">
 <div>© 2026 Nevod · Kolpakov Andrey</div>
 <div><a href="/es/support/">Soporte</a> · <a href="/es/privacy/">Privacidad</a> · <a href="/es/terms/">Condiciones de uso</a> · <a href="/es/node/">Tu propio nodo</a> · <a href="https://github.com/avk0978/nevod-messenger">Código fuente</a></div>

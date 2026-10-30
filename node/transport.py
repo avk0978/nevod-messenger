@@ -176,6 +176,8 @@ class Transport:
         self.connections = ConnectionRegistry()
         self._server = None
         self.on_disconnect = None   # Optional[Callable[[str], Awaitable[None]]]
+        # Node.is_node_blocked — a blocked node is closed right after auth, both ways.
+        self.is_blocked: Optional[Callable[[str], bool]] = None
 
     @property
     def node_id(self) -> str:
@@ -227,6 +229,7 @@ class Transport:
                     f"expected {expected_fingerprint[:16]}… got {actual[:16]}…"
                 )
         conn = await self._do_auth(ws, expected_node_id=None, initiator=True)
+        await self._refuse_if_blocked(conn)
         await self.connections.add(conn)
         asyncio.create_task(self._recv_loop(conn))
         return conn
@@ -245,9 +248,15 @@ class Transport:
                     f"expected {expected_fingerprint[:16]}… got {actual[:16]}…"
                 )
         conn = await self._do_auth(ws, expected_node_id=node_id, initiator=True)
+        await self._refuse_if_blocked(conn)
         await self.connections.add(conn)
         asyncio.create_task(self._recv_loop(conn))
         return conn
+
+    async def _refuse_if_blocked(self, conn: PeerConnection):
+        if self.is_blocked and self.is_blocked(conn.peer_node_id):
+            await conn.close()
+            raise ValueError(f"node {conn.peer_node_id[:8]} is blocked")
 
     def sign(self, packet: Packet) -> Packet:
         """Sign packet with this node's signing key."""
@@ -281,6 +290,10 @@ class Transport:
             # constantly exchanging address lists and gossip-pinging each other,
             # this would otherwise drown out genuinely useful log signal.
             log.debug("auth failed from %s: %s", ws.remote_address, e)
+            await ws.close()
+            return
+        if self.is_blocked and self.is_blocked(conn.peer_node_id):
+            log.info("refused blocked node %s", conn.peer_node_id[:8])
             await ws.close()
             return
 

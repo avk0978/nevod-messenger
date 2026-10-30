@@ -26,6 +26,36 @@ main.article code { font-size:.9em; background:var(--card); border:1px solid var
 main.article ol li, main.article ul li { margin-bottom:.35em; overflow-wrap:anywhere; }
 .pub { margin:16px 0; } .pub h3 a { text-decoration:none; } .pub-date { font-size:14px; color:var(--muted); }
 .pub-back { font-size:15px; }
+main.article pre { background:var(--ink); color:var(--paper); border-radius:8px; padding:12px 14px; overflow-x:auto;
+  font-size:14px; line-height:1.5; margin:0 0 1em; }
+main.article pre code { background:none; border:0; padding:0; font-size:inherit; color:inherit; }
+main.article .note { margin:0 0 1em; } main.article .note p:last-child { margin-bottom:0; }
+.toc li { margin-bottom:.35em; }
+.docs-layout { display:grid; grid-template-columns:250px minmax(0,1fr); gap:40px; align-items:start; }
+.docs-side { position:sticky; top:76px; max-height:calc(100vh - 92px); overflow-y:auto; font-size:15px;
+  line-height:1.4; padding-right:8px; border-right:1px solid var(--line); }
+.docs-side ol, .docs-toc ol { list-style:none; padding:0; margin:0 0 14px; }
+.docs-side li, .docs-toc li { margin:0; }
+.docs-side a, .docs-toc a { display:block; padding:4px 8px; border-radius:6px; text-decoration:none; color:var(--ink); }
+.docs-side a:hover, .docs-toc a:hover { background:var(--card); }
+.docs-side li.cur > a, .docs-toc li.cur > a { background:var(--card); font-weight:600; box-shadow:inset 3px 0 0 var(--accent); }
+.docs-side ul, .docs-toc ul { list-style:none; padding:2px 0 6px 12px; margin:0; }
+.docs-side ul a, .docs-toc ul a { font-size:14px; color:var(--muted); padding:3px 8px; }
+.docs-side .soon, .docs-toc .soon { padding:4px 8px; color:var(--muted); opacity:.7; }
+.docs-group { font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.6px; color:var(--muted);
+  margin:14px 8px 6px; }
+.docs-home { margin:0 0 4px; font-weight:600; } .docs-home a { padding:4px 8px; }
+.docs-toc { display:none; background:var(--card); border:1px solid var(--line); border-radius:10px; margin:0 0 20px; }
+.docs-toc summary { cursor:pointer; padding:10px 14px; font-weight:600; }
+.docs-toc[open] summary { border-bottom:1px solid var(--line); }
+.docs-toc > p, .docs-toc > ol { margin-left:8px; margin-right:8px; }
+@media (max-width:960px) {
+  .docs-layout { display:block; }
+  .docs-side { display:none; }
+  .docs-toc { display:block; }
+}
+.doc-nav { display:flex; flex-wrap:wrap; gap:8px 24px; justify-content:space-between; font-size:15px;
+  border-top:1px solid var(--line); padding-top:16px; margin-top:32px; }
 p, ul, ol, table { margin:0 0 1em; }
 .wrap { max-width:1080px; margin:0 auto; padding:0 16px; }
 header.top { background:var(--ink); color:var(--paper); position:sticky; top:0; z-index:10; }
@@ -116,8 +146,8 @@ footer.site .wrap { display:flex; flex-wrap:wrap; gap:8px 24px; justify-content:
 <body>
 <header class="top"><div class="wrap">
 <a class="brand" href="/de/">Nevod<span>.</span></a>
-<nav class="main"><a href="/de/" aria-current="page">Start</a><a href="/de/manifesto/">ZKI-Manifest</a><a href="/de/compare/">Vergleich</a><a href="/de/security/">Sicherheit</a><a href="/de/cities/">Für Städte</a><a href="/de/download/">Download</a><a href="/de/publications/">Publikationen</a><a href="/de/about/">Über das Projekt</a></nav>
-<details class="menu"><summary aria-label="Menü"><span class="burger"></span></summary><nav><a href="/de/" aria-current="page">Start</a><a href="/de/manifesto/">ZKI-Manifest</a><a href="/de/compare/">Vergleich</a><a href="/de/security/">Sicherheit</a><a href="/de/cities/">Für Städte</a><a href="/de/download/">Download</a><a href="/de/publications/">Publikationen</a><a href="/de/about/">Über das Projekt</a></nav></details>
+<nav class="main"><a href="/de/" aria-current="page">Start</a><a href="/de/manifesto/">ZKI-Manifest</a><a href="/de/compare/">Vergleich</a><a href="/de/security/">Sicherheit</a><a href="/de/docs/">Doku</a><a href="/de/download/">Download</a><a href="/de/publications/">Publikationen</a><a href="/de/about/">Über das Projekt</a></nav>
+<details class="menu"><summary aria-label="Menü"><span class="burger"></span></summary><nav><a href="/de/" aria-current="page">Start</a><a href="/de/manifesto/">ZKI-Manifest</a><a href="/de/compare/">Vergleich</a><a href="/de/security/">Sicherheit</a><a href="/de/docs/">Doku</a><a href="/de/download/">Download</a><a href="/de/publications/">Publikationen</a><a href="/de/about/">Über das Projekt</a></nav></details>
 <details class="lang"><summary>Deutsch</summary><ul><li><a href="/uk/" hreflang="uk" lang="uk">Українська</a></li><li><a href="/en/" hreflang="en" lang="en">English</a></li><li><a href="/de/" hreflang="de" lang="de">Deutsch</a></li><li><a href="/tr/" hreflang="tr" lang="tr">Türkçe</a></li><li><a href="/es/" hreflang="es" lang="es">Español</a></li><li><a href="/it/" hreflang="it" lang="it">Italiano</a></li><li><a href="/fr/" hreflang="fr" lang="fr">Français</a></li></ul></details>
 </div></header>
 
@@ -139,8 +169,10 @@ footer.site .wrap { display:flex; flex-wrap:wrap; gap:8px 24px; justify-content:
 </div>
 <p class="note">ZKI ist die Grundlage der Entwicklung von Nevod. Jede technische Entscheidung wird an einer Frage gemessen: Erhält der Schöpfer der Infrastruktur Zugriff auf die Inhalte? <a href="/de/manifesto/">Das Manifest der Zero Knowledge Infrastructure →</a></p>
 <h2>Gering belastetes verteiltes Netz</h2>
-<p>Die Last jedes Nevod-Nodes ist durch seinen eigenen Kreis begrenzt (Familie, Zuhause, Team), nicht durch die Größe des ganzen Netzes: Eine Million neuer Nutzer anderswo fügt deinem Node kein einziges Byte hinzu. Ein Node läuft auf gewöhnlicher Heim-Hardware, das Netz hat kein Zentrum, und der Node selbst transportiert nur Chiffretext.</p>
+<p><b>Nevod ist ein verschlüsselter verteilter Messenger der Klasse LL-0: Die Last jedes Nodes hängt nur von seinem eigenen Kreis ab (Familie, Zuhause, Team), nicht von der Größe des Netzes.</b> Unter den Netzen dieser Klasse ist Nevod das einzige, das als vollwertiger Messenger für gewöhnliche Menschen gedacht ist, mit Sprach- und Videoanrufen.</p>
+<p>Eine Million neuer Nutzer anderswo fügt deinem Node kein einziges Byte hinzu. Ein Node läuft auf gewöhnlicher Heim-Hardware, das Netz hat kein Zentrum, und der Node selbst transportiert nur Chiffretext.</p>
 <p><a href="/de/compare/#low-load">Ein Vergleich von Nevod mit 14 anderen Netzen, von FidoNet bis Signal →</a></p>
+<p><a href="/de/publications/low-load-networks/">Der Artikel „Low-Load Distributed Data Networks“ (DOI 10.5281/zenodo.23621073) →</a></p>
 <h2>Was Nevod kann</h2>
 <div class="grid">
 <div class="card"><h3>🔒 Ende-zu-Ende-Verschlüsselung</h3><p>Jede Nachricht, jedes Foto, jede Sprachnachricht und jeder Anruf wird auf dem Telefon verschlüsselt. Nodes sehen nur verschlüsselte Daten.</p></div>
@@ -151,7 +183,7 @@ footer.site .wrap { display:flex; flex-wrap:wrap; gap:8px 24px; justify-content:
 <h2>Projektstatus</h2>
 <div class="tbl"><table class="status">
 <tr><th style="width:34%">Bereich</th><th>Status</th></tr>
-<tr><td>iPhone-App</td><td>Geschlossener Test (TestFlight); Veröffentlichung im App Store in Vorbereitung</td></tr>
+<tr><td>iPhone-App</td><td>Veröffentlicht im <a href="https://apps.apple.com/app/id6805214654">App Store</a></td></tr>
 <tr><td>Android-App</td><td>In Entwicklung</td></tr>
 <tr><td>Netz-Nodes</td><td>In Betrieb, laufen mit Docker</td></tr>
 <tr><td>App-Sprachen</td><td>8: Ukrainisch, Englisch, Russisch, Deutsch, Türkisch, Spanisch, Italienisch, Französisch</td></tr>

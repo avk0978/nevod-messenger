@@ -120,8 +120,20 @@ class GossipEngine:
         except Exception as e:
             log.debug("gossip send to %s failed: %s", peer.node_id[:8], e)
 
-    async def handle_gossip(self, pkt: Packet):
-        """Process incoming GOSSIP packet — merge node_table and presence."""
+    async def handle_gossip(self, pkt: Packet, conn):
+        """Process incoming GOSSIP packet — merge node_table and presence.
+
+        Only a node already in our node_table may gossip to us: it got there by being
+        admitted (NODE_REGISTER with an invite or via open node_join_mode) or by another
+        admitted node's gossip. Anyone else on the transport — a cell, or a node that was
+        never admitted — is ignored, otherwise node_join_mode="invite" would mean nothing.
+        The sender is the identity Schnorr auth proved for this connection, never
+        pkt.from_addr."""
+        sender = conn.peer_node_id
+        my_id = self.node.identity.node_id
+        if sender == my_id or await self.node.storage.get_node(sender) is None:
+            log.info("gossip: ignored from unknown peer %s", sender[:8])
+            return
         try:
             data = decode_payload(pkt.payload)
             remote_nodes = data.get("nodes", [])
@@ -131,10 +143,17 @@ class GossipEngine:
         for n in remote_nodes:
             node_id = n.get("node_id", "")
             address = n.get("address", "")
-            if not node_id or not address or node_id == self.node.identity.node_id:
+            if not node_id or not address or node_id == my_id:
                 continue
+            if self.node.is_node_blocked(node_id):
+                continue  # blocked by our operator — must not come back through others
             existing = await self.node.storage.get_node(node_id)
-            # Always upsert, not just on first discovery — a node's capabilities
+            # A node describes only itself. A third party may introduce a node we don't
+            # know yet, but may not rewrite one we do: its address, fingerprint and
+            # capabilities change only when the node itself gossips them to us.
+            if existing is not None and sender != node_id:
+                continue
+            # Upsert, not just first discovery — a node's capabilities
             # (push_relay_platforms/turn_relay) or address can change after we
             # first learned about it, and only periodic gossip will ever tell us
             # (see node.py's start() comment for the same problem on our own
@@ -155,13 +174,15 @@ class GossipEngine:
             )
             await self.node.storage.upsert_node(entry)
             if existing is None:
-                log.info("gossip: discovered new node %s", node_id[:8])
+                log.info("gossip: discovered new node %s via %s", node_id[:8], sender[:8])
 
-        # Merge presence entries from open nodes (don't overwrite locally-known cells)
+        # Presence from an open node: the cells registered on THAT node (see _exchange).
+        # A node may announce only its own cells — never claim cells homed elsewhere —
+        # and we never overwrite cells we know locally.
         for p in data.get("presence", []):
             cell_id      = p.get("cell_id", "")
             home_node_id = p.get("home_node_id", "")
-            if not cell_id or not home_node_id:
+            if not cell_id or home_node_id != sender or self.node.is_node_blocked(sender):
                 continue
             local_cell = await self.node.storage.get_cell(cell_id)
             if local_cell:

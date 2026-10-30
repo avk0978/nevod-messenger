@@ -23,11 +23,28 @@ from typing import TYPE_CHECKING
 from aiohttp import web
 
 from .admin_i18n import COOKIE, LANG_NAMES, LANGS, localize, pick_lang
+from .limits import admin_login_guard
 
 if TYPE_CHECKING:
     from .node import Node
 
 log = logging.getLogger(__name__)
+
+# Where "Join the Nevod network" (Nodes page) connects: Nevod Open, the project node that
+# admits other nodes without an invite (node_join_mode=open). Its node port and the SHA-256 of
+# its self-signed TLS certificate, pinned — the certificate belongs to Open's identity and
+# doesn't change. NEVOD_NETWORK_ENTRY="host:port|fingerprint" overrides both (tests, or a
+# network other than Nevod's).
+NETWORK_ENTRY_ADDRESS = "open.nevod.network:8775"
+NETWORK_ENTRY_FINGERPRINT = "c7329a03c66d8faea83ca5bdf0855c52bd98b229a9abeaec727c533836a100e3"
+
+
+def _network_entry() -> tuple[str, str]:
+    raw = os.environ.get("NEVOD_NETWORK_ENTRY", "").strip()
+    if raw:
+        address, _, fingerprint = raw.partition("|")
+        return address.strip(), fingerprint.strip()
+    return NETWORK_ENTRY_ADDRESS, NETWORK_ENTRY_FINGERPRINT
 
 
 def _repo_root() -> Path:
@@ -282,7 +299,7 @@ function renderHeader(data){
   const accessOpen = data.access === 'open';
   const accessEl = document.getElementById('status-access');
   accessEl.className = 'status-pill ' + (accessOpen ? 'pill-open' : 'pill-closed');
-  accessEl.innerHTML = '<b>' + (accessOpen ? 'Открытая' : 'Закрытая') + '</b>допуск узлов';
+  accessEl.innerHTML = '<b>' + (accessOpen ? 'Виден' : 'Скрыт') + '</b>в обзоре сети';
 
   const vis = data.cells_visibility || 'members';
   const visLabel = {off:'Никто', members:'Участники ноды', public:'Все'}[vis] || vis;
@@ -297,8 +314,8 @@ async function loadHeader(){
   return data;
 }
 async function toggleAccess(newAccess){
-  const label = newAccess === 'open' ? 'Открытая' : 'Закрытая';
-  if(!confirm('Сменить на "' + label + '"? Изменение допуска узлов применяется только после ' +
+  const label = newAccess === 'open' ? 'Виден' : 'Скрыт';
+  if(!confirm('Сменить на "' + label + '"? Изменение видимости применяется только после ' +
               'перезапуска ноды (как и через nevod.py set-access).')) return;
   const r = await fetch('/nevod-admin/api/access', {
     method:'POST', headers:{'Content-Type':'application/json'},
@@ -366,6 +383,9 @@ _BODY_OVERVIEW = """
 
 _SCRIPT_OVERVIEW = """
 async function loadCells(){
+  // The 5 s refresh rebuilds the table — skip it while a name is being edited, or the
+  // input is reset to the stored name mid-typing (found on Open 2026-10-29).
+  if(document.activeElement && document.activeElement.classList.contains('alias-inp')) return;
   const r = await fetch('/nevod-admin/api/cells');
   const data = await r.json();
   renderHeader(data);
@@ -400,7 +420,7 @@ async function saveAlias(inp){
     body: JSON.stringify({alias})
   });
   inp.style.borderColor='#3fb950';
-  setTimeout(()=>inp.style.borderColor='',1000);
+  setTimeout(()=>{ inp.style.borderColor=''; inp.blur(); }, 1000);
 }
 
 async function delCell(cell_id, tr){
@@ -477,17 +497,17 @@ _BODY_SETTINGS = """
 </section>
 
 <section>
-  <h2>Допуск узлов</h2>
+  <h2>Видимость в «Обзоре сети»</h2>
   <div style="padding:10px 16px;display:flex;gap:8px;align-items:center;font-size:12px;color:#8b949e;flex-wrap:wrap">
     <select id="access-select" style="background:#0d1117;color:#c9d1d9;border:1px solid #30363d;padding:6px;border-radius:4px">
-      <option value="open">open — любой узел может присоединиться</option>
-      <option value="closed">closed — только по инвайту узла</option>
+      <option value="open">open — узел виден пользователям других узлов в «Обзоре сети»</option>
+      <option value="closed">closed — узел не показывается в «Обзоре сети»</option>
     </select>
     <button onclick="saveAccess()" style="background:#1a2a3a;color:#58a6ff">Сохранить</button>
     <span id="access-err" class="err"></span>
   </div>
   <div style="padding:0 16px 10px;color:#484f58;font-size:11px">
-    Применяется после перезапуска ноды.
+    Применяется после перезапуска ноды. Регистрацию это не открывает: кто может зарегистрироваться, задаёт режим допуска ячеек ниже.
   </div>
 </section>
 
@@ -512,7 +532,7 @@ _BODY_SETTINGS = """
   <div style="padding:10px 16px;display:flex;gap:8px;align-items:center;font-size:12px;color:#8b949e;flex-wrap:wrap">
     <select id="invite-mode-select" style="background:#0d1117;color:#c9d1d9;border:1px solid #30363d;padding:6px;border-radius:4px">
       <option value="open">open — без кода</option>
-      <option value="delegated">delegated — код от участников</option>
+      <option value="delegated">delegated — только по коду приглашения</option>
       <option value="admin">admin — заявка + ваше одобрение</option>
     </select>
     <button onclick="saveInviteMode()" style="background:#1a2a3a;color:#58a6ff">Сохранить</button>
@@ -947,14 +967,66 @@ setInterval(loadAllowed, 15000);
 
 _BODY_NODES = """
 <section>
+  <h2>Подключение к сети Nevod <span id="net-stat" class="stat"></span></h2>
+  <div style="padding:10px 16px;color:#8b949e;font-size:12px">
+    Подключённый к сети узел получает уведомления для телефонов и ретранслятор звонков от узлов проекта. Без подключения сообщения доставляются, но телефоны не получают уведомлений, пока приложение закрыто.
+  </div>
+  <div style="padding:0 16px 12px;display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+    <button id="join-net-btn" onclick="joinNetwork()" style="background:#1a3a1a;color:#3fb950">Подключиться к сети Nevod</button>
+    <span id="join-net-msg" style="font-size:12px"></span>
+  </div>
+  <div style="padding:0 16px 12px;display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+    <input id="join-token" placeholder="Токен от администратора другого узла" style="background:#0d1117;color:#c9d1d9;border:1px solid #30363d;padding:6px;border-radius:4px;flex:1;min-width:220px">
+    <button onclick="joinByToken()" style="background:#1a2a3a;color:#58a6ff">Подключиться по токену</button>
+  </div>
+</section>
+
+<section>
   <h2>Известные узлы <span id="nodes-stat" class="stat"></span>
     <button onclick="loadNodes()" style="background:#1a2a3a;color:#58a6ff;margin-left:auto">обновить</button>
   </h2>
   <table>
-    <thead><tr><th>Название</th><th>node_id</th><th>Адрес</th><th>Статус</th><th>Тип</th><th>Последний раз на связи</th></tr></thead>
+    <thead><tr><th>Название</th><th>node_id</th><th>Адрес</th><th>Статус</th><th>Тип</th><th>Последний раз на связи</th><th></th></tr></thead>
     <tbody id="nodes-body"></tbody>
   </table>
   <div id="nodes-err" class="err"></div>
+</section>
+
+<section>
+  <h2>Заблокированные узлы <span id="blocked-stat" class="stat"></span></h2>
+  <div style="padding:10px 16px;color:#8b949e;font-size:12px">
+    Заблокированный узел не может подключиться к вашему узлу и не вернётся через другие узлы. Сообщения и звонки от его пользователей и к ним не проходят.
+  </div>
+  <div style="padding:0 16px 12px;display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+    <input id="block-node-id" placeholder="node_id узла (64 символа)" style="background:#0d1117;color:#c9d1d9;border:1px solid #30363d;padding:6px;border-radius:4px;flex:2;min-width:220px;font-family:monospace">
+    <input id="block-reason" placeholder="Причина (необязательно)" style="background:#0d1117;color:#c9d1d9;border:1px solid #30363d;padding:6px;border-radius:4px;flex:1;min-width:160px">
+    <button onclick="blockNodeById()" style="background:#3a1a1a;color:#f85149">Заблокировать</button>
+    <span id="block-msg" style="font-size:12px"></span>
+  </div>
+  <table>
+    <thead><tr><th>Название</th><th>node_id</th><th>Адрес</th><th>Причина</th><th>Заблокирован</th><th></th></tr></thead>
+    <tbody id="blocked-body"></tbody>
+  </table>
+</section>
+
+<section>
+  <h2>Общий список блокировки проекта Nevod <span id="proj-stat" class="stat"></span></h2>
+  <div style="padding:10px 16px;color:#8b949e;font-size:12px">
+    Узлы, которые проект Nevod заблокировал за спам или запрещённый контент. Список подписывает куратор проекта, узел обновляет его раз в час. Узлы проекта применяют его по умолчанию, на своём узле вы решаете сами.
+  </div>
+  <div style="padding:0 16px 12px;display:flex;gap:8px;flex-wrap:wrap;align-items:center;font-size:12px;color:#8b949e">
+    На этом узле:
+    <select id="proj-mode" style="background:#0d1117;color:#c9d1d9;border:1px solid #30363d;padding:6px;border-radius:4px">
+      <option value="on">применять</option>
+      <option value="off">не применять</option>
+    </select>
+    <button onclick="saveProjectMode()" style="background:#1a2a3a;color:#58a6ff">Сохранить</button>
+    <span id="proj-msg" style="font-size:12px"></span>
+  </div>
+  <table>
+    <thead><tr><th>node_id</th><th>Причина</th></tr></thead>
+    <tbody id="proj-body"></tbody>
+  </table>
 </section>
 
 <section>
@@ -981,6 +1053,10 @@ async function loadNodes(){
   const r = await fetch('/nevod-admin/api/nodes');
   const data = await r.json();
   document.getElementById('nodes-stat').textContent = data.nodes.length + ' шт';
+  const others = data.nodes.filter(n => n.node_id !== data.self_id && n.status === 'online').length;
+  const net = document.getElementById('net-stat');
+  net.textContent = others ? 'подключён · узлов на связи:' + ' ' + others : 'не подключён';
+  net.style.color = others ? '#3fb950' : '#d29922';
   const tbody = document.getElementById('nodes-body');
   tbody.innerHTML = '';
   for(const n of data.nodes){
@@ -992,10 +1068,103 @@ async function loadNodes(){
       <td>${esc(n.address)}</td>
       <td><span class="dot"></span>${n.status === 'online' ? 'онлайн' : 'офлайн'}</td>
       <td>${esc(n.type)}</td>
-      <td>${ts(n.last_seen)}</td>`;
+      <td>${ts(n.last_seen)}</td>
+      <td>${n.node_id === data.self_id ? '' : `<button class="btn-del" onclick="blockNode('${esc(n.node_id)}')">Заблокировать</button>`}</td>`;
     tbody.appendChild(tr);
   }
-  if(!data.nodes.length) tbody.innerHTML='<tr><td colspan="6" style="color:#484f58;padding:12px 16px">нет известных узлов</td></tr>';
+  if(!data.nodes.length) tbody.innerHTML='<tr><td colspan="7" style="color:#484f58;padding:12px 16px">нет известных узлов</td></tr>';
+}
+
+async function postBlock(node_id, reason){
+  const r = await fetch('/nevod-admin/api/blocked-nodes', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({node_id, reason})});
+  const data = await r.json();
+  loadNodes(); loadBlocked();
+  return data.ok;
+}
+async function blockNode(node_id){
+  const reason = prompt('Заблокировать этот узел? Он не сможет подключаться к вашему узлу, сообщения и звонки от его пользователей и к ним перестанут проходить.\\n\\nПричина (необязательно):', '');
+  if(reason === null) return;
+  await postBlock(node_id, reason);
+}
+async function blockNodeById(){
+  const msg = document.getElementById('block-msg');
+  const ok = await postBlock(document.getElementById('block-node-id').value.trim(),
+                             document.getElementById('block-reason').value.trim());
+  msg.style.color = ok ? '#3fb950' : '#f85149';
+  msg.textContent = ok ? 'Узел заблокирован.' : 'Неверный node_id: нужно 64 шестнадцатеричных символа, и это не может быть ваш собственный узел.';
+  if(ok){ document.getElementById('block-node-id').value = ''; document.getElementById('block-reason').value = ''; }
+}
+async function unblockNode(node_id){
+  await fetch('/nevod-admin/api/blocked-nodes/' + encodeURIComponent(node_id), {method:'DELETE'});
+  loadBlocked();
+}
+async function saveProjectMode(){
+  const mode = document.getElementById('proj-mode').value;
+  const r = await fetch('/nevod-admin/api/project-blocklist', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({mode})});
+  const msg = document.getElementById('proj-msg');
+  msg.style.color = r.ok ? '#3fb950' : '#f85149';
+  msg.textContent = r.ok ? 'Сохранено.' : 'Ошибка';
+  loadNodes(); loadBlocked();
+}
+async function loadBlocked(){
+  const r = await fetch('/nevod-admin/api/blocked-nodes');
+  const data = await r.json();
+  const p = data.project;
+  document.getElementById('proj-mode').value = p.applied ? 'on' : 'off';
+  document.getElementById('proj-stat').textContent = p.version
+    ? 'версия' + ' ' + p.version + ' · ' + 'узлов в списке:' + ' ' + p.nodes.length
+    : 'список ещё не получен';
+  const pbody = document.getElementById('proj-body');
+  pbody.innerHTML = '';
+  for(const n of p.nodes){
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td class="cell-id" title="${esc(n.node_id)}">${shortId(n.node_id)}</td><td>${n.reason ? esc(n.reason) : '—'}</td>`;
+    pbody.appendChild(tr);
+  }
+  if(!p.nodes.length) pbody.innerHTML='<tr><td colspan="2" style="color:#484f58;padding:12px 16px">в общем списке нет узлов</td></tr>';
+  document.getElementById('blocked-stat').textContent = data.nodes.length + ' шт';
+  const tbody = document.getElementById('blocked-body');
+  tbody.innerHTML = '';
+  for(const n of data.nodes){
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${n.name ? esc(n.name) : '<span class="cell-id">—</span>'}</td>
+      <td class="cell-id" title="${esc(n.node_id)}">${shortId(n.node_id)}</td>
+      <td>${n.address ? esc(n.address) : '—'}</td>
+      <td>${n.reason ? esc(n.reason) : '—'}</td>
+      <td>${ts(n.blocked_at)}</td>
+      <td><button class="btn-save" onclick="unblockNode('${esc(n.node_id)}')">Разблокировать</button></td>`;
+    tbody.appendChild(tr);
+  }
+  if(!data.nodes.length) tbody.innerHTML='<tr><td colspan="6" style="color:#484f58;padding:12px 16px">нет заблокированных узлов</td></tr>';
+}
+
+async function joinNetwork(){
+  const btn = document.getElementById('join-net-btn');
+  const msg = document.getElementById('join-net-msg');
+  btn.disabled = true; msg.style.color = '#8b949e'; msg.textContent = 'подключение…';
+  const r = await fetch('/nevod-admin/api/join-network', {method:'POST'});
+  const data = await r.json();
+  btn.disabled = false;
+  if(data.ok){
+    msg.style.color = '#3fb950';
+    msg.textContent = data.reachable === false
+      ? 'Подключено, но узел сети не смог достучаться до вашего узла снаружи — проверьте порт 8765 и файрвол.'
+      : 'Подключено. Список узлов обновится в течение минуты.';
+    loadNodes();
+  } else {
+    msg.style.color = '#f85149'; msg.textContent = 'Ошибка: ' + data.error;
+  }
+}
+async function joinByToken(){
+  const token = document.getElementById('join-token').value.trim();
+  const msg = document.getElementById('join-net-msg');
+  if(!token) return;
+  msg.style.color = '#8b949e'; msg.textContent = 'подключение…';
+  const r = await fetch('/nevod-admin/api/join-node', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({token})});
+  const data = await r.json();
+  if(data.ok){ msg.style.color = '#3fb950'; msg.textContent = 'Подключено. Список узлов обновится в течение минуты.'; loadNodes(); }
+  else { msg.style.color = '#f85149'; msg.textContent = 'Ошибка: ' + data.error; }
 }
 
 let _lastNodeToken = '';
@@ -1034,6 +1203,7 @@ async function loadNodeInvites(){
 
 loadHeader();
 loadNodes();
+loadBlocked();
 loadNodeInvites();
 setInterval(loadNodes, 15000);
 setInterval(loadNodeInvites, 15000);
@@ -1179,7 +1349,7 @@ _BODY_AI_BOTS = """
   <div style="padding:10px 16px;display:flex;gap:8px;flex-wrap:wrap;align-items:center">
     <span style="color:#8b949e;font-size:12px">Готовые:</span>
     <button onclick="fillPreset('assistant')" style="background:#1a2a3a;color:#58a6ff">AI Assistant</button>
-    <button onclick="fillPreset('tolmach')" style="background:#1a2a3a;color:#58a6ff">Толмач (переводчик)</button>
+    <button onclick="fillPreset('tolmach')" style="background:#1a2a3a;color:#58a6ff">Tolmach (переводчик)</button>
     <span style="color:#484f58;font-size:11px">— заполняют форму, перед сохранением можно изменить</span>
   </div>
   <div style="padding:0 16px 10px;display:flex;gap:8px;flex-wrap:wrap;align-items:center">
@@ -1453,6 +1623,22 @@ class AdminServer:
         # from. None (unlikely: only if a caller doesn't pass it) means such
         # edits apply live but don't survive a restart.
         self._identity_path = identity_path
+        self._login_guard = admin_login_guard()
+
+    @staticmethod
+    def _client_ip(request: web.Request) -> str:
+        """The browser's address. Behind a reverse proxy (nginx/Caddy) the socket's own
+        address is the proxy's and the real one is in X-Real-IP — trusted only when the
+        socket comes from a private/loopback address, same rule as transport._client_ip."""
+        import ipaddress
+        host = request.remote or ""
+        try:
+            addr = ipaddress.ip_address(host)
+            behind_proxy = addr.is_private or addr.is_loopback
+        except ValueError:
+            behind_proxy = False
+        real = request.headers.get("X-Real-IP", "").strip() if behind_proxy else ""
+        return real or host
 
     async def _check_auth(self, request: web.Request) -> bool:
         auth = request.headers.get("Authorization", "")
@@ -1479,12 +1665,21 @@ class AdminServer:
     async def _auth_middleware(self, request: web.Request, handler):
         if request.path.startswith("/nevod-card") or request.path.startswith("/nevod-update"):
             return await handler(request)
+        ip = self._client_ip(request)
+        if self._login_guard.locked(ip):
+            return web.Response(status=429, text="Too many failed logins — try again in 15 minutes")
         if not await self._check_auth(request):
+            # A request without credentials is just the browser asking for the login
+            # dialog — only a wrong password counts as a failed attempt.
+            if request.headers.get("Authorization", "").startswith("Basic "):
+                self._login_guard.failed(ip)
+                log.warning("admin: wrong password from %s", ip)
             return web.Response(
                 status=401,
                 headers={"WWW-Authenticate": 'Basic realm="Nevod Admin"'},
                 text="Unauthorized",
             )
+        self._login_guard.succeeded(ip)
         return await handler(request)
 
     @web.middleware
@@ -2000,8 +2195,44 @@ class AdminServer:
                     "last_seen": n.last_seen,
                 }
                 for n in nodes
-            ]
+            ],
+            "self_id": self._node.identity.node_id,
         })
+
+    async def _handle_list_blocked_nodes(self, _req):
+        project = self._node.project_blocked_nodes()
+        return web.json_response({
+            "nodes": await self._node.storage.list_blocked_nodes(),
+            "project": {
+                "applied": self._node.project_blocklist_on(),
+                "version": self._node.project_blocklist_version,
+                "nodes": [{"node_id": k, "reason": project[k]} for k in sorted(project)],
+            },
+        })
+
+    async def _handle_set_project_blocklist(self, request: web.Request):
+        try:
+            mode = str((await request.json()).get("mode", ""))
+        except Exception:
+            return web.json_response({"ok": False}, status=400)
+        if mode not in ("on", "off"):
+            return web.json_response({"ok": False}, status=400)
+        await self._node.set_project_blocklist(mode)
+        log.info("admin: project blocklist set to '%s'", mode)
+        return web.json_response({"ok": True})
+
+    async def _handle_block_node(self, request: web.Request):
+        try:
+            body = await request.json()
+        except Exception:
+            return web.json_response({"ok": False}, status=400)
+        ok = await self._node.block_node(str(body.get("node_id", "")),
+                                         reason=str(body.get("reason", "")).strip())
+        return web.json_response({"ok": ok}, status=200 if ok else 400)
+
+    async def _handle_unblock_node(self, request: web.Request):
+        ok = await self._node.unblock_node(request.match_info["node_id"])
+        return web.json_response({"ok": ok})
 
     async def _handle_diagnostics(self, _req):
         from .diagnostics import run_diagnostics
@@ -2037,6 +2268,22 @@ class AdminServer:
                                               invite_code=invite_code)
         except Exception as e:
             return web.json_response({"ok": False, "error": str(e)}, status=400)
+        return web.json_response({"ok": True, "reachable": reachable})
+
+    async def _handle_join_network(self, _req):
+        """The Nodes page's "Join the Nevod network" button: an invite-less join through
+        Nevod Open (see NETWORK_ENTRY_*). Without being part of the network a node delivers
+        messages but can't wake phones — push and TURN come from the project's nodes."""
+        address, fingerprint = _network_entry()
+        if address in (self._node.identity.address, ""):
+            return web.json_response({"ok": False, "error": "this node is the network entry itself"}, status=400)
+        try:
+            reachable = await self._node.join(address, expected_fingerprint=fingerprint or None,
+                                              open_join=True)
+        except Exception as e:
+            log.warning("admin: join network via %s failed: %s", address, e)
+            return web.json_response({"ok": False, "error": str(e)}, status=400)
+        log.info("admin: joined the network via %s (reachable=%s)", address, reachable)
         return web.json_response({"ok": True, "reachable": reachable})
 
     async def _handle_create_node_invite(self, _req):
@@ -2203,6 +2450,11 @@ class AdminServer:
         app.router.add_post("/nevod-admin/api/join-requests/{cell_id}/deny",        self._handle_deny_join_request)
         app.router.add_get("/nevod-admin/api/nodes",                                self._handle_list_nodes)
         app.router.add_post("/nevod-admin/api/join-node",                           self._handle_join_node)
+        app.router.add_get("/nevod-admin/api/blocked-nodes",                        self._handle_list_blocked_nodes)
+        app.router.add_post("/nevod-admin/api/blocked-nodes",                       self._handle_block_node)
+        app.router.add_delete("/nevod-admin/api/blocked-nodes/{node_id}",           self._handle_unblock_node)
+        app.router.add_post("/nevod-admin/api/project-blocklist",                   self._handle_set_project_blocklist)
+        app.router.add_post("/nevod-admin/api/join-network",                        self._handle_join_network)
         app.router.add_get("/nevod-admin/api/diagnostics",                          self._handle_diagnostics)
         app.router.add_get("/nevod-admin/api/allowed",                              self._handle_list_allowed)
         app.router.add_post("/nevod-admin/api/allowed/{cell_id}/invite-right",      self._handle_toggle_invite_right)

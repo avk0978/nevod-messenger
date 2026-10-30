@@ -9,6 +9,8 @@ a brake on scripts, not a quota on people.
 Configured per node by environment variables (0 = no limit):
   NEVOD_NEW_CELLS_PER_IP_PER_HOUR      — new cells registering (reconnects never count)
   NEVOD_OPEN_NODE_JOINS_PER_IP_PER_DAY — nodes joining without an invite (default 3)
+  NEVOD_ADMIN_MAX_FAILED_LOGINS        — wrong admin-panel passwords per address before a
+                                         15-minute lockout (default 5, LoginGuard)
 """
 import os
 import time
@@ -54,3 +56,48 @@ def new_cells_limiter() -> RateLimiter:
 
 def open_node_joins_limiter() -> RateLimiter:
     return RateLimiter(_env_int("NEVOD_OPEN_NODE_JOINS_PER_IP_PER_DAY", 3), 24 * 3600)
+
+
+class LoginGuard:
+    """Brute-force brake for the admin panel: after `max_failures` wrong passwords from one
+    address within `window` seconds, that address is refused for `lockout` seconds without
+    the password even being checked. A correct password clears the address's failures.
+    In memory only, like RateLimiter."""
+
+    def __init__(self, max_failures: int = 5, window: float = 900, lockout: float = 900):
+        self.max_failures = max_failures
+        self.window = window
+        self.lockout = lockout
+        self._failures: Dict[str, Deque[float]] = {}
+        self._locked_until: Dict[str, float] = {}
+
+    def locked(self, key: str) -> bool:
+        until = self._locked_until.get(key)
+        if until is None:
+            return False
+        if time.monotonic() < until:
+            return True
+        del self._locked_until[key]
+        return False
+
+    def failed(self, key: str) -> None:
+        if self.max_failures <= 0 or not key:
+            return
+        now = time.monotonic()
+        q = self._failures.setdefault(key, deque())
+        while q and now - q[0] >= self.window:
+            q.popleft()
+        q.append(now)
+        if len(q) >= self.max_failures:
+            self._locked_until[key] = now + self.lockout
+            q.clear()
+        if len(self._failures) > 10_000:
+            self._failures = {k: v for k, v in self._failures.items() if v and now - v[-1] < self.window}
+            self._locked_until = {k: t for k, t in self._locked_until.items() if t > now}
+
+    def succeeded(self, key: str) -> None:
+        self._failures.pop(key, None)
+
+
+def admin_login_guard() -> LoginGuard:
+    return LoginGuard(_env_int("NEVOD_ADMIN_MAX_FAILED_LOGINS", 5), 900, 900)

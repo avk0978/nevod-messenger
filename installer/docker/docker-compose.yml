@@ -1,0 +1,54 @@
+# A Nevod node on a server with its own domain: the node + Caddy in front of it.
+# Caddy gets a Let's Encrypt certificate for NEVOD_DOMAIN by itself and serves
+#   https://NEVOD_DOMAIN/nevod-ws     → phones (WebSocket)
+#   https://NEVOD_DOMAIN/nevod-card/  → contact-card lookup by short code
+#   https://NEVOD_DOMAIN/nevod-admin  → admin panel (unless NEVOD_ADMIN_PUBLIC=false)
+# Port 8765 stays public: other nodes connect to it directly (self-signed TLS,
+# pinned by fingerprint). The admin port 8766 is published on 127.0.0.1 only —
+# for an SSH tunnel; Docker bypasses ufw, so never publish it on all addresses.
+#
+#   cp .env.example .env   # fill it in
+#   docker compose up -d --build
+services:
+  nevod_node:
+    build: ../..
+    container_name: nevod_node
+    restart: always
+    # Capped logs (privacy policy §3: technical logs "kept for a limited time").
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+    ports:
+      - "8765:8765"
+      - "127.0.0.1:8766:8766"
+    volumes:
+      - ./data:/app/data
+    environment:
+      - NEVOD_ADDRESS=${NEVOD_DOMAIN:?set NEVOD_DOMAIN in .env}:8765
+      - NEVOD_BIND=0.0.0.0
+      - NEVOD_PUBLIC_CLIENT_ADDR=${NEVOD_DOMAIN}/nevod-ws
+      - NEVOD_ADMIN_PASSWORD=${NEVOD_ADMIN_PASSWORD:?set NEVOD_ADMIN_PASSWORD in .env}
+      - TURN_SECRET=${TURN_SECRET:-}
+
+  caddy:
+    image: caddy:2
+    container_name: nevod_caddy
+    restart: always
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - ./caddy_data:/data
+    environment:
+      - NEVOD_DOMAIN=${NEVOD_DOMAIN}
+      - NEVOD_ADMIN_PUBLIC=${NEVOD_ADMIN_PUBLIC:-true}
+    depends_on:
+      - nevod_node

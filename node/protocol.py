@@ -295,11 +295,23 @@ def make_group_members_request(from_addr: str, to_node: str) -> Packet:
     )
 
 
-def make_group_members_response(from_node: str, to_addr: str, members: list) -> Packet:
-    """members: list of {"cell_id": str, "enc_pubkey": bytes}"""
+def node_admin_message(cell_id: str, enc_pub: str, node_id: str, node_name: str) -> bytes:
+    """Bytes a node signs for its administrator record (node.py administrator_record). The
+    "node-admin|" prefix domain-separates it from packet and curator signatures. Must match
+    the iOS NodeAdministrator.verify exactly."""
+    return f"node-admin|{cell_id.lower()}|{enc_pub.lower()}|{node_id.lower()}|{node_name}".encode("utf-8")
+
+
+def make_group_members_response(from_node: str, to_addr: str, members: list,
+                                administrator: Optional[dict] = None) -> Packet:
+    """members: list of {"cell_id": str, "enc_pubkey": bytes}; administrator: the node-signed
+    record from Node.administrator_record (omitted when the node has none)."""
+    payload = {"members": members}
+    if administrator:
+        payload["administrator"] = administrator
     return Packet(
         type=T.GROUP_MEMBERS_RESPONSE,
-        payload=encode_payload({"members": members}),
+        payload=encode_payload(payload),
         from_addr=from_node,
         to_addr=to_addr,
     )

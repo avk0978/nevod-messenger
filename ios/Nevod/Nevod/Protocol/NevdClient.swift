@@ -64,6 +64,8 @@ final class NevdClient: NSObject, ObservableObject {
     private let connectTimeoutSecs: UInt64 = 8
 
     private var pendingMembers: CheckedContinuation<[GroupMember], Error>?
+    /// This node's administrator from the last member list, signature already verified.
+    private(set) var nodeAdministrator: NodeAdministrator?
     private var pendingNodeList: CheckedContinuation<[PublicNode], Error>?
     private var pendingNodeCells: CheckedContinuation<[PublishedCell], Error>?
     private var pendingInvite:  CheckedContinuation<InviteResult, Error>?
@@ -668,6 +670,7 @@ final class NevdClient: NSObject, ObservableObject {
             guard let cid = m["cell_id"].string, let enc = m["enc_pubkey"].data else { return nil }
             return GroupMember(cellId: cid, encPubkey: enc, displayName: m["display_name"].string ?? "")
         }
+        nodeAdministrator = NodeAdministrator.verify(d["administrator"], nodeId: nodeId)
         pendingMembers?.resume(returning: members)
         pendingMembers = nil
     }

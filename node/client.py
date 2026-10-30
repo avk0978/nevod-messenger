@@ -63,6 +63,7 @@ class CellClient:
         self._ack_status: dict = {}     # message_id → latest ACK status string
         self._incoming_from: dict = {}  # received msg_id → original from_addr
         self._pending_members: Optional[asyncio.Future] = None
+        self.node_administrator: Optional[dict] = None  # node-signed record, last members reply
         self._pending_cells: Optional[asyncio.Future] = None
 
     @property
@@ -338,6 +339,7 @@ class CellClient:
             {"cell_id": m["cell_id"], "enc_pubkey": bytes(m["enc_pubkey"])}
             for m in data.get("members", [])
         ]
+        self.node_administrator = data.get("administrator")
         if self._pending_members and not self._pending_members.done():
             self._pending_members.set_result(members)
         self._pending_members = None

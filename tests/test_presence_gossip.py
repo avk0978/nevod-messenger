@@ -43,6 +43,9 @@ async def bidirectional_gossip(n_from, n_to):
     # n_from now has n_to in its table — send presence gossip n_from→n_to
     entry_nto = await n_from.storage.get_node(n_to.identity.node_id)
     if entry_nto:
+        # As in a real round: the ping (re)connects first — admission's reachability
+        # check may have closed the only connection between the two.
+        await n_from.gossip._ping_node(entry_nto)
         await n_from.gossip._exchange(entry_nto)
         await asyncio.sleep(0.1)
 
@@ -78,7 +81,11 @@ class TestOpenNodeGossip:
         idt = CellIdentity.generate("Alice")
         cell = CellClient(idt)
         try:
-            await n2.join(addr(0), expected_fingerprint=n1.identity.tls_fingerprint)
+            # Admitted the real way (open node_join_mode) — gossip is accepted only
+            # from nodes already in the receiver's node_table.
+            n1.identity.node_join_mode = "open"
+            await n2.join(addr(0), expected_fingerprint=n1.identity.tls_fingerprint,
+                          open_join=True)
             await asyncio.sleep(0.05)
 
             await cell.connect(addr(0))
@@ -154,19 +161,23 @@ class TestOpenNodeGossip:
 
         original_handle = n2.gossip.handle_gossip
 
-        async def intercept(pkt):
+        async def intercept(pkt, conn):
             from node.protocol import decode_payload
             try:
                 data = decode_payload(pkt.payload)
                 captured.append(data)
             except Exception:
                 pass
-            await original_handle(pkt)
+            await original_handle(pkt, conn)
 
         n2.gossip.handle_gossip = intercept
 
         try:
-            await n2.join(addr(4), expected_fingerprint=n1.identity.tls_fingerprint)
+            # Admitted the real way (open node_join_mode) — gossip is accepted only
+            # from nodes already in the receiver's node_table.
+            n1.identity.node_join_mode = "open"
+            await n2.join(addr(4), expected_fingerprint=n1.identity.tls_fingerprint,
+                          open_join=True)
             await cell.connect(addr(4))
             await asyncio.sleep(0.05)
 
@@ -270,13 +281,13 @@ class TestClosedNodeGossip:
 
         original_handle = n2.gossip.handle_gossip
 
-        async def intercept(pkt):
+        async def intercept(pkt, conn):
             from node.protocol import decode_payload
             try:
                 captured.append(decode_payload(pkt.payload))
             except Exception:
                 pass
-            await original_handle(pkt)
+            await original_handle(pkt, conn)
 
         n2.gossip.handle_gossip = intercept
 
@@ -454,13 +465,13 @@ class TestChildNode:
 
         original_handle = other.gossip.handle_gossip
 
-        async def intercept(pkt):
+        async def intercept(pkt, conn):
             from node.protocol import decode_payload
             try:
                 captured.append(decode_payload(pkt.payload))
             except Exception:
                 pass
-            await original_handle(pkt)
+            await original_handle(pkt, conn)
 
         other.gossip.handle_gossip = intercept
 

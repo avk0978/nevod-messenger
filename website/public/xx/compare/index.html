@@ -26,6 +26,36 @@ main.article code { font-size:.9em; background:var(--card); border:1px solid var
 main.article ol li, main.article ul li { margin-bottom:.35em; overflow-wrap:anywhere; }
 .pub { margin:16px 0; } .pub h3 a { text-decoration:none; } .pub-date { font-size:14px; color:var(--muted); }
 .pub-back { font-size:15px; }
+main.article pre { background:var(--ink); color:var(--paper); border-radius:8px; padding:12px 14px; overflow-x:auto;
+  font-size:14px; line-height:1.5; margin:0 0 1em; }
+main.article pre code { background:none; border:0; padding:0; font-size:inherit; color:inherit; }
+main.article .note { margin:0 0 1em; } main.article .note p:last-child { margin-bottom:0; }
+.toc li { margin-bottom:.35em; }
+.docs-layout { display:grid; grid-template-columns:250px minmax(0,1fr); gap:40px; align-items:start; }
+.docs-side { position:sticky; top:76px; max-height:calc(100vh - 92px); overflow-y:auto; font-size:15px;
+  line-height:1.4; padding-right:8px; border-right:1px solid var(--line); }
+.docs-side ol, .docs-toc ol { list-style:none; padding:0; margin:0 0 14px; }
+.docs-side li, .docs-toc li { margin:0; }
+.docs-side a, .docs-toc a { display:block; padding:4px 8px; border-radius:6px; text-decoration:none; color:var(--ink); }
+.docs-side a:hover, .docs-toc a:hover { background:var(--card); }
+.docs-side li.cur > a, .docs-toc li.cur > a { background:var(--card); font-weight:600; box-shadow:inset 3px 0 0 var(--accent); }
+.docs-side ul, .docs-toc ul { list-style:none; padding:2px 0 6px 12px; margin:0; }
+.docs-side ul a, .docs-toc ul a { font-size:14px; color:var(--muted); padding:3px 8px; }
+.docs-side .soon, .docs-toc .soon { padding:4px 8px; color:var(--muted); opacity:.7; }
+.docs-group { font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.6px; color:var(--muted);
+  margin:14px 8px 6px; }
+.docs-home { margin:0 0 4px; font-weight:600; } .docs-home a { padding:4px 8px; }
+.docs-toc { display:none; background:var(--card); border:1px solid var(--line); border-radius:10px; margin:0 0 20px; }
+.docs-toc summary { cursor:pointer; padding:10px 14px; font-weight:600; }
+.docs-toc[open] summary { border-bottom:1px solid var(--line); }
+.docs-toc > p, .docs-toc > ol { margin-left:8px; margin-right:8px; }
+@media (max-width:960px) {
+  .docs-layout { display:block; }
+  .docs-side { display:none; }
+  .docs-toc { display:block; }
+}
+.doc-nav { display:flex; flex-wrap:wrap; gap:8px 24px; justify-content:space-between; font-size:15px;
+  border-top:1px solid var(--line); padding-top:16px; margin-top:32px; }
 p, ul, ol, table { margin:0 0 1em; }
 .wrap { max-width:1080px; margin:0 auto; padding:0 16px; }
 header.top { background:var(--ink); color:var(--paper); position:sticky; top:0; z-index:10; }
@@ -116,8 +146,8 @@ footer.site .wrap { display:flex; flex-wrap:wrap; gap:8px 24px; justify-content:
 <body>
 <header class="top"><div class="wrap">
 <a class="brand" href="/xx/">Nevod<span>.</span></a>
-<nav class="main"><a href="/xx/">Главная</a><a href="/xx/manifesto/">Манифест ZKI</a><a href="/xx/compare/" aria-current="page">Сравнение</a><a href="/xx/security/">Безопасность</a><a href="/xx/cities/">Для городов</a><a href="/xx/download/">Скачать</a><a href="/xx/publications/">Публикации</a><a href="/xx/about/">О проекте</a></nav>
-<details class="menu"><summary aria-label="Меню"><span class="burger"></span></summary><nav><a href="/xx/">Главная</a><a href="/xx/manifesto/">Манифест ZKI</a><a href="/xx/compare/" aria-current="page">Сравнение</a><a href="/xx/security/">Безопасность</a><a href="/xx/cities/">Для городов</a><a href="/xx/download/">Скачать</a><a href="/xx/publications/">Публикации</a><a href="/xx/about/">О проекте</a></nav></details>
+<nav class="main"><a href="/xx/">Главная</a><a href="/xx/manifesto/">Манифест ZKI</a><a href="/xx/compare/" aria-current="page">Сравнение</a><a href="/xx/security/">Безопасность</a><a href="/xx/docs/">Документация</a><a href="/xx/download/">Скачать</a><a href="/xx/publications/">Публикации</a><a href="/xx/about/">О проекте</a></nav>
+<details class="menu"><summary aria-label="Меню"><span class="burger"></span></summary><nav><a href="/xx/">Главная</a><a href="/xx/manifesto/">Манифест ZKI</a><a href="/xx/compare/" aria-current="page">Сравнение</a><a href="/xx/security/">Безопасность</a><a href="/xx/docs/">Документация</a><a href="/xx/download/">Скачать</a><a href="/xx/publications/">Публикации</a><a href="/xx/about/">О проекте</a></nav></details>
 <details class="lang"><summary></summary><ul><li><a href="/uk/compare/" hreflang="uk" lang="uk">Українська</a></li><li><a href="/en/compare/" hreflang="en" lang="en">English</a></li><li><a href="/de/compare/" hreflang="de" lang="de">Deutsch</a></li><li><a href="/tr/compare/" hreflang="tr" lang="tr">Türkçe</a></li><li><a href="/es/compare/" hreflang="es" lang="es">Español</a></li><li><a href="/it/compare/" hreflang="it" lang="it">Italiano</a></li><li><a href="/fr/compare/" hreflang="fr" lang="fr">Français</a></li></ul></details>
 </div></header>
 
@@ -144,6 +174,7 @@ footer.site .wrap { display:flex; flex-wrap:wrap; gap:8px 24px; justify-content:
 <p>ZKI задаёт другой вопрос: <b>что создатель инфраструктуры может получить даже теоретически?</b> В Nevod ответ заложен в архитектуру: ключи не покидают устройство, нет мастер-ключа и резервных копий, нет центрального сервера и реестра людей по номерам.</p>
 <h2 id="low-load">Мало нагруженная распределённая сеть: сравнение</h2>
 <p>Мы оцениваем сети по шести признакам мало нагруженной распределённой сети: нагрузка каждого узла ограничена его собственным кругом участников, а не размером всей сети. Признаки выведены из принципов Nevod, поэтому сравнение ему заведомо благоприятно.</p>
+<p><a href="/xx/publications/low-load-networks/">Подробно — концепция, шесть признаков, классы LL-0…LL-3 и сравнение 15 сетей — в статье «Low-Load Distributed Data Networks» (Zenodo, DOI 10.5281/zenodo.23621073) →</a></p>
 <ol>
 <li>Свой круг: нагрузка узла растёт с его кругом (семья, дом, команда), а не со всей сетью.</li>
 <li>Обычное железо: домашний компьютер, мини-сервер, роутер; дата-центр не нужен.</li>
@@ -152,7 +183,7 @@ footer.site .wrap { display:flex; flex-wrap:wrap; gap:8px 24px; justify-content:
 <li>Без центра: нет единой точки отказа, блокировки или изъятия.</li>
 <li>Слепой узел: узел переносит только шифротекст и не может его прочитать.</li>
 </ol>
-<p class="note">1: выполнено, ½: частично, 0: нет. Год: первый публичный выпуск. Класс: LL-0 — нагрузка узла ограничена его кругом; LL-1 — плюс ограниченный чужой транзит; LL-3 — нагрузка растёт со всей сетью или зависит от посторонних пользователей. Подробнее: <a href="/xx/publications/low-load-networks/">статья</a>.</p>
+<p class="note">1: выполнено, ½: частично, 0: нет. Год: первый публичный выпуск. Класс: LL-0 — нагрузка узла ограничена его кругом; LL-1 — плюс ограниченный чужой транзит; LL-3 — нагрузка растёт со всей сетью или зависит от посторонних пользователей.</p>
 <div class="tbl"><table class="stack">
 <tr><th>Сеть</th><th>Год</th><th>Свой круг</th><th>Обычное железо</th><th>Экономия</th><th>Задержки</th><th>Без центра</th><th>Слепой узел</th><th>Класс</th></tr>
 <tr><td data-label="Сеть">Secure Scuttlebutt</td><td data-label="Год">2014</td><td data-label="Свой круг">1</td><td data-label="Обычное железо">1</td><td data-label="Экономия">½</td><td data-label="Задержки">1</td><td data-label="Без центра">1</td><td data-label="Слепой узел">0</td><td data-label="Класс">LL-0</td></tr>
@@ -185,7 +216,7 @@ footer.site .wrap { display:flex; flex-wrap:wrap; gap:8px 24px; justify-content:
 <h2>Что мы признаём</h2>
 <ul>
 <li>Узел технически обрабатывает только данные доставки, какой зашифрованный пакет кому передать и никогда не видит содержимого. Никто не запрещает запустить собственный узел: тогда и эти данные доставки остаются только у вас.</li>
-<li>У Signal открытый и тщательно проверенный протокол — это сильная сторона, которую мы признаём. Код Nevod пока закрыт; его открытие запланировано.</li>
+<li>У Signal открытый и тщательно проверенный протокол — это сильная сторона, которую мы признаём. Код Nevod <a href="https://github.com/avk0978/nevod-messenger">открыт</a> (AGPL-3.0), но независимой проверки кода пока не было.</li>
 </ul>
 </div></main>
 

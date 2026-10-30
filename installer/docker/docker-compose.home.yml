@@ -10,11 +10,12 @@ services:
         max-size: "10m"
         max-file: "3"
     ports:
-      # Both published (unlike node1's compose) — this node's TLS-terminating
-      # reverse proxy (Caddy) runs on the HOST, not inside Docker, and reaches
-      # the container via localhost, same as it reached the old native exe.
+      # This node's TLS-terminating reverse proxy (Caddy) runs on the HOST, not
+      # inside Docker, and reaches the container via localhost. The admin port is
+      # published on 127.0.0.1 only: Docker bypasses the host firewall, so "8766:8766"
+      # would put the panel on the internet over plain HTTP.
       - "8765:8765"
-      - "8766:8766"
+      - "127.0.0.1:8766:8766"
     volumes:
       - ${NEVOD_DATA_DIR}:/app/data
     environment:

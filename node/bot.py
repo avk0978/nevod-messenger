@@ -8,7 +8,7 @@ protocol, not special node infrastructure; runs as its own process,
 independent of node.py.
 
 This file is persona-agnostic: --name/--system-prompt(-file) configure WHICH
-agent a given run is. "Толмач" (a translator) was the first agent built on
+agent a given run is. "Tolmach" (a translator) was the first agent built on
 this connector — see the default prompt below for its exact wording — but
 any other persona (FAQ bot, assistant for a specific community, etc.) is
 just a different invocation of the same script, not a fork of it.
@@ -71,12 +71,12 @@ DEFAULT_SYSTEM_PROMPT = (
     "that you can't."
 )
 
-# The first agent built on this connector — "Толмач" ("Tolmach", Russian for
+# The first agent built on this connector — "Tolmach" (from Russian «толмач»,
 # "interpreter"), a translator. Not used unless a run explicitly asks for it
 # (--system-prompt-file pointed at a file with this text, or --system-prompt
 # passed directly) — kept here only as the canonical example wording.
 TOLMACH_SYSTEM_PROMPT = (
-    'You are "Толмач" ("Tolmach" — Russian for "interpreter"), a translation '
+    'You are "Tolmach" (from Russian «толмач», "interpreter"), a translation '
     "assistant reachable on the Nevod messaging network. Translate whatever "
     "text the user sends, or answer direct questions about a translation. "
     "Keep replies short — this is a chat, not an essay. You have no ability "

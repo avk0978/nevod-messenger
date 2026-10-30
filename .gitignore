@@ -54,3 +54,7 @@ generate_*.py
 xcuserdata/
 *.xcuserstate
 DerivedData/
+
+# installer/docker/docker-compose.yml runtime folders
+installer/docker/caddy_data/
+!manifests/blocked_nodes.json

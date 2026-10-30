@@ -26,6 +26,36 @@ main.article code { font-size:.9em; background:var(--card); border:1px solid var
 main.article ol li, main.article ul li { margin-bottom:.35em; overflow-wrap:anywhere; }
 .pub { margin:16px 0; } .pub h3 a { text-decoration:none; } .pub-date { font-size:14px; color:var(--muted); }
 .pub-back { font-size:15px; }
+main.article pre { background:var(--ink); color:var(--paper); border-radius:8px; padding:12px 14px; overflow-x:auto;
+  font-size:14px; line-height:1.5; margin:0 0 1em; }
+main.article pre code { background:none; border:0; padding:0; font-size:inherit; color:inherit; }
+main.article .note { margin:0 0 1em; } main.article .note p:last-child { margin-bottom:0; }
+.toc li { margin-bottom:.35em; }
+.docs-layout { display:grid; grid-template-columns:250px minmax(0,1fr); gap:40px; align-items:start; }
+.docs-side { position:sticky; top:76px; max-height:calc(100vh - 92px); overflow-y:auto; font-size:15px;
+  line-height:1.4; padding-right:8px; border-right:1px solid var(--line); }
+.docs-side ol, .docs-toc ol { list-style:none; padding:0; margin:0 0 14px; }
+.docs-side li, .docs-toc li { margin:0; }
+.docs-side a, .docs-toc a { display:block; padding:4px 8px; border-radius:6px; text-decoration:none; color:var(--ink); }
+.docs-side a:hover, .docs-toc a:hover { background:var(--card); }
+.docs-side li.cur > a, .docs-toc li.cur > a { background:var(--card); font-weight:600; box-shadow:inset 3px 0 0 var(--accent); }
+.docs-side ul, .docs-toc ul { list-style:none; padding:2px 0 6px 12px; margin:0; }
+.docs-side ul a, .docs-toc ul a { font-size:14px; color:var(--muted); padding:3px 8px; }
+.docs-side .soon, .docs-toc .soon { padding:4px 8px; color:var(--muted); opacity:.7; }
+.docs-group { font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.6px; color:var(--muted);
+  margin:14px 8px 6px; }
+.docs-home { margin:0 0 4px; font-weight:600; } .docs-home a { padding:4px 8px; }
+.docs-toc { display:none; background:var(--card); border:1px solid var(--line); border-radius:10px; margin:0 0 20px; }
+.docs-toc summary { cursor:pointer; padding:10px 14px; font-weight:600; }
+.docs-toc[open] summary { border-bottom:1px solid var(--line); }
+.docs-toc > p, .docs-toc > ol { margin-left:8px; margin-right:8px; }
+@media (max-width:960px) {
+  .docs-layout { display:block; }
+  .docs-side { display:none; }
+  .docs-toc { display:block; }
+}
+.doc-nav { display:flex; flex-wrap:wrap; gap:8px 24px; justify-content:space-between; font-size:15px;
+  border-top:1px solid var(--line); padding-top:16px; margin-top:32px; }
 p, ul, ol, table { margin:0 0 1em; }
 .wrap { max-width:1080px; margin:0 auto; padding:0 16px; }
 header.top { background:var(--ink); color:var(--paper); position:sticky; top:0; z-index:10; }
@@ -116,8 +146,8 @@ footer.site .wrap { display:flex; flex-wrap:wrap; gap:8px 24px; justify-content:
 <body>
 <header class="top"><div class="wrap">
 <a class="brand" href="/es/">Nevod<span>.</span></a>
-<nav class="main"><a href="/es/">Inicio</a><a href="/es/manifesto/">Manifiesto ZKI</a><a href="/es/compare/" aria-current="page">Comparación</a><a href="/es/security/">Seguridad</a><a href="/es/cities/">Para ciudades</a><a href="/es/download/">Descargar</a><a href="/es/publications/">Publicaciones</a><a href="/es/about/">Sobre el proyecto</a></nav>
-<details class="menu"><summary aria-label="Menú"><span class="burger"></span></summary><nav><a href="/es/">Inicio</a><a href="/es/manifesto/">Manifiesto ZKI</a><a href="/es/compare/" aria-current="page">Comparación</a><a href="/es/security/">Seguridad</a><a href="/es/cities/">Para ciudades</a><a href="/es/download/">Descargar</a><a href="/es/publications/">Publicaciones</a><a href="/es/about/">Sobre el proyecto</a></nav></details>
+<nav class="main"><a href="/es/">Inicio</a><a href="/es/manifesto/">Manifiesto ZKI</a><a href="/es/compare/" aria-current="page">Comparación</a><a href="/es/security/">Seguridad</a><a href="/es/docs/">Documentación</a><a href="/es/download/">Descargar</a><a href="/es/publications/">Publicaciones</a><a href="/es/about/">Sobre el proyecto</a></nav>
+<details class="menu"><summary aria-label="Menú"><span class="burger"></span></summary><nav><a href="/es/">Inicio</a><a href="/es/manifesto/">Manifiesto ZKI</a><a href="/es/compare/" aria-current="page">Comparación</a><a href="/es/security/">Seguridad</a><a href="/es/docs/">Documentación</a><a href="/es/download/">Descargar</a><a href="/es/publications/">Publicaciones</a><a href="/es/about/">Sobre el proyecto</a></nav></details>
 <details class="lang"><summary>Español</summary><ul><li><a href="/uk/compare/" hreflang="uk" lang="uk">Українська</a></li><li><a href="/en/compare/" hreflang="en" lang="en">English</a></li><li><a href="/de/compare/" hreflang="de" lang="de">Deutsch</a></li><li><a href="/tr/compare/" hreflang="tr" lang="tr">Türkçe</a></li><li><a href="/es/compare/" hreflang="es" lang="es">Español</a></li><li><a href="/it/compare/" hreflang="it" lang="it">Italiano</a></li><li><a href="/fr/compare/" hreflang="fr" lang="fr">Français</a></li></ul></details>
 </div></header>
 
@@ -144,6 +174,7 @@ footer.site .wrap { display:flex; flex-wrap:wrap; gap:8px 24px; justify-content:
 <p>ZKI plantea otra pregunta: <b>¿qué puede obtener, siquiera en teoría, el creador de la infraestructura?</b> En Nevod la respuesta está en la arquitectura: las claves nunca salen del dispositivo, no hay clave maestra ni copias de seguridad, no hay servidor central ni registro de personas por número de teléfono.</p>
 <h2 id="low-load">Red distribuida de baja carga: una comparación</h2>
 <p>Evaluamos las redes según seis rasgos de una red distribuida de baja carga: la carga de cada nodo está limitada por su propio círculo de personas, no por el tamaño de toda la red. Los rasgos salen de los propios principios de Nevod, así que la comparación le favorece de entrada.</p>
+<p><a href="/es/publications/low-load-networks/">En detalle — el concepto, seis rasgos, las clases LL-0…LL-3 y una comparación de 15 redes — en el artículo «Low-Load Distributed Data Networks» (Zenodo, DOI 10.5281/zenodo.23621073) →</a></p>
 <ol>
 <li>Círculo propio: la carga de un nodo crece con su círculo (familia, hogar, equipo), no con toda la red.</li>
 <li>Hardware común: un ordenador doméstico, un miniservidor o un router; no hace falta un centro de datos.</li>
@@ -152,7 +183,7 @@ footer.site .wrap { display:flex; flex-wrap:wrap; gap:8px 24px; justify-content:
 <li>Sin centro: ningún punto único de fallo, bloqueo o incautación.</li>
 <li>Nodo ciego: el nodo solo transporta texto cifrado y no puede leerlo.</li>
 </ol>
-<p class="note">1: sí, ½: en parte, 0: no. Año: primera versión pública. Clase: LL-0, la carga del nodo está limitada por su círculo; LL-1, además tránsito ajeno limitado; LL-3, la carga crece con toda la red o depende de usuarios ajenos. Más: <a href="/es/publications/low-load-networks/">el artículo</a>.</p>
+<p class="note">1: sí, ½: en parte, 0: no. Año: primera versión pública. Clase: LL-0, la carga del nodo está limitada por su círculo; LL-1, además tránsito ajeno limitado; LL-3, la carga crece con toda la red o depende de usuarios ajenos.</p>
 <div class="tbl"><table class="stack">
 <tr><th>Red</th><th>Año</th><th>Círculo propio</th><th>Hardware común</th><th>Economía</th><th>Retrasos</th><th>Sin centro</th><th>Nodo ciego</th><th>Clase</th></tr>
 <tr><td data-label="Red">Secure Scuttlebutt</td><td data-label="Año">2014</td><td data-label="Círculo propio">1</td><td data-label="Hardware común">1</td><td data-label="Economía">½</td><td data-label="Retrasos">1</td><td data-label="Sin centro">1</td><td data-label="Nodo ciego">0</td><td data-label="Clase">LL-0</td></tr>
@@ -185,7 +216,7 @@ footer.site .wrap { display:flex; flex-wrap:wrap; gap:8px 24px; justify-content:
 <h2>Lo que reconocemos</h2>
 <ul>
 <li>Un nodo técnicamente solo procesa datos de entrega —qué paquete cifrado va a quién— y nunca ve el contenido. Nadie te impide ejecutar tu propio nodo: entonces incluso esos datos de entrega se quedan contigo.</li>
-<li>El protocolo de Signal es abierto y ha sido ampliamente auditado; lo reconocemos como una fortaleza. El código de Nevod es cerrado por ahora; está previsto abrirlo.</li>
+<li>El protocolo de Signal es abierto y ha sido ampliamente auditado; lo reconocemos como una fortaleza. El código de Nevod es <a href="https://github.com/avk0978/nevod-messenger">abierto</a> (AGPL-3.0), pero aún no ha sido auditado de forma independiente.</li>
 </ul>
 </div></main>
 

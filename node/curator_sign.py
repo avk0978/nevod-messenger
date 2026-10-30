@@ -33,6 +33,12 @@ Usage:
             --cell-id <hex> --role administrator --name administrator --privkey <hex>
         # prints a ready-to-paste official.json entry
 
+    Sign the project node blocklist (blocked_nodes.json — node/blocklist.py). Edit the
+    "nodes" list by hand ({"node_id": ..., "reason": ...}), then sign it in place; the
+    version is bumped every time, nodes only ever accept a higher one:
+        python -m node.curator_sign sign-blocklist --privkey-file <key.json> \
+            --list manifests/blocked_nodes.json
+
     Verify an entry (self-check — a client does the equivalent with its own
     hardcoded public key, not by calling this script):
         python -m node.curator_sign verify \\
@@ -210,6 +216,28 @@ def _cmd_sign_official(args):
     print(json.dumps(entry, indent=2, ensure_ascii=False))
 
 
+def _cmd_sign_blocklist(args):
+    import time
+    from .blocklist import canonical_message, parse, verify_doc
+    doc = json.load(open(args.list, encoding="utf-8"))
+    doc["version"] = max(int(time.time()), int(doc.get("version", 0)) + 1)
+    doc["sig"] = ""
+    parsed = parse(doc)
+    if not parsed:
+        print("error: every entry needs a 64-hex node_id and a one-line reason (≤500 chars)",
+              file=sys.stderr)
+        sys.exit(1)
+    version, nodes = parsed
+    doc["nodes"] = [{"node_id": nid, "reason": nodes[nid]} for nid in sorted(nodes)]
+    priv_hex = _load_privkey(args)
+    priv = signing_priv_from_bytes(bytes.fromhex(priv_hex))
+    doc["sig"] = sign(canonical_message(version, nodes),
+                      SigningKeypair(private=priv, public=bytes.fromhex(_pubkey_of(priv_hex)))).hex()
+    assert verify_doc(doc, _pubkey_of(priv_hex))
+    _write_json(args.list, doc)
+    print(f"{args.list}: version {version}, {len(nodes)} node(s), signed with {_pubkey_of(priv_hex)}")
+
+
 def _cmd_verify(args):
     ok = verify_entry(args.node_id, args.address, args.tls_fingerprint,
                       args.purpose, args.sig, args.pubkey)
@@ -253,6 +281,11 @@ def main():
     rp.add_argument("--nodes", help="path to nodes.json")
     rp.add_argument("--official", help="path to official.json")
 
+    bp = sub.add_parser("sign-blocklist", help="sign the project node blocklist in place")
+    bp.add_argument("--list", required=True, help="path to blocked_nodes.json")
+    bp.add_argument("--privkey-file", help="curator key file (genkey --out JSON, or bare hex)")
+    bp.add_argument("--privkey", help="curator private key, hex (legacy — prefer --privkey-file)")
+
     vp = sub.add_parser("verify", help="verify a signed entry (self-check)")
     vp.add_argument("--node-id", required=True)
     vp.add_argument("--address", required=True)
@@ -263,7 +296,8 @@ def main():
 
     args = p.parse_args()
     {"genkey": _cmd_genkey, "sign": _cmd_sign, "sign-official": _cmd_sign_official,
-     "resign": _cmd_resign, "verify": _cmd_verify}[args.cmd](args)
+     "resign": _cmd_resign, "sign-blocklist": _cmd_sign_blocklist,
+     "verify": _cmd_verify}[args.cmd](args)
 
 
 if __name__ == "__main__":

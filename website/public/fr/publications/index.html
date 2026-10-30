@@ -26,6 +26,36 @@ main.article code { font-size:.9em; background:var(--card); border:1px solid var
 main.article ol li, main.article ul li { margin-bottom:.35em; overflow-wrap:anywhere; }
 .pub { margin:16px 0; } .pub h3 a { text-decoration:none; } .pub-date { font-size:14px; color:var(--muted); }
 .pub-back { font-size:15px; }
+main.article pre { background:var(--ink); color:var(--paper); border-radius:8px; padding:12px 14px; overflow-x:auto;
+  font-size:14px; line-height:1.5; margin:0 0 1em; }
+main.article pre code { background:none; border:0; padding:0; font-size:inherit; color:inherit; }
+main.article .note { margin:0 0 1em; } main.article .note p:last-child { margin-bottom:0; }
+.toc li { margin-bottom:.35em; }
+.docs-layout { display:grid; grid-template-columns:250px minmax(0,1fr); gap:40px; align-items:start; }
+.docs-side { position:sticky; top:76px; max-height:calc(100vh - 92px); overflow-y:auto; font-size:15px;
+  line-height:1.4; padding-right:8px; border-right:1px solid var(--line); }
+.docs-side ol, .docs-toc ol { list-style:none; padding:0; margin:0 0 14px; }
+.docs-side li, .docs-toc li { margin:0; }
+.docs-side a, .docs-toc a { display:block; padding:4px 8px; border-radius:6px; text-decoration:none; color:var(--ink); }
+.docs-side a:hover, .docs-toc a:hover { background:var(--card); }
+.docs-side li.cur > a, .docs-toc li.cur > a { background:var(--card); font-weight:600; box-shadow:inset 3px 0 0 var(--accent); }
+.docs-side ul, .docs-toc ul { list-style:none; padding:2px 0 6px 12px; margin:0; }
+.docs-side ul a, .docs-toc ul a { font-size:14px; color:var(--muted); padding:3px 8px; }
+.docs-side .soon, .docs-toc .soon { padding:4px 8px; color:var(--muted); opacity:.7; }
+.docs-group { font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.6px; color:var(--muted);
+  margin:14px 8px 6px; }
+.docs-home { margin:0 0 4px; font-weight:600; } .docs-home a { padding:4px 8px; }
+.docs-toc { display:none; background:var(--card); border:1px solid var(--line); border-radius:10px; margin:0 0 20px; }
+.docs-toc summary { cursor:pointer; padding:10px 14px; font-weight:600; }
+.docs-toc[open] summary { border-bottom:1px solid var(--line); }
+.docs-toc > p, .docs-toc > ol { margin-left:8px; margin-right:8px; }
+@media (max-width:960px) {
+  .docs-layout { display:block; }
+  .docs-side { display:none; }
+  .docs-toc { display:block; }
+}
+.doc-nav { display:flex; flex-wrap:wrap; gap:8px 24px; justify-content:space-between; font-size:15px;
+  border-top:1px solid var(--line); padding-top:16px; margin-top:32px; }
 p, ul, ol, table { margin:0 0 1em; }
 .wrap { max-width:1080px; margin:0 auto; padding:0 16px; }
 header.top { background:var(--ink); color:var(--paper); position:sticky; top:0; z-index:10; }
@@ -116,11 +146,11 @@ footer.site .wrap { display:flex; flex-wrap:wrap; gap:8px 24px; justify-content:
 <body>
 <header class="top"><div class="wrap">
 <a class="brand" href="/fr/">Nevod<span>.</span></a>
-<nav class="main"><a href="/fr/">Accueil</a><a href="/fr/manifesto/">Manifeste ZKI</a><a href="/fr/compare/">Comparaison</a><a href="/fr/security/">Sécurité</a><a href="/fr/cities/">Pour les villes</a><a href="/fr/download/">Télécharger</a><a href="/fr/publications/" aria-current="page">Publications</a><a href="/fr/about/">Le projet</a></nav>
-<details class="menu"><summary aria-label="Menu"><span class="burger"></span></summary><nav><a href="/fr/">Accueil</a><a href="/fr/manifesto/">Manifeste ZKI</a><a href="/fr/compare/">Comparaison</a><a href="/fr/security/">Sécurité</a><a href="/fr/cities/">Pour les villes</a><a href="/fr/download/">Télécharger</a><a href="/fr/publications/" aria-current="page">Publications</a><a href="/fr/about/">Le projet</a></nav></details>
+<nav class="main"><a href="/fr/">Accueil</a><a href="/fr/manifesto/">Manifeste ZKI</a><a href="/fr/compare/">Comparaison</a><a href="/fr/security/">Sécurité</a><a href="/fr/docs/">Documentation</a><a href="/fr/download/">Télécharger</a><a href="/fr/publications/" aria-current="page">Publications</a><a href="/fr/about/">Le projet</a></nav>
+<details class="menu"><summary aria-label="Menu"><span class="burger"></span></summary><nav><a href="/fr/">Accueil</a><a href="/fr/manifesto/">Manifeste ZKI</a><a href="/fr/compare/">Comparaison</a><a href="/fr/security/">Sécurité</a><a href="/fr/docs/">Documentation</a><a href="/fr/download/">Télécharger</a><a href="/fr/publications/" aria-current="page">Publications</a><a href="/fr/about/">Le projet</a></nav></details>
 <details class="lang"><summary>Français</summary><ul><li><a href="/uk/publications/" hreflang="uk" lang="uk">Українська</a></li><li><a href="/en/publications/" hreflang="en" lang="en">English</a></li><li><a href="/de/publications/" hreflang="de" lang="de">Deutsch</a></li><li><a href="/tr/publications/" hreflang="tr" lang="tr">Türkçe</a></li><li><a href="/es/publications/" hreflang="es" lang="es">Español</a></li><li><a href="/it/publications/" hreflang="it" lang="it">Italiano</a></li><li><a href="/fr/publications/" hreflang="fr" lang="fr">Français</a></li></ul></details>
 </div></header>
-<main><div class="wrap"><h1>Publications</h1><p>Articles et recherches issus du travail sur Nevod.</p><div class="card pub"><h3><a href="/fr/publications/low-load-networks/">Réseaux distribués de données à faible charge : concept, classification et analyse comparative</a></h3><p class="pub-date">Publié le: 2026-09-30</p><p>L&#x27;article introduit le concept de réseau distribué de données à faible charge : un réseau dans lequel la charge de chaque nœud (trafic, stockage, état de service) est limitée par le cercle de participants de ce nœud et ne croît pas avec la croissance du réseau dans son ensemble. On montre que les classifications de la charge utilisées en théorie des télécommunications (taux d&#x27;utilisation, erlangs, points du « genou » (knee) et de la « falaise » (cliff) sur la courbe du débit en fonction de la charge, classes de qualité de service) décrivent l&#x27;état d&#x27;un réseau à un instant donné et non une propriété de son architecture, et ne permettent donc pas de distinguer les réseaux selon ce trait. On propose six traits d&#x27;un réseau à faible charge et une classification LL-0…LL-3 selon le comportement asymptotique de la charge par nœud. Quinze réseaux sont comparés, de FidoNet (1984) à Nevod (2026), et leurs prédécesseurs dans la littérature sont nommés : réseaux d&#x27;ami à ami (F2F), réseaux tolérants aux délais (DTN), tables de hachage distribuées, logiciels local-first et réseaux communautaires (community networks).</p><p><a href="/fr/publications/low-load-networks/">Lire l&#x27;article →</a></p></div></div></main>
+<main><div class="wrap"><h1>Publications</h1><p>Articles et recherches issus du travail sur Nevod.</p><div class="card pub"><h3><a href="/fr/publications/low-load-networks/">Low-Load Distributed Data Networks: Concept, Classification and Comparative Analysis</a></h3><p class="pub-date">Publié le: 2026-10-24</p><p>This article introduces the concept of a low-load distributed data network: a network in which the load on each node (traffic, storage, service state) is bounded by that node&#x27;s own circle of participants and does not grow as the network grows. We show that the load classifications used in communications theory (utilization, erlangs, the &quot;knee&quot; and &quot;cliff&quot; points on the throughput-versus-load curve, quality-of-service classes) describe the state of a network at a given moment rather than a property of its architecture, and therefore cannot distinguish networks by this trait. We propose six traits of a low-load network and a classification LL-0…LL-3 by the asymptotic load on a node. We compare fifteen networks, from FidoNet (1984) to Nevod (2026), and name their predecessors in the literature: friend-to-friend (F2F) networks, delay-tolerant networks (DTN), distributed hash tables, local-first software and community networks.</p><p><a href="/fr/publications/low-load-networks/">Lire l&#x27;article →</a></p></div></div></main>
 <footer class="site"><div class="wrap">
 <div>© 2026 Nevod · Kolpakov Andrey</div>
 <div><a href="/fr/support/">Assistance</a> · <a href="/fr/privacy/">Confidentialité</a> · <a href="/fr/terms/">Conditions d'utilisation</a> · <a href="/fr/node/">Votre nœud</a> · <a href="https://github.com/avk0978/nevod-messenger">Code source</a></div>

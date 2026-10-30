@@ -87,6 +87,25 @@ _FOLDED_NODE_STEMS = tuple(
 )
 
 
+PUSH_TITLE_MAX = 32
+PUSH_TITLE_DEFAULT = "Nevod"
+
+
+def relayed_push_title(title: str) -> str:
+    """Title for a push we send on behalf of ANOTHER node (node.py _handle_push_relay_request).
+    That node's operator controls the text, and the notification shows up as coming from the
+    Nevod app — so control characters and line breaks are dropped, the name is capped at
+    PUSH_TITLE_MAX, and anything reserved ("Nevod Support", "Nеvod" with a Cyrillic е,
+    "administrator", …) is replaced by the generic title the app shows for an unknown sender.
+    For a sender in the recipient's contacts the phone overrides the title anyway (iOS
+    NotificationService) — this only matters for a first message from a stranger."""
+    s = "".join(ch if unicodedata.category(ch)[0] != "C" else " " for ch in title or "")
+    s = " ".join(s.split())[:PUSH_TITLE_MAX].strip()
+    if not s or is_reserved_name(s):
+        return PUSH_TITLE_DEFAULT
+    return s
+
+
 def official_cell_ids() -> set:
     """This node's own official cells, allowed to use reserved names — comma-separated
     NEVOD_OFFICIAL_CELL_IDS (full hex cell ids). Read per call: cheap, and lets an operator

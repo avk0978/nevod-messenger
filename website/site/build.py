@@ -16,6 +16,7 @@ import json
 import re
 import importlib
 import pathlib
+import os
 import shutil
 import sys
 
@@ -76,6 +77,36 @@ main.article code { font-size:.9em; background:var(--card); border:1px solid var
 main.article ol li, main.article ul li { margin-bottom:.35em; overflow-wrap:anywhere; }
 .pub { margin:16px 0; } .pub h3 a { text-decoration:none; } .pub-date { font-size:14px; color:var(--muted); }
 .pub-back { font-size:15px; }
+main.article pre { background:var(--ink); color:var(--paper); border-radius:8px; padding:12px 14px; overflow-x:auto;
+  font-size:14px; line-height:1.5; margin:0 0 1em; }
+main.article pre code { background:none; border:0; padding:0; font-size:inherit; color:inherit; }
+main.article .note { margin:0 0 1em; } main.article .note p:last-child { margin-bottom:0; }
+.toc li { margin-bottom:.35em; }
+.docs-layout { display:grid; grid-template-columns:250px minmax(0,1fr); gap:40px; align-items:start; }
+.docs-side { position:sticky; top:76px; max-height:calc(100vh - 92px); overflow-y:auto; font-size:15px;
+  line-height:1.4; padding-right:8px; border-right:1px solid var(--line); }
+.docs-side ol, .docs-toc ol { list-style:none; padding:0; margin:0 0 14px; }
+.docs-side li, .docs-toc li { margin:0; }
+.docs-side a, .docs-toc a { display:block; padding:4px 8px; border-radius:6px; text-decoration:none; color:var(--ink); }
+.docs-side a:hover, .docs-toc a:hover { background:var(--card); }
+.docs-side li.cur > a, .docs-toc li.cur > a { background:var(--card); font-weight:600; box-shadow:inset 3px 0 0 var(--accent); }
+.docs-side ul, .docs-toc ul { list-style:none; padding:2px 0 6px 12px; margin:0; }
+.docs-side ul a, .docs-toc ul a { font-size:14px; color:var(--muted); padding:3px 8px; }
+.docs-side .soon, .docs-toc .soon { padding:4px 8px; color:var(--muted); opacity:.7; }
+.docs-group { font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.6px; color:var(--muted);
+  margin:14px 8px 6px; }
+.docs-home { margin:0 0 4px; font-weight:600; } .docs-home a { padding:4px 8px; }
+.docs-toc { display:none; background:var(--card); border:1px solid var(--line); border-radius:10px; margin:0 0 20px; }
+.docs-toc summary { cursor:pointer; padding:10px 14px; font-weight:600; }
+.docs-toc[open] summary { border-bottom:1px solid var(--line); }
+.docs-toc > p, .docs-toc > ol { margin-left:8px; margin-right:8px; }
+@media (max-width:960px) {
+  .docs-layout { display:block; }
+  .docs-side { display:none; }
+  .docs-toc { display:block; }
+}
+.doc-nav { display:flex; flex-wrap:wrap; gap:8px 24px; justify-content:space-between; font-size:15px;
+  border-top:1px solid var(--line); padding-top:16px; margin-top:32px; }
 p, ul, ol, table { margin:0 0 1em; }
 .wrap { max-width:1080px; margin:0 auto; padding:0 16px; }
 header.top { background:var(--ink); color:var(--paper); position:sticky; top:0; z-index:10; }
@@ -201,7 +232,39 @@ def stack_tables(body):
 # /<lang>/publications/ lists them. First "# " line = title; the first paragraph after the
 # abstract heading = listing summary / meta description.
 ARTICLES_DIR = HERE.parent / "content" / "articles"
-ARTICLES = [("low-load-networks", "2026-09-30")]   # (slug, date), newest first
+# (slug, date), newest first.
+ARTICLES = [("low-load-networks", "2026-10-24")]
+# Articles shown in one language on every language's page (user, 2026-10-22: the low-load
+# article is English only, as published on Zenodo, DOI 10.5281/zenodo.23621073).
+ARTICLE_LANG = {"low-load-networks": "en"}
+# Files served as-is under /files/ (the article's PDF exactly as published on Zenodo).
+FILES_DIR = HERE / "files"
+
+# Articles are published in English and shown in English on every language's page (user,
+# 2026-10-26). A page that shows a translation instead says so above the text.
+ARTICLE_ORIGINAL = "en"
+PUB_TRANSLATION_NOTE = {
+    "ru": "Перевод статьи с английского на русский язык.",
+    "uk": "Переклад статті з англійської українською мовою.",
+    "en": "",
+    "de": "Übersetzung des Artikels aus dem Englischen ins Deutsche.",
+    "tr": "Makalenin İngilizceden Türkçeye çevirisidir.",
+    "es": "Traducción del artículo del inglés al español.",
+    "it": "Traduzione dell'articolo dall'inglese all'italiano.",
+    "fr": "Traduction de l'article de l'anglais vers le français.",
+}
+
+# Shown on /publications/ while ARTICLES is empty.
+PUB_EMPTY = {
+    "ru": "Первые публикации скоро появятся здесь.",
+    "uk": "Перші публікації незабаром з'являться тут.",
+    "en": "The first publications will appear here soon.",
+    "de": "Die ersten Publikationen erscheinen hier in Kürze.",
+    "tr": "İlk yayınlar yakında burada olacak.",
+    "es": "Las primeras publicaciones aparecerán aquí pronto.",
+    "it": "Le prime pubblicazioni appariranno qui a breve.",
+    "fr": "Les premières publications paraîtront bientôt ici.",
+}
 
 # (nav label, page title, page description, intro, "read" link, date label)
 PUB_TEXT = {
@@ -245,6 +308,7 @@ def md_to_html(text: str) -> str:
     """Minimal Markdown for our articles: headings, paragraphs, hr, pipe tables,
     ordered/unordered lists with indented continuation lines, inline bold/italic/code/links."""
     out, para, lst = [], [], None   # lst = [tag, items(list of str), start]
+    h2_count = 0   # "## " headings get id="s1", "s2"… — anchors for the docs sidebar
     lines = text.splitlines()
 
     def flush_para():
@@ -263,6 +327,31 @@ def md_to_html(text: str) -> str:
     while i < len(lines):
         ln = lines[i]
         st = ln.strip()
+        if st.startswith("```"):
+            # Fenced block — shell commands and config files in the docs, copied verbatim.
+            flush_para(); flush_list()
+            code = []
+            i += 1
+            while i < len(lines) and not lines[i].strip().startswith("```"):
+                code.append(lines[i])
+                i += 1
+            out.append("<pre><code>" + html.escape("\n".join(code), quote=False) + "</code></pre>")
+            i += 1
+            continue
+        if st.startswith(">"):
+            # "> text" lines → one highlighted note (warnings and tips in the docs);
+            # a bare ">" line starts a new paragraph inside it.
+            flush_para(); flush_list()
+            paras = [[]]
+            while i < len(lines) and lines[i].strip().startswith(">"):
+                t = lines[i].strip()[1:].strip()
+                if t:
+                    paras[-1].append(t)
+                elif paras[-1]:
+                    paras.append([])
+                i += 1
+            out.append('<div class="note">' + "".join(f"<p>{_md_inline(' '.join(x))}</p>" for x in paras if x) + "</div>")
+            continue
         m_ol = re.match(r"^(\d+)\.\s+(.*)$", st) if not ln.startswith(" ") else None
         m_ul = re.match(r"^[-*]\s+(.*)$", st) if not ln.startswith(" ") else None
         if not st:
@@ -272,7 +361,11 @@ def md_to_html(text: str) -> str:
         elif st.startswith("#"):
             flush_para(); flush_list()
             level = len(st) - len(st.lstrip("#"))
-            out.append(f"<h{level}>{_md_inline(st[level:].strip())}</h{level}>")
+            if level == 2:
+                h2_count += 1
+                out.append(f'<h2 id="s{h2_count}">{_md_inline(st[level:].strip())}</h2>')
+            else:
+                out.append(f"<h{level}>{_md_inline(st[level:].strip())}</h{level}>")
         elif st == "---":
             flush_para(); flush_list()
             out.append("<hr>")
@@ -307,6 +400,7 @@ def md_to_html(text: str) -> str:
 
 # The reference list is shared by all translations (<slug>.refs.md) — only these few words
 # (and the GOST title: translation first, Russian original in parentheses) inside it are localized, so the 39 entries can never drift apart between languages.
+# Exception: the English article carries its own edited list (no GOST, Bachmann, Landau; + source code), so it has no {{REFS}}.
 REF_WORDS = {
     "ru": ("обзор", "см. также", "ГОСТ 22348-86. Сеть связи автоматизированная единая. Термины и определения"),
     "uk": ("огляд", "див. також", "ГОСТ 22348-86. Єдина автоматизована мережа зв'язку. Терміни та визначення (ГОСТ 22348-86. Сеть связи автоматизированная единая. Термины и определения)"),
@@ -321,7 +415,7 @@ REF_WORDS = {
 
 def article(lang, slug):
     """(title, summary, body_html) for one article in one language."""
-    text = (ARTICLES_DIR / f"{slug}.{lang}.md").read_text(encoding="utf-8")
+    text = (ARTICLES_DIR / f"{slug}.{ARTICLE_LANG.get(slug, lang)}.md").read_text(encoding="utf-8")
     refs_file = ARTICLES_DIR / f"{slug}.refs.md"
     if "{{REFS}}" in text and refs_file.exists():
         overview, see_also, gost_tr = REF_WORDS[lang]
@@ -336,13 +430,17 @@ def article(lang, slug):
     return title, summary, md_to_html(text)
 
 
+def article_exists(lang, slug):
+    return (ARTICLES_DIR / f"{slug}.{ARTICLE_LANG.get(slug, lang)}.md").exists()
+
+
 def publication_page(lang, page):
     """(title, desc, body) for /publications/ and /publications/<slug>/."""
     nav_label, ptitle, pdesc, intro, read, date_label = PUB_TEXT[lang]
     if page == "publications":
         items = []
         for slug, date in ARTICLES:
-            if not (ARTICLES_DIR / f"{slug}.{lang}.md").exists():
+            if not article_exists(lang, slug):
                 continue
             title, summary, _ = article(lang, slug)
             items.append(f'<div class="card pub"><h3><a href="{url(lang, "publications/" + slug)}">'
@@ -350,12 +448,185 @@ def publication_page(lang, page):
                          f'<p>{html.escape(summary)}</p><p><a href="{url(lang, "publications/" + slug)}">'
                          f'{html.escape(read)}</a></p></div>')
         body = (f'<main><div class="wrap"><h1>{html.escape(ptitle)}</h1><p>{html.escape(intro)}</p>'
-                + "".join(items) + "</div></main>")
+                + ("".join(items) or f'<p class="note">{html.escape(PUB_EMPTY[lang])}</p>') + "</div></main>")
         return ptitle, pdesc, body
     slug = page.split("/", 1)[1]
     title, summary, body = article(lang, slug)
+    a_lang = ARTICLE_LANG.get(slug, lang)
+    if a_lang != lang:
+        body = f'<div lang="{a_lang}">{body}</div>'
+    elif a_lang != ARTICLE_ORIGINAL:
+        body = f'<p class="note">{html.escape(PUB_TRANSLATION_NOTE[lang])}</p>' + body
     back = f'<p class="pub-back"><a href="{url(lang, "publications")}">← {html.escape(nav_label)}</a></p>'
     return title, summary, f'<main class="article"><div class="wrap">{back}{body}{back}</div></main>'
+
+
+# ── Documentation ─────────────────────────────────────────────────────────────
+# Markdown in website/content/docs/<slug>.<lang>.md → /<lang>/docs/<slug>/; /<lang>/docs/ is the
+# table of contents. Only sections whose file exists in that language become pages — the rest
+# are listed as "being written". First "# " line = title, the paragraph after it = summary.
+# Links between sections are relative ("../node-install/"), so they work under every language.
+DOCS_DIR = HERE.parent / "content" / "docs"
+DOCS = [
+    ("users", ["start", "contacts", "messages", "calls", "bots", "security", "faq"]),
+    ("owners", ["node-how", "node-install", "node-panel", "node-invite", "node-network",
+                "node-turn", "node-maintenance", "node-admin"]),
+]
+DOC_SLUGS = [slug for _, slugs in DOCS for slug in slugs]
+# NEVOD_SITE_NO_DOCS=1 builds the site as deployed today: no /docs/, "For cities" in the menu.
+# The docs go public only after the real-VPS test that follows App Store approval (user,
+# 2026-10-24); until then every deploy is built with this flag.
+WITH_DOCS = os.environ.get("NEVOD_SITE_NO_DOCS") != "1"
+
+# nav label, page title, description, intro, group titles, "being written", ← prev, next →
+DOCS_TEXT = {
+    "ru": ("Документация", "Документация", "Как пользоваться Nevod и как запустить свой узел.",
+           "Как пользоваться приложением и как запустить и вести свой узел Nevod.",
+           {"users": "Для пользователей", "owners": "Для владельцев узлов"}, "готовится", "Назад", "Далее"),
+    "uk": ("Документація", "Документація", "Як користуватися Nevod і як запустити власний вузол.",
+           "Як користуватися застосунком і як запустити та вести власний вузол Nevod.",
+           {"users": "Для користувачів", "owners": "Для власників вузлів"}, "готується", "Назад", "Далі"),
+    "en": ("Docs", "Documentation", "How to use Nevod and how to run your own node.",
+           "How to use the app, and how to set up and run your own Nevod node.",
+           {"users": "For users", "owners": "For node owners"}, "being written", "Back", "Next"),
+    "de": ("Doku", "Dokumentation", "Wie man Nevod benutzt und einen eigenen Node betreibt.",
+           "Wie man die App benutzt und wie man einen eigenen Nevod-Node einrichtet und betreibt.",
+           {"users": "Für Nutzer", "owners": "Für Node-Betreiber"}, "in Arbeit", "Zurück", "Weiter"),
+    "tr": ("Belgeler", "Belgeler", "Nevod nasıl kullanılır ve kendi düğümünüz nasıl çalıştırılır.",
+           "Uygulamanın nasıl kullanılacağı ve kendi Nevod düğümünüzü nasıl kurup yöneteceğiniz.",
+           {"users": "Kullanıcılar için", "owners": "Düğüm sahipleri için"}, "hazırlanıyor", "Geri", "İleri"),
+    "es": ("Documentación", "Documentación", "Cómo usar Nevod y cómo poner en marcha tu propio nodo.",
+           "Cómo usar la aplicación y cómo instalar y mantener tu propio nodo Nevod.",
+           {"users": "Para usuarios", "owners": "Para propietarios de nodos"}, "en preparación", "Atrás", "Siguiente"),
+    "it": ("Documentazione", "Documentazione", "Come usare Nevod e come avviare un proprio nodo.",
+           "Come usare l'app e come installare e gestire un proprio nodo Nevod.",
+           {"users": "Per gli utenti", "owners": "Per chi gestisce un nodo"}, "in preparazione", "Indietro", "Avanti"),
+    "fr": ("Documentation", "Documentation", "Comment utiliser Nevod et faire tourner son propre nœud.",
+           "Comment utiliser l'application, et comment installer et gérer votre propre nœud Nevod.",
+           {"users": "Pour les utilisateurs", "owners": "Pour les propriétaires de nœuds"}, "en préparation", "Retour", "Suite"),
+}
+
+# Section titles for the table of contents — also for sections not written yet in a language.
+# A written section's own "# " heading is what its page shows.
+DOC_TITLES = {
+    "ru": ["Первые шаги", "Контакты", "Сообщения и файлы", "Звонки", "Боты и AI-ассистенты",
+           "Безопасность и резервные копии", "Вопросы и проблемы",
+           "Как устроен узел", "Установка шаг за шагом", "Первая настройка в панели администратора",
+           "Как позвать людей", "Подключение к общей сети Nevod", "Звонки через свой узел",
+           "Обслуживание", "Панель администратора: все страницы и настройки"],
+    "uk": ["Перші кроки", "Контакти", "Повідомлення та файли", "Дзвінки", "Боти та AI-асистенти",
+           "Безпека та резервні копії", "Питання та проблеми",
+           "Як влаштований вузол", "Встановлення крок за кроком", "Перше налаштування в панелі адміністратора",
+           "Як запросити людей", "Підключення до спільної мережі Nevod", "Дзвінки через власний вузол",
+           "Обслуговування", "Панель адміністратора: усі сторінки та налаштування"],
+    "en": ["Getting started", "Contacts", "Messages and files", "Calls", "Bots and AI assistants",
+           "Security and backups", "Questions and problems",
+           "How a node works", "Installation step by step", "First setup in the admin panel",
+           "Inviting people", "Joining the Nevod network", "Calls through your own node",
+           "Maintenance", "The admin panel: every page and setting"],
+    "de": ["Erste Schritte", "Kontakte", "Nachrichten und Dateien", "Anrufe", "Bots und KI-Assistenten",
+           "Sicherheit und Backups", "Fragen und Probleme",
+           "Wie ein Node funktioniert", "Installation Schritt für Schritt", "Ersteinrichtung im Admin-Panel",
+           "Leute einladen", "Anschluss an das Nevod-Netz", "Anrufe über den eigenen Node",
+           "Wartung", "Das Admin-Panel: alle Seiten und Einstellungen"],
+    "tr": ["İlk adımlar", "Kişiler", "Mesajlar ve dosyalar", "Aramalar", "Botlar ve yapay zekâ asistanları",
+           "Güvenlik ve yedekler", "Sorular ve sorunlar",
+           "Düğüm nasıl çalışır", "Adım adım kurulum", "Yönetim panelinde ilk ayarlar",
+           "İnsanları davet etmek", "Nevod ağına katılmak", "Kendi düğümünüz üzerinden aramalar",
+           "Bakım", "Yönetim paneli: tüm sayfalar ve ayarlar"],
+    "es": ["Primeros pasos", "Contactos", "Mensajes y archivos", "Llamadas", "Bots y asistentes de IA",
+           "Seguridad y copias de seguridad", "Preguntas y problemas",
+           "Cómo funciona un nodo", "Instalación paso a paso", "Primera configuración en el panel de administración",
+           "Invitar a personas", "Conectarse a la red Nevod", "Llamadas a través de tu propio nodo",
+           "Mantenimiento", "El panel de administración: todas las páginas y ajustes"],
+    "it": ["Primi passi", "Contatti", "Messaggi e file", "Chiamate", "Bot e assistenti IA",
+           "Sicurezza e backup", "Domande e problemi",
+           "Come funziona un nodo", "Installazione passo per passo", "Prima configurazione nel pannello di amministrazione",
+           "Invitare le persone", "Collegarsi alla rete Nevod", "Chiamate tramite il proprio nodo",
+           "Manutenzione", "Il pannello di amministrazione: tutte le pagine e le impostazioni"],
+    "fr": ["Premiers pas", "Contacts", "Messages et fichiers", "Appels", "Bots et assistants IA",
+           "Sécurité et sauvegardes", "Questions et problèmes",
+           "Comment fonctionne un nœud", "Installation pas à pas", "Premiers réglages dans le panneau d'administration",
+           "Inviter des personnes", "Rejoindre le réseau Nevod", "Appels via votre propre nœud",
+           "Maintenance", "Le panneau d'administration : toutes les pages et tous les réglages"],
+}
+
+
+# Heading of the collapsible table of contents on phones (the sidebar has no heading).
+DOCS_TOC_LABEL = {"ru": "Содержание", "uk": "Зміст", "en": "Contents", "de": "Inhalt", "tr": "İçindekiler",
+                  "es": "Contenido", "it": "Indice", "fr": "Sommaire"}
+
+
+def doc_exists(lang, slug):
+    return (DOCS_DIR / f"{slug}.{lang}.md").exists()
+
+
+def doc(lang, slug):
+    """(title, summary, body_html) for one documentation section in one language."""
+    text = (DOCS_DIR / f"{slug}.{lang}.md").read_text(encoding="utf-8")
+    head, _, after = text.partition("\n")
+    title = head[2:].strip()
+    first_para = " ".join(after.strip().split("\n\n", 1)[0].split())
+    summary = re.sub(r"\[([^\]]+)\]\([^)]*\)", r"\1", first_para).replace("*", "").replace("`", "")
+    return title, summary, md_to_html(text)
+
+
+def docs_page(lang, page):
+    """(title, desc, body) for /docs/ and /docs/<slug>/."""
+    nav_label, ptitle, pdesc, intro, groups, soon, prev_l, next_l = DOCS_TEXT[lang]
+    titles = dict(zip(DOC_SLUGS, DOC_TITLES[lang]))
+    if page == "docs":
+        parts = [f'<main><div class="wrap"><h1>{html.escape(ptitle)}</h1><p>{html.escape(intro)}</p>']
+        for group, slugs in DOCS:
+            items = []
+            for slug in slugs:
+                n = DOC_SLUGS.index(slug) + 1
+                if doc_exists(lang, slug):
+                    items.append(f'<li><a href="{url(lang, "docs/" + slug)}">{html.escape(titles[slug])}</a></li>')
+                else:
+                    items.append(f'<li>{html.escape(titles[slug])} <span class="pub-date">— {html.escape(soon)}</span></li>')
+            start = DOC_SLUGS.index(slugs[0]) + 1
+            parts.append(f'<h2>{html.escape(groups[group])}</h2><ol class="toc" start="{start}">{"".join(items)}</ol>')
+        parts.append("</div></main>")
+        return ptitle, pdesc, "".join(parts)
+    slug = page.split("/", 1)[1]
+    title, summary, body = doc(lang, slug)
+    written = [s_ for s_ in DOC_SLUGS if doc_exists(lang, s_)]
+    i = written.index(slug)
+    nav = [f'<a href="{url(lang, "docs")}">↑ {html.escape(nav_label)}</a>']
+    if i > 0:
+        nav.insert(0, f'<a href="{url(lang, "docs/" + written[i - 1])}">← {html.escape(titles[written[i - 1]])}</a>')
+    if i + 1 < len(written):
+        nav.append(f'<a href="{url(lang, "docs/" + written[i + 1])}">{html.escape(titles[written[i + 1]])} →</a>')
+    bottom = '<p class="doc-nav">' + "".join(nav) + "</p>"
+    toc = docs_toc(lang, slug, body)
+    return title, summary, (f'<main class="article"><div class="wrap docs-layout">'
+                            f'<aside class="docs-side">{toc}</aside>'
+                            f'<div class="docs-main"><details class="docs-toc"><summary>{html.escape(DOCS_TOC_LABEL[lang])}</summary>{toc}</details>'
+                            f'{body}{bottom}</div></div></main>')
+
+
+def docs_toc(lang, current, body):
+    """Sidebar: every section, both groups; the current one expanded into its "## " headings.
+    The same markup goes into the phone-width collapsible block."""
+    nav_label, _, _, _, groups, _, _, _ = DOCS_TEXT[lang]
+    titles = dict(zip(DOC_SLUGS, DOC_TITLES[lang]))
+    heads = re.findall(r'<h2 id="(s\d+)">(.*?)</h2>', body)
+    parts = [f'<p class="docs-home"><a href="{url(lang, "docs")}">{html.escape(nav_label)}</a></p>']
+    for group, slugs in DOCS:
+        items = []
+        for slug in slugs:
+            name = html.escape(titles[slug])
+            if slug == current:
+                sub = "".join(f'<li><a href="#{i}">{re.sub(r"<[^>]+>", "", h)}</a></li>' for i, h in heads)
+                items.append(f'<li class="cur"><a href="{url(lang, "docs/" + slug)}" aria-current="page">{name}</a>'
+                             + (f"<ul>{sub}</ul>" if sub else "") + "</li>")
+            elif doc_exists(lang, slug):
+                items.append(f'<li><a href="{url(lang, "docs/" + slug)}">{name}</a></li>')
+            else:
+                items.append(f'<li class="soon">{name}</li>')
+        parts.append(f'<p class="docs-group">{html.escape(groups[group])}</p><ol>{"".join(items)}</ol>')
+    return "".join(parts)
 
 
 def author_card(lang):
@@ -375,17 +646,20 @@ def author_card(lang):
 def render(lang, page, c, langs):
     t = c.T
     # ZKI manifesto sits right after Home: it's the foundation of the project (user, 2026-09-28).
-    nav_pages = ["index", "manifesto", "compare", "security", "cities", "download", "publications", "about"]
+    # "Docs" took the place of "For cities" in the menu (user, 2026-10-24); /cities/ is still built.
+    nav_pages = ["index", "manifesto", "compare", "security", "docs" if WITH_DOCS else "cities",
+                 "download", "publications", "about"]
     nav = "".join(
         f'<a href="{url(lang, p)}"'
-        f'{" aria-current=\"page\"" if p == page or (p == "publications" and page.startswith("publications/")) else ""}>'
-        f'{html.escape(t["nav"].get(p) or PUB_TEXT[lang][0])}</a>'
+        f'{" aria-current=\"page\"" if p == page or (p in ("publications", "docs") and page.startswith(p + "/")) else ""}>'
+        f'{html.escape(t["nav"].get(p) or (DOCS_TEXT[lang][0] if p == "docs" else PUB_TEXT[lang][0]))}</a>'
         for p in nav_pages)
     switch = "".join(f'<li><a href="{url(l, page)}" hreflang="{l}" lang="{l}">{LANG_NAMES[l]}</a></li>'
                      for l in langs if l not in HIDDEN_LANGS)
     alternates = "".join(f'<link rel="alternate" hreflang="{l}" href="https://nevod.network{url(l, page)}">'
                          for l in langs if l not in HIDDEN_LANGS or l == lang)
     title, desc, body = (publication_page(lang, page) if page.startswith("publications")
+                         else docs_page(lang, page) if page.startswith("docs")
                          else c.PAGES[page])
     body = stack_tables(body)
     if page == "about":
@@ -454,7 +728,9 @@ def main():
     for lang in langs:
         c = importlib.import_module(f"content_{lang}")
         pages = PAGES + ["publications"] + [f"publications/{slug}" for slug, _ in ARTICLES
-                                            if (ARTICLES_DIR / f"{slug}.{lang}.md").exists()]
+                                            if article_exists(lang, slug)]
+        if WITH_DOCS:
+            pages += ["docs"] + [f"docs/{slug}" for slug in DOC_SLUGS if doc_exists(lang, slug)]
         for page in pages:
             d = OUT / SLUG.get(lang, lang) if page == "index" else OUT / SLUG.get(lang, lang) / page
             d.mkdir(parents=True, exist_ok=True)
@@ -465,6 +741,8 @@ def main():
     # see memory feedback-manifesto-authorship-required).
     (OUT / "manifesto").mkdir(parents=True, exist_ok=True)
     shutil.copyfile(HERE.parent / "index.html", OUT / "manifesto" / "index.html")
+    if FILES_DIR.exists():
+        shutil.copytree(FILES_DIR, OUT / "files")
     # Invite links (https://nevod.network/join/#t=…) — one page for all languages, see join_page.py.
     import join_page
     (OUT / "join").mkdir(parents=True, exist_ok=True)

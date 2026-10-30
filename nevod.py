@@ -68,22 +68,48 @@ def init(address, out, node_type, access, name):
 @click.option("--access", default="open",
               type=click.Choice(["open", "closed"]), show_default=True)
 @click.option("--name", default="", help="Human-friendly node name (gossiped to the network)")
-def genesis(address, identity, db, access, name):
+@click.option("--invite-mode", default="open",
+              type=click.Choice(["open", "delegated", "admin"]), show_default=True,
+              help="Who may register a cell: anyone / invitation code / code or administrator approval")
+def genesis(address, identity, db, access, name, invite_mode):
     """Create the first node in a new Nevod network."""
-    asyncio.run(_genesis(address, identity, db, access, name))
+    asyncio.run(_genesis(address, identity, db, access, name, invite_mode))
 
 
-async def _genesis(address, identity_path, db_path, access, name=""):
+async def _start_admin(node, identity_path):
+    """The web admin panel, if NEVOD_ADMIN_PASSWORD is set. Shared by `start` and `genesis`
+    — a Docker node's very first run goes through `genesis` (entrypoint.sh), and without
+    this its panel only came up after the first container restart."""
+    import os
+    admin_password = os.environ.get("NEVOD_ADMIN_PASSWORD")
+    if not admin_password:
+        click.echo("admin: disabled (set NEVOD_ADMIN_PASSWORD to enable)")
+        return None
+    from node.admin import AdminServer
+    admin_port = int(os.environ.get("NEVOD_ADMIN_PORT", 8766))
+    admin_username = os.environ.get("NEVOD_ADMIN_USERNAME") or None
+    admin = AdminServer(node, admin_password, admin_username, identity_path=identity_path)
+    await admin.start(admin_port)
+    click.echo(f"admin: http://0.0.0.0:{admin_port}/admin  (password protected)")
+    return admin
+
+
+async def _genesis(address, identity_path, db_path, access, name="", invite_mode="open"):
     from node.node import Node
-    node = await Node.create_genesis(address, identity_path, db_path, access=access, name=name)
+    node = await Node.create_genesis(address, identity_path, db_path, access=access, name=name,
+                                     invite_mode=invite_mode)
     click.echo(f"genesis node: {node.identity.node_id}")
     click.echo(f"name        : {name or '(none)'}")
+    click.echo(f"invite mode : {invite_mode}")
     click.echo(f"address     : {address}")
     click.echo(f"identity    → {identity_path}")
     click.echo(f"database    → {db_path}")
     await node.start()
+    admin = await _start_admin(node, identity_path)
     click.echo("node running — Ctrl+C to stop")
     await _run_until_signal(node)
+    if admin:
+        await admin.stop()
 
 
 @cli.command()
@@ -95,23 +121,12 @@ def start(identity, db):
 
 
 async def _start(identity_path, db_path):
-    import os
     from node.node import Node
     node = await Node.create(identity_path, db_path)
     await node.start()
     click.echo(f"node : {node.identity.node_id[:16]}...")
 
-    admin_password = os.environ.get("NEVOD_ADMIN_PASSWORD")
-    if admin_password:
-        from node.admin import AdminServer
-        admin_port = int(os.environ.get("NEVOD_ADMIN_PORT", 8766))
-        admin_username = os.environ.get("NEVOD_ADMIN_USERNAME") or None
-        admin = AdminServer(node, admin_password, admin_username, identity_path=identity_path)
-        await admin.start(admin_port)
-        click.echo(f"admin: http://0.0.0.0:{admin_port}/admin  (password protected)")
-    else:
-        admin = None
-        click.echo("admin: disabled (set NEVOD_ADMIN_PASSWORD to enable)")
+    admin = await _start_admin(node, identity_path)
 
     click.echo("running — Ctrl+C to stop")
     await _run_until_signal(node)

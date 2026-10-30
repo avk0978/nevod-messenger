@@ -38,7 +38,7 @@ PRESETS: Dict[str, dict] = {
         "system_prompt": DEFAULT_SYSTEM_PROMPT,
     },
     "tolmach": {
-        "name": "Толмач",
+        "name": "Tolmach",
         "description": "Translator: send any text, get it translated. Works on your own AI key.",
         "system_prompt": TOLMACH_SYSTEM_PROMPT,
     },

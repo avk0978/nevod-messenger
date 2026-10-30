@@ -26,8 +26,10 @@ INDEX = """
 </div>
 <p class="note">ZKI es la base del desarrollo de Nevod. Cada decisión técnica se somete a una sola pregunta: ¿obtiene el creador de la infraestructura acceso al contenido? <a href="/es/manifesto/">Manifiesto de Zero Knowledge Infrastructure →</a></p>
 <h2>Red distribuida de baja carga</h2>
-<p>La carga de cada nodo de Nevod está limitada por su propio círculo (familia, hogar, equipo), no por el tamaño de toda la red: un millón de usuarios nuevos en otro lugar no añaden ni un byte a tu nodo. El nodo funciona en hardware doméstico común, la red no tiene centro y el propio nodo solo transporta texto cifrado.</p>
+<p><b>Nevod es un mensajero distribuido y cifrado de clase LL-0: la carga de cada nodo depende solo de su propio círculo (familia, hogar, equipo), no del tamaño de la red.</b> Entre las redes de esta clase, Nevod es la única concebida como un mensajero completo para personas comunes, con llamadas de voz y video.</p>
+<p>Un millón de usuarios nuevos en otro lugar no añaden ni un byte a tu nodo. El nodo funciona en hardware doméstico común, la red no tiene centro y el propio nodo solo transporta texto cifrado.</p>
 <p><a href="/es/compare/#low-load">Una comparación de Nevod con otras 14 redes, de FidoNet a Signal →</a></p>
+<p><a href="/es/publications/low-load-networks/">El artículo «Low-Load Distributed Data Networks» (DOI 10.5281/zenodo.23621073) →</a></p>
 <h2>Qué hace Nevod</h2>
 <div class="grid">
 <div class="card"><h3>🔒 Cifrado de extremo a extremo</h3><p>Cada mensaje, foto, mensaje de voz y llamada se cifra en el teléfono. Los nodos solo ven datos cifrados.</p></div>
@@ -38,7 +40,7 @@ INDEX = """
 <h2>Estado del proyecto</h2>
 <div class="tbl"><table class="status">
 <tr><th style="width:34%">Área</th><th>Estado</th></tr>
-<tr><td>App para iPhone</td><td>Prueba cerrada (TestFlight); publicación en App Store en preparación</td></tr>
+<tr><td>App para iPhone</td><td>Publicada en <a href="https://apps.apple.com/app/id6805214654">App Store</a></td></tr>
 <tr><td>App para Android</td><td>En desarrollo</td></tr>
 <tr><td>Nodos de la red</td><td>En funcionamiento, se instalan con Docker</td></tr>
 <tr><td>Idiomas de la app</td><td>8: ucraniano, inglés, ruso, alemán, turco, español, italiano, francés</td></tr>
@@ -129,6 +131,7 @@ COMPARE = """
 <p>ZKI plantea otra pregunta: <b>¿qué puede obtener, siquiera en teoría, el creador de la infraestructura?</b> En Nevod la respuesta está en la arquitectura: las claves nunca salen del dispositivo, no hay clave maestra ni copias de seguridad, no hay servidor central ni registro de personas por número de teléfono.</p>
 <h2 id="low-load">Red distribuida de baja carga: una comparación</h2>
 <p>Evaluamos las redes según seis rasgos de una red distribuida de baja carga: la carga de cada nodo está limitada por su propio círculo de personas, no por el tamaño de toda la red. Los rasgos salen de los propios principios de Nevod, así que la comparación le favorece de entrada.</p>
+<p><a href="/es/publications/low-load-networks/">En detalle — el concepto, seis rasgos, las clases LL-0…LL-3 y una comparación de 15 redes — en el artículo «Low-Load Distributed Data Networks» (Zenodo, DOI 10.5281/zenodo.23621073) →</a></p>
 <ol>
 <li>Círculo propio: la carga de un nodo crece con su círculo (familia, hogar, equipo), no con toda la red.</li>
 <li>Hardware común: un ordenador doméstico, un miniservidor o un router; no hace falta un centro de datos.</li>
@@ -137,7 +140,7 @@ COMPARE = """
 <li>Sin centro: ningún punto único de fallo, bloqueo o incautación.</li>
 <li>Nodo ciego: el nodo solo transporta texto cifrado y no puede leerlo.</li>
 </ol>
-<p class="note">1: sí, ½: en parte, 0: no. Año: primera versión pública. Clase: LL-0, la carga del nodo está limitada por su círculo; LL-1, además tránsito ajeno limitado; LL-3, la carga crece con toda la red o depende de usuarios ajenos. Más: <a href="/es/publications/low-load-networks/">el artículo</a>.</p>
+<p class="note">1: sí, ½: en parte, 0: no. Año: primera versión pública. Clase: LL-0, la carga del nodo está limitada por su círculo; LL-1, además tránsito ajeno limitado; LL-3, la carga crece con toda la red o depende de usuarios ajenos.</p>
 <div class="tbl"><table>
 <tr><th>Red</th><th>Año</th><th>Círculo propio</th><th>Hardware común</th><th>Economía</th><th>Retrasos</th><th>Sin centro</th><th>Nodo ciego</th><th>Clase</th></tr>
 <tr><td>Secure Scuttlebutt</td><td>2014</td><td>1</td><td>1</td><td>½</td><td>1</td><td>1</td><td>0</td><td>LL-0</td></tr>
@@ -170,7 +173,7 @@ COMPARE = """
 <h2>Lo que reconocemos</h2>
 <ul>
 <li>Un nodo técnicamente solo procesa datos de entrega —qué paquete cifrado va a quién— y nunca ve el contenido. Nadie te impide ejecutar tu propio nodo: entonces incluso esos datos de entrega se quedan contigo.</li>
-<li>El protocolo de Signal es abierto y ha sido ampliamente auditado; lo reconocemos como una fortaleza. El código de Nevod es cerrado por ahora; está previsto abrirlo.</li>
+<li>El protocolo de Signal es abierto y ha sido ampliamente auditado; lo reconocemos como una fortaleza. El código de Nevod es <a href="https://github.com/avk0978/nevod-messenger">abierto</a> (AGPL-3.0), pero aún no ha sido auditado de forma independiente.</li>
 </ul>
 </div></main>
 """
@@ -234,9 +237,10 @@ DOWNLOAD = """
 <main><div class="wrap">
 <h1>Descargar Nevod</h1>
 <div class="grid">
-<div class="card"><h3>📱 iPhone y iPad</h3><p>Ahora en prueba cerrada mediante TestFlight; la publicación en App Store está en preparación. Para unirte a la prueba, escribe a <a href="mailto:support@nevod.network">support@nevod.network</a>.</p></div>
+<div class="card"><h3>📱 iPhone y iPad</h3><p>Nevod está disponible en App Store para iPhone y iPad con iOS 17.2 o posterior. Gratis, sin compras dentro de la app.</p><p><a class="btn primary" href="https://apps.apple.com/app/id6805214654">Descargar en App Store</a></p></div>
 <div class="card"><h3>🤖 Android</h3><p>La app está en desarrollo. Lo anunciaremos aquí cuando esté lista para pruebas.</p></div>
 <div class="card"><h3>🖥️ Nodo de la red</h3><p>Un nodo de Nevod funciona con Docker en un servidor o en un ordenador corriente. Consulta <a href="/es/node/">Tu propio nodo</a>.</p></div>
+<div class="card"><h3>💻 Código fuente</h3><p>El código de la app, del nodo y de este sitio es abierto con la licencia AGPL-3.0: <a href="https://github.com/avk0978/nevod-messenger">github.com/avk0978/nevod-messenger</a>.</p></div>
 </div>
 </div></main>
 """

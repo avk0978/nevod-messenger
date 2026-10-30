@@ -97,7 +97,7 @@ async def test_created_bot_answers_on_the_users_key(tmp_path, fake_ai, monkeypat
         assert os.path.exists(tmp_path / "ai_bots" / f"{bot.cell_id}.json")
         published = await node.storage.get_published_cells()
         assert [(c.cell_id, c.name, c.ai_providers) for c in published] == \
-            [(bot.cell_id, "Толмач", ["anthropic", "gemini"])]
+            [(bot.cell_id, "Tolmach", ["anthropic", "gemini"])]
         await _wait_online(node, bot.cell_id)
 
         user = _User(node, 2)

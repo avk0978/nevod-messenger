@@ -122,6 +122,33 @@ enum OfficialAccounts {
     }
 }
 
+/// The administrator of a node, signed by that node's own key — the "Node administrator"
+/// mark for private nodes, no curator involved (the blue ✓ stays official.json only). The
+/// node sends it with the member list (node.py administrator_record); node_id IS the node's
+/// Ed25519 public key, so a node can sign only for itself.
+struct NodeAdministrator: Codable, Equatable {
+    let cellId: String
+    let encPub: String
+    let nodeId: String
+    let nodeName: String
+
+    /// nil unless the record is for `nodeId` (the node we're talking to) and its signature
+    /// checks out against that node's key.
+    static func verify(_ v: MsgPackValue, nodeId: String) -> NodeAdministrator? {
+        guard let cellId = v["cell_id"].string?.lowercased(),
+              let encPub = v["enc_pub"].string?.lowercased(),
+              let recNode = v["node_id"].string?.lowercased(),
+              recNode == nodeId.lowercased(),
+              let sig = v["sig"].string.flatMap(Hex.decode),
+              let nodePub = Hex.decode(recNode) else { return nil }
+        let nodeName = v["node_name"].string ?? ""
+        // Must match node/protocol.py node_admin_message exactly.
+        let msg = Data("node-admin|\(cellId)|\(encPub)|\(recNode)|\(nodeName)".utf8)
+        guard ed25519Verify(signature: sig, data: msg, publicKey: nodePub) else { return nil }
+        return NodeAdministrator(cellId: cellId, encPub: encPub, nodeId: recNode, nodeName: nodeName)
+    }
+}
+
 /// The abuse report email — see ReportSheet. Always carries the reporter's own cellId, since
 /// the administration answers in the Nevod app only (never by email), so it needs to know
 /// whom to write to there.

@@ -725,7 +725,17 @@ struct ChatView: View {
     private func sendPickedVideo(_ item: PhotosPickerItem) async {
         isPreparingVideo = true
         defer { isPreparingVideo = false }
-        guard let picked = try? await item.loadTransferable(type: PickedMovie.self) else {
+        let picked: PickedMovie
+        do {
+            guard let p = try await item.loadTransferable(type: PickedMovie.self) else {
+                nlog("video pick: loadTransferable returned nil types=\(item.supportedContentTypes.map(\.identifier))")
+                errorMsg = String(localized: "Не удалось загрузить видео")
+                return
+            }
+            picked = p
+        } catch {
+            let ns = error as NSError
+            nlog("video pick failed: \(ns.domain) \(ns.code) \(ns.localizedDescription) underlying=\(String(describing: ns.userInfo[NSUnderlyingErrorKey])) types=\(item.supportedContentTypes.map(\.identifier))")
             errorMsg = String(localized: "Не удалось загрузить видео")
             return
         }

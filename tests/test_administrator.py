@@ -61,6 +61,34 @@ class TestAdministrator:
         finally:
             await node2.stop()
 
+    async def test_members_reply_carries_node_signed_record(self, tmp_path):
+        from node.crypto import verify
+        from node.protocol import node_admin_message
+        node = await make_node(tmp_path, 4)
+        node.identity.name = "Семья"
+        await node.start()
+        try:
+            client = await connect(node, "Alice", [])
+            try:
+                await client.get_group_members()
+                rec = client.node_administrator
+                info = node.administrator_info()
+                assert rec["cell_id"] == info["cell_id"] and rec["enc_pub"] == info["enc_pub"]
+                assert rec["node_id"] == node.identity.node_id and rec["node_name"] == "Семья"
+                fields = {k: rec[k] for k in ("cell_id", "enc_pub", "node_id", "node_name")}
+                # node_id is the node's own Ed25519 key — the app verifies against it.
+                assert verify(node_admin_message(**fields), bytes.fromhex(rec["sig"]),
+                              bytes.fromhex(node.identity.node_id))
+                # Any field swapped (another cell, another key, another name) breaks it.
+                for k, v in (("cell_id", "00" * 32), ("enc_pub", "11" * 32), ("node_name", "X")):
+                    assert not verify(node_admin_message(**{**fields, k: v}),
+                                      bytes.fromhex(rec["sig"]),
+                                      bytes.fromhex(node.identity.node_id))
+            finally:
+                await client.disconnect()
+        finally:
+            await node.stop()
+
     async def test_appeal_stored_acked_and_answered(self, tmp_path):
         node = await make_node(tmp_path, 1)
         await node.start()

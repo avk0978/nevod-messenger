@@ -18,6 +18,8 @@ import aiosqlite
 from dataclasses import dataclass, field
 from typing import Optional, List
 
+from .relays import trusted_relay_ids
+
 INVITE_TTL_SECS   = 600              # 10 minutes — node invites (operator-to-operator, done live)
 # Cell invite codes are handed to people, who open them hours later — 10 minutes was far too
 # short (device test 2026-10-16). The admin panel can pick another lifetime from this list.
@@ -225,6 +227,17 @@ CREATE TABLE IF NOT EXISTS diag_logs (
     data        BLOB NOT NULL
 );
 CREATE INDEX IF NOT EXISTS idx_appeals_cell ON appeals(cell_id, id);
+
+-- Nodes this node's operator blocked (admin panel "Узлы" → Заблокировать): never connected
+-- to or accepted, ignored in gossip, and nothing routed from or to their cells — see
+-- Node.block_node. name/address are remembered for the panel only.
+CREATE TABLE IF NOT EXISTS blocked_nodes (
+    node_id     TEXT PRIMARY KEY,
+    name        TEXT NOT NULL DEFAULT '',
+    address     TEXT NOT NULL DEFAULT '',
+    reason      TEXT NOT NULL DEFAULT '',
+    blocked_at  INTEGER NOT NULL
+);
 """
 
 
@@ -481,15 +494,20 @@ class Storage:
         """Online nodes that advertised the ability to relay push for `platform`
         (e.g. "apns") on behalf of a node with no push credentials of its own.
         Filtered in Python rather than SQL — the platform list is tiny (a handful
-        of comma-joined tags per row), not worth a fiddly LIKE pattern."""
+        of comma-joined tags per row), not worth a fiddly LIKE pattern. Only nodes on the
+        trusted relay list count — the advertised flag is just a claim (node/relays.py)."""
         online = await self.get_online_nodes()
-        return [n for n in online if platform in n.push_relay_platforms_list()]
+        trusted = trusted_relay_ids()
+        return [n for n in online
+                if platform in n.push_relay_platforms_list() and n.node_id in trusted]
 
     async def get_turn_relay_nodes(self) -> List[NodeEntry]:
         """Online nodes that hold real TURN_SECRET/coturn and will generate TURN
-        credentials on behalf of a node with none of its own."""
+        credentials on behalf of a node with none of its own. Trusted relays only, as
+        for push (node/relays.py)."""
         online = await self.get_online_nodes()
-        return [n for n in online if n.turn_relay]
+        trusted = trusted_relay_ids()
+        return [n for n in online if n.turn_relay and n.node_id in trusted]
 
     async def update_node_ping(self, node_id: str, success: bool):
         now = int(time.time())
@@ -513,6 +531,36 @@ class Storage:
     async def remove_node(self, node_id: str):
         await self._db.execute("DELETE FROM node_table WHERE node_id = ?", (node_id,))
         await self._db.commit()
+
+    # --- blocked nodes ---
+
+    async def block_node(self, node_id: str, name: str = "", address: str = "", reason: str = ""):
+        await self._db.execute(
+            "INSERT INTO blocked_nodes (node_id, name, address, reason, blocked_at) "
+            "VALUES (?, ?, ?, ?, ?) ON CONFLICT(node_id) DO UPDATE SET reason = excluded.reason",
+            (node_id, name[:64], address[:256], reason[:500], int(time.time())),
+        )
+        await self._db.commit()
+        await self.forget_node(node_id)
+
+    async def forget_node(self, node_id: str):
+        """A blocked node out of node_table, and its cells' presence too — that would
+        otherwise keep routing toward it."""
+        await self._db.execute("DELETE FROM presence_table WHERE home_node_id = ? OR visiting_node_id = ?",
+                               (node_id, node_id))
+        await self._db.execute("DELETE FROM node_table WHERE node_id = ?", (node_id,))
+        await self._db.commit()
+
+    async def unblock_node(self, node_id: str) -> bool:
+        cur = await self._db.execute("DELETE FROM blocked_nodes WHERE node_id = ?", (node_id,))
+        await self._db.commit()
+        return cur.rowcount > 0
+
+    async def list_blocked_nodes(self) -> list:
+        async with self._db.execute(
+            "SELECT node_id, name, address, reason, blocked_at FROM blocked_nodes ORDER BY blocked_at DESC"
+        ) as cur:
+            return [dict(r) for r in await cur.fetchall()]
 
     async def cleanup_expired_nodes(self):
         cutoff = int(time.time()) - TTL_NODE_OFFLINE_SECS

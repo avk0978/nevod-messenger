@@ -1,0 +1,34 @@
+# Used by docker-compose.yml — nothing to edit here, everything comes from .env.
+{$NEVOD_DOMAIN} {
+	# Phones. The node speaks TLS itself with a self-signed certificate; Caddy is
+	# the one the phone trusts, so the hop inside Docker skips verification.
+	handle /nevod-ws* {
+		reverse_proxy https://nevod_node:8765 {
+			transport http {
+				tls_insecure_skip_verify
+			}
+			header_up X-Real-IP {remote_host}
+		}
+	}
+
+	# Contact-card lookup by short code (public, no password).
+	handle /nevod-card/* {
+		reverse_proxy nevod_node:8766 {
+			header_up X-Real-IP {remote_host}
+		}
+	}
+
+	# Admin panel. NEVOD_ADMIN_PUBLIC=false closes it here; it then stays reachable
+	# only through an SSH tunnel to 127.0.0.1:8766 on the server.
+	handle /nevod-admin* {
+		@closed expression `{env.NEVOD_ADMIN_PUBLIC} == "false"`
+		respond @closed 404
+		reverse_proxy nevod_node:8766 {
+			header_up X-Real-IP {remote_host}
+		}
+	}
+
+	handle {
+		respond "Nevod node — https://nevod.network" 200
+	}
+}

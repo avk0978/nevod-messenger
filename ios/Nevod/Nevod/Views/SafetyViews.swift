@@ -15,8 +15,9 @@ enum NevodLinks {
 // MARK: - Official badge / impersonation warning
 
 /// Shown right after a name wherever one appears (chat header, chat list, contacts).
-/// ✓ for a curator-signed official account; ⚠︎ for a name that claims an official role
-/// (administrator, support, …) on an account that isn't one.
+/// ✓ for a curator-signed official account; "Node administrator · <node>" for the
+/// node-signed administrator of a private node; ⚠︎ for a name that claims an official role
+/// (administrator, support, …) on an account that is neither.
 struct OfficialNameBadge: View {
     @EnvironmentObject var store: AppStore
     let cellId: String
@@ -27,6 +28,16 @@ struct OfficialNameBadge: View {
             Image(systemName: "checkmark.seal.fill")
                 .foregroundStyle(.blue)
                 .accessibilityLabel(Text("Официальный аккаунт Nevod"))
+        } else if let admin = store.nodeAdministrator(cellId) {
+            HStack(spacing: 3) {
+                Image(systemName: "checkmark.shield.fill")
+                Text("Администратор узла")
+                if !admin.nodeName.isEmpty { Text(verbatim: "· \(admin.nodeName)") }
+            }
+            .font(.caption2)
+            .foregroundStyle(.secondary)
+            .lineLimit(1)
+            .accessibilityElement(children: .combine)
         } else if store.looksLikeImpersonation(cellId: cellId, name: name) {
             Image(systemName: "exclamationmark.triangle.fill")
                 .foregroundStyle(.orange)

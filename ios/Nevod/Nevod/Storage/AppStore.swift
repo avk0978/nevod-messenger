@@ -31,6 +31,9 @@ final class AppStore: ObservableObject {
     @Published var verifiedNodes: [String: VerifiedNodeInfo] = [:]
     // Curator-signed official accounts, cellId -> role (see OfficialAccounts in Safety.swift).
     @Published var officialAccounts: [String: OfficialAccount] = [:]
+    // Node-signed administrators of nodes we've been on, cellId -> record (NodeAdministrator
+    // in Safety.swift) — the "Node administrator" mark on private nodes.
+    @Published var nodeAdministrators: [String: NodeAdministrator] = [:]
     // Users this device blocked (App Store Guideline 1.2). Enforced twice: the home node drops
     // everything they send us (chat_prefs {"blocked": true}, node/router.py), and
     // handleIncoming/handleReaction drop it here too — covers a node that hasn't been told
@@ -98,6 +101,7 @@ final class AppStore: ObservableObject {
     private let nodeMembersKey = "nevod.nodeMembers"
     private let verifiedNodesKey = "nevod.verifiedNodes"
     private let officialAccountsKey = "nevod.officialAccounts"
+    private let nodeAdministratorsKey = "nevod.nodeAdministrators"
     private let blockedKey = "nevod.blockedCellIds"
     // Block/unblock changes not yet confirmed sent to the node (made while offline) —
     // flushed on the next "connected". cellId -> blocked.
@@ -389,6 +393,10 @@ final class AppStore: ObservableObject {
         loadNodeMembers()
         loadVerifiedNodes()
         loadOfficialAccounts()
+        if let data = LocalDefaults.shared.data(forKey: nodeAdministratorsKey),
+           let decoded = try? JSONDecoder().decode([String: NodeAdministrator].self, from: data) {
+            nodeAdministrators = decoded
+        }
         blockedCellIds = Set(LocalDefaults.shared.stringArray(forKey: blockedKey) ?? [])
         loadCallLog()
         if let id = IdentityStore.load() {
@@ -2471,20 +2479,41 @@ final class AppStore: ObservableObject {
 
     func isOfficial(_ cellId: String) -> Bool { officialAccounts[cellId.lowercased()] != nil }
 
+    /// The node-signed administrator record for this cell — nil for anyone else, and for a
+    /// curator-signed official account (that one gets the blue ✓ instead).
+    func nodeAdministrator(_ cellId: String) -> NodeAdministrator? {
+        isOfficial(cellId) ? nil : nodeAdministrators[cellId.lowercased()]
+    }
+
+    /// Called after every member list: the client has already checked the record's signature
+    /// against the node's own key.
+    private func storeNodeAdministrator(_ admin: NodeAdministrator) {
+        guard nodeAdministrators[admin.cellId] != admin else { return }
+        nodeAdministrators[admin.cellId] = admin
+        if let data = try? JSONEncoder().encode(nodeAdministrators) {
+            LocalDefaults.shared.set(data, forKey: nodeAdministratorsKey)
+        }
+        nlog("node administrator stored node=\(admin.nodeId.prefix(8)) cell=\(admin.cellId.prefix(8))")
+    }
+
     /// The administrator of the node this identity lives on, as a sendable contact — nil until
-    /// that node's administrator is curator-signed into official.json (with its encryption
-    /// key). Every node has its own built-in administrator cell whose operator answers from
+    /// that node's administrator is known: curator-signed into official.json (project nodes,
+    /// blue ✓) or signed by the node itself (private nodes, "Node administrator"). Every node has its own built-in administrator cell whose operator answers from
     /// the node's admin panel, so a complaint goes to the administrator who can actually act
     /// on it — the user's own node. No signed administrator for this node → nil, and
     /// ReportSheet falls back to the abuse@ e-mail.
     var administratorContact: Contact? {
-        guard let myNodeId = client?.nodeId.lowercased(), !myNodeId.isEmpty,
-              let admin = officialAccounts.first(where: {
-                  $0.value.role == "administrator" && $0.value.nodeId.lowercased() == myNodeId
-              }),
-              let encPub = Hex.decode(admin.value.encPub) else { return nil }
-        return Contact(cellId: admin.key, nodeAddr: "", encPub: encPub, alias: admin.value.name,
-                       nodeId: admin.value.nodeId)
+        guard let myNodeId = client?.nodeId.lowercased(), !myNodeId.isEmpty else { return nil }
+        if let admin = officialAccounts.first(where: {
+               $0.value.role == "administrator" && $0.value.nodeId.lowercased() == myNodeId
+           }), let encPub = Hex.decode(admin.value.encPub) {
+            return Contact(cellId: admin.key, nodeAddr: "", encPub: encPub, alias: admin.value.name,
+                           nodeId: admin.value.nodeId)
+        }
+        guard let admin = nodeAdministrators.values.first(where: { $0.nodeId == myNodeId }),
+              let encPub = Hex.decode(admin.encPub) else { return nil }
+        return Contact(cellId: admin.cellId, nodeAddr: "", encPub: encPub, alias: "administrator",
+                       nodeId: admin.nodeId)
     }
 
     /// Diagnostics without a Mail account (DiagnosticsView): the description as a normal
@@ -2524,9 +2553,11 @@ final class AppStore: ObservableObject {
     }
 
     /// A name that claims an official role (administrator, support, …) on an account that
-    /// isn't in the curator-signed list — shown with a warning wherever the name appears.
+    /// isn't in the curator-signed list nor a node-signed node administrator — shown with a
+    /// warning wherever the name appears.
     func looksLikeImpersonation(cellId: String, name: String) -> Bool {
-        !isOfficial(cellId) && ReservedNames.isReserved(name)
+        !isOfficial(cellId) && nodeAdministrators[cellId.lowercased()] == nil
+            && ReservedNames.isReserved(name)
     }
 
     // MARK: - Blocking (Guideline 1.2)
@@ -2567,6 +2598,7 @@ final class AppStore: ObservableObject {
             .filter { $0.cellId != selfId }
             .map { NodeMember(cellId: $0.cellId, encPub: $0.encPubkey, displayName: $0.displayName) }
         saveNodeMembers()
+        if let admin = client?.nodeAdministrator { storeNodeAdministrator(admin) }
         // The home node's AI bots are members too: a bot opened from Contacts never went through
         // a planet (NodePlanetDetailView.handleTap), so the chat didn't know it was an AI bot —
         // no "Add AI key", and the bot's silent "ai-error:no_key:" showed as text (device test

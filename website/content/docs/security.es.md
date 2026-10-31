@@ -1,6 +1,6 @@
 # Seguridad y copias de seguridad
 
-Qué protege Nevod por sí solo, cómo te protege de estafadores y ataques, qué deberías hacer tú, cómo bloquear un chat con contraseña, cómo bloquear y denunciar, y por qué Nevod no hace copias de seguridad de las conversaciones.
+Qué protege Nevod por sí solo, cómo te protege de estafadores y ataques, qué deberías hacer tú, cómo protegerte de desconocidos, cómo bloquear un chat con contraseña, cómo bloquear y denunciar, y por qué Nevod no hace copias de seguridad de las conversaciones.
 
 ## Qué está protegido sin que hagas nada
 
@@ -44,6 +44,17 @@ Puedes bloquear un chat con contraseña: así, aunque alguien tenga tu teléfono
 3. Las contraseñas deben ser distintas. Para cambiarlas, en el mismo sitio: **Cambiar contraseñas**.
 
 > La contraseña del chat se guarda solo en este teléfono, y no la contraseña en sí sino su hash. **Una contraseña olvidada no se puede recuperar**, ni por ti ni por los desarrolladores, y el chat ya no podrá abrirse. Elige una contraseña que no vayas a olvidar. La contraseña de coacción borra la conversación solo en tu teléfono: la otra persona la conserva.
+
+## Protección frente a desconocidos
+
+No solo pueden escribirte y llamarte las personas a las que diste tu tarjeta. En un nodo abierto, como Nevod Open, cualquiera puede registrarse, y los miembros del nodo se ven en **Contactos → En este nodo**. Además, alguien con quien hablas puede reenviar tu tarjeta a otra persona. Aquí, desconocido es quien no está en tus contactos. Las cuentas oficiales de Nevod y el administrador de tu nodo no cuentan como desconocidos.
+
+En **Perfil → Seguridad** hay dos ajustes. Activarlos o no es decisión tuya; al principio los dos están desactivados:
+
+- **Llamadas solo de contactos**: una llamada de alguien que no está en tus contactos se rechaza en silencio y el teléfono no suena. Para quien llama, la llamada termina enseguida; en tu historial de llamadas aparece como **Rechazada: no está en contactos**.
+- **Imágenes de desconocidos: al tocar**: las fotos y vídeos de alguien que no está en tus contactos no se muestran enseguida: el chat muestra un marcador **Foto: mostrar** o **Vídeo: mostrar**, y la app abre el archivo solo después de que lo toques. Así, ni siquiera una imagen preparada puede activarse sola.
+
+En un nodo cerrado, donde el administrador conoce a todos los miembros, estos ajustes no suelen hacer falta. En un nodo abierto conviene activarlos.
 
 ## Bloquear y denunciar
 

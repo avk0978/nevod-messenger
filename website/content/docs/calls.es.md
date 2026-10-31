@@ -40,6 +40,7 @@ Una videollamada empieza como una llamada normal: llama y, cuando la otra person
 | Qué ves | Qué hacer |
 |---|---|
 | **Ocupado** | la otra persona ya está en una llamada: llama más tarde |
+| la llamada termina enseguida, pero los mensajes llegan | puede que la otra persona tenga activado **Llamadas solo de contactos** y tú no estés entre sus contactos. Pídele que te añada; consulta [Seguridad](../security/), «Protección frente a desconocidos» |
 | **Conectando…** se queda mucho tiempo | uno de vosotros tiene mala conexión. Prueba a pasar de datos móviles a Wi-Fi o al revés y vuelve a llamar |
 | la llamada se conectó, pero a uno de los dos no se le oye | comprueba que Nevod tiene permiso para usar el micrófono: **Ajustes del iPhone → Nevod → Micrófono** |
 | las llamadas entrantes no llegan con Nevod cerrado | comprueba que no esté activado No molestar u otro modo de concentración. Si estás en un nodo privado, su administrador debería comprobar que el nodo está [conectado a la red](../node-network/); sin eso, una llamada no puede «despertar» el teléfono |

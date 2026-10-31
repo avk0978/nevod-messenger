@@ -40,6 +40,7 @@ A video call starts as a regular one: call, and when the other person answers, t
 | What you see | What to do |
 |---|---|
 | **Busy** | the other person is already on a call — call later |
+| a call ends right away, but messages go through | the other person may have turned on **Calls only from contacts**, and you are not in their contacts. Ask them to add you — see [Security](../security/), "Protection from strangers" |
 | **Connecting…** stays on for a long time | one of you has a poor connection. Try switching from mobile data to Wi-Fi or the other way round and call again |
 | the call connected, but one of you can't be heard | check that Nevod is allowed to use the microphone: **iPhone Settings → Nevod → Microphone** |
 | incoming calls don't arrive while Nevod is closed | check that Do Not Disturb or another Focus mode isn't on. If you are on a private node, its administrator should check that the node is [connected to the network](../node-network/) — without that, a call can't "wake up" the phone |

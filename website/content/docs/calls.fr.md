@@ -40,6 +40,7 @@ Un appel vidéo commence comme un appel normal : appelez, et quand votre interlo
 | Ce que vous voyez | Que faire |
 |---|---|
 | **Occupé** | votre interlocuteur est déjà en ligne : rappelez plus tard |
+| l'appel se termine aussitôt, mais les messages arrivent | votre interlocuteur a peut-être activé **Appels des contacts uniquement**, et vous n'êtes pas dans ses contacts. Demandez-lui de vous ajouter ; voir [Sécurité](../security/), « Protection contre les inconnus » |
 | **Connexion…** reste affiché longtemps | l'un de vous a une mauvaise connexion. Passez des données mobiles au Wi-Fi ou inversement, puis rappelez |
 | l'appel est établi, mais l'un de vous n'est pas entendu | vérifiez que Nevod a accès au micro : **Réglages de l'iPhone → Nevod → Micro** |
 | les appels entrants n'arrivent pas quand Nevod est fermé | vérifiez que Ne pas déranger ou un autre mode de concentration n'est pas activé. Si vous êtes sur un nœud privé, son administrateur doit vérifier que le nœud est [connecté au réseau](../node-network/) : sinon, un appel ne peut pas « réveiller » le téléphone |

@@ -159,7 +159,10 @@ struct ChatSettings: Codable {
     var outcomeRaw: String
     var isVideo: Bool = false  // defaulted so existing rows (pre-video-calls) migrate cleanly
 
-    enum Outcome: String { case answered, missed }
+    /// declined: an incoming call from a stranger turned away by "Звонки только от контактов"
+    /// — the phone never rang. Stored as a raw string, so no schema change; an older build
+    /// reading it falls back to .missed.
+    enum Outcome: String { case answered, missed, declined }
 
     var outcome: Outcome {
         get { Outcome(rawValue: outcomeRaw) ?? .missed }

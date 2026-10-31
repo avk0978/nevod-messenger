@@ -206,6 +206,11 @@ final class CallManager: NSObject, ObservableObject {
     // this to reuse callUUID instead of reporting a second, duplicate incoming call.
     private var pendingPushCallerId: String?
 
+    // "Звонки только от контактов": a stranger whose call a VoIP push already reported and
+    // ended (reportIncomingCallFromPush) — the real offer arriving after it is the same call,
+    // already logged and turned away, so it's dropped without a second log entry.
+    private var pushDeclinedCaller: (cellId: String, at: Date)?
+
     // Set when the user answers via CallKit's UI before the real offer (buffered on the
     // node, only delivered once the socket reconnects) has actually arrived — performAccept
     // has no SDP to act on yet. CallKit already dismissed its UI as "answered" at that point,
@@ -393,6 +398,24 @@ final class CallManager: NSObject, ObservableObject {
         let payload = parts.count > 2 ? parts[2] : ""
         nlog("call handleSignal type=\(type) from=\(cellId.prefix(8)) state=\(state)")
 
+        // A call FROM a stranger ("Звонки только от контактов") — a call we placed to them
+        // ourselves has state.cellId == cellId and goes through normally.
+        if state.cellId != cellId, store?.shouldDeclineCall(from: cellId) == true {
+            if type == "offer" {
+                rememberCallerEncPub(cellId: cellId, offerJSON: payload)
+                if let p = pushDeclinedCaller, p.cellId == cellId, Date().timeIntervalSince(p.at) < 120 {
+                    // The offer behind a push we already turned away (and logged). The reject
+                    // sent from the push path may have had no key for a caller from another
+                    // node yet — now there is one, so say it again.
+                    pushDeclinedCaller = nil
+                    Task { try? await store?.sendSignal("vcall:reject", to: cellId) }
+                } else {
+                    declineStrangerCall(from: cellId)
+                }
+            }
+            return   // and its ice/video_on: never added to anyone's call
+        }
+
         switch type {
         case "offer":  receiveOffer(from: cellId, json: payload)
         case "answer": receiveAnswer(json: payload)
@@ -433,6 +456,26 @@ final class CallManager: NSObject, ObservableObject {
     }
 
     // MARK: - Incoming
+
+    /// "Звонки только от контактов": the call is logged as declined and the caller is told it
+    /// was turned down (as if declined on the call screen) instead of ringing out for a minute.
+    private func declineStrangerCall(from cellId: String) {
+        nlog("call declineStrangerCall from=\(cellId.prefix(8))")
+        store?.logCall(cellId: cellId, isOutgoing: false, timestamp: Date(),
+                       durationSecs: 0, outcome: .declined)
+        Task { try? await store?.sendSignal("vcall:reject", to: cellId) }
+    }
+
+    /// The offer carries the caller's encryption key — needed to send even a "reject" back to
+    /// someone who is neither a contact nor on our node (same as receiveOffer does).
+    private func rememberCallerEncPub(cellId: String, offerJSON: String) {
+        if let data = offerJSON.data(using: .utf8),
+           let dict = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+           let hexPub = dict["callerEncPub"] as? String, !hexPub.isEmpty,
+           let encPubData = Hex.decode(hexPub) {
+            store?.tempEncPubs[cellId] = encPubData
+        }
+    }
 
     /// Best-known display name for `cellId` — prefers what WE call them locally (a saved
     /// contact, or a fellow member of our own node) over whatever they claim about
@@ -501,6 +544,19 @@ final class CallManager: NSObject, ObservableObject {
             provider.reportNewIncomingCall(with: uuid, update: update) { [weak self] _ in
                 self?.callController.request(CXTransaction(action: CXEndCallAction(call: uuid))) { _ in }
             }
+            return
+        }
+        if store?.shouldDeclineCall(from: callerId) == true {
+            // "Звонки только от контактов". The node can't filter this one (it doesn't know
+            // the user's contacts — they never leave the phone), so the push still arrives and
+            // PushKit still requires reporting it: report and end at once, same as a blocked
+            // caller above, so the phone doesn't ring.
+            nlog("call reportIncomingCallFromPush — caller \(callerId.prefix(8)) not in contacts, declining")
+            provider.reportNewIncomingCall(with: uuid, update: update) { [weak self] _ in
+                self?.callController.request(CXTransaction(action: CXEndCallAction(call: uuid))) { _ in }
+            }
+            pushDeclinedCaller = (callerId, Date())
+            declineStrangerCall(from: callerId)
             return
         }
         guard state.isIdle else {

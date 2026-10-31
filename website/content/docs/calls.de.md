@@ -40,6 +40,7 @@ Ein Videoanruf beginnt wie ein normaler: Ruf an, und wenn der andere annimmt, ti
 | Was du siehst | Was zu tun ist |
 |---|---|
 | **Besetzt** | der andere telefoniert gerade — ruf später an |
+| der Anruf endet sofort, Nachrichten kommen aber an | der andere hat vielleicht **Anrufe nur von Kontakten** eingeschaltet, und du bist nicht in seinen Kontakten. Bitte ihn, dich hinzuzufügen — siehe [Sicherheit](../security/), „Schutz vor Fremden“ |
 | **Verbinden…** steht lange da | einer von euch hat eine schlechte Verbindung. Wechsle vom Mobilfunk ins WLAN oder umgekehrt und ruf noch einmal an |
 | der Anruf ist verbunden, aber einer von euch ist nicht zu hören | prüfe, ob Nevod das Mikrofon nutzen darf: **iPhone-Einstellungen → Nevod → Mikrofon** |
 | eingehende Anrufe kommen nicht an, solange Nevod geschlossen ist | prüfe, ob „Nicht stören“ oder ein anderer Fokus eingeschaltet ist. Bist du auf einem privaten Node, sollte sein Administrator prüfen, ob der Node [mit dem Netz verbunden](../node-network/) ist — sonst kann ein Anruf das Telefon nicht „wecken“ |

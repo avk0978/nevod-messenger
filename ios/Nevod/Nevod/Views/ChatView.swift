@@ -604,7 +604,9 @@ struct ChatView: View {
                 withAnimation { proxy.scrollTo(rid, anchor: .center) }
             },
             onRetry: { store.retrySend(msgId: msg.msgId, to: contact) },
-            showsMarkdown: !msg.fromMe && store.isAIBot(contact.cellId)
+            showsMarkdown: !msg.fromMe && store.isAIBot(contact.cellId),
+            holdsMedia: store.shouldHoldMedia(msgId: msg.msgId, chatId: msg.chatId, fromMe: msg.fromMe),
+            onRevealMedia: { store.revealMedia(msgId: msg.msgId) }
         )
     }
 
@@ -842,6 +844,11 @@ struct MessageBubble: View {
     /// than shown as "**…**" (App Store screenshots 2026-10-21). People's messages stay
     /// literal, so a stray "*" in what someone typed changes nothing.
     var showsMarkdown = false
+    /// "Картинки от незнакомых — по нажатию" (AppStore.shouldHoldMedia): a photo/video from a
+    /// stranger is a "Показать" placeholder and its file isn't touched — not even decoded for
+    /// a thumbnail or poster — until the user taps it, so a crafted file can't fire by itself.
+    var holdsMedia = false
+    var onRevealMedia: () -> Void = {}
 
     // Only consulted when needsReactionRevealPop is true (see reactionBadges below) — every
     // other bubble ignores this and renders its badge in final state immediately, same as
@@ -877,7 +884,10 @@ struct MessageBubble: View {
                     // Photos already clip themselves to rounded corners (imageBubble) and read
                     // better edge-to-edge — the tinted bubble behind them was just a colored
                     // border, not a background anything shows through (user feedback 2026-08-25).
-                    .background(message.type == .image || message.type == .video ? Color.clear
+                    // A deleted photo keeps its type but shows "Сообщение удалено" — it needs
+                    // the bubble, or the sender's white text sat on a white screen, invisible
+                    // (device test 2026-10-31).
+                    .background((message.type == .image || message.type == .video) && !message.isRemoved ? Color.clear
                                 : (message.fromMe ? Color.accentColor : Color(.systemGray5)))
                     .foregroundStyle(message.fromMe ? .white : .primary)
                     .clipShape(RoundedRectangle(cornerRadius: 16))
@@ -958,8 +968,9 @@ struct MessageBubble: View {
         .onReceive(NotificationCenter.default.publisher(for: UIApplication.protectedDataDidBecomeAvailableNotification)) { _ in
             if !mediaLoaded { unlockRetry += 1 }
         }
-        .task(id: "\(message.msgId)#\(unlockRetry)") {
+        .task(id: "\(message.msgId)#\(unlockRetry)#\(holdsMedia)") {
             guard !mediaLoaded else { return }
+            if holdsMedia && (message.type == .image || message.type == .video) { return }
             // Locked phone: the files can't be read yet — try again on unlock (see above).
             if message.type != .text, !UIApplication.shared.isProtectedDataAvailable { return }
             mediaLoaded = true
@@ -1031,6 +1042,8 @@ struct MessageBubble: View {
     private var bubbleContent: some View {
         if message.isRemoved {
             deletedPlaceholder
+        } else if holdsMedia && (message.type == .image || message.type == .video) {
+            heldMediaPlaceholder
         } else {
             switch message.type {
             case .image: imageBubble
@@ -1050,6 +1063,24 @@ struct MessageBubble: View {
             .italic()
             .foregroundStyle(.secondary)
             .padding(.horizontal, 12).padding(.vertical, 8)
+    }
+
+    private var heldMediaPlaceholder: some View {
+        Button(action: onRevealMedia) {
+            VStack(spacing: 6) {
+                Image(systemName: message.type == .video ? "video.fill" : "photo.fill")
+                    .font(.title2)
+                Text(message.type == .video ? LocalizedStringKey("Видео — показать") : LocalizedStringKey("Фото — показать"))
+                    .font(.subheadline.weight(.semibold))
+                Text("От человека не из ваших контактов")
+                    .font(.caption2).foregroundStyle(.secondary)
+                    .multilineTextAlignment(.center)
+            }
+            .padding(12)
+            .frame(width: 200, height: 130)
+            .background(RoundedRectangle(cornerRadius: 14).fill(Color(.systemGray5)))
+        }
+        .buttonStyle(.plain)
     }
 
     // MARK: Image

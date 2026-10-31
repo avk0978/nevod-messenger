@@ -1,6 +1,6 @@
 # Sicurezza e backup
 
-Cosa protegge Nevod da solo, come ti protegge da truffatori e attacchi, cosa dovresti fare tu, come bloccare una chat con una password, come bloccare e segnalare, e perché Nevod non fa backup delle conversazioni.
+Cosa protegge Nevod da solo, come ti protegge da truffatori e attacchi, cosa dovresti fare tu, come difenderti dagli sconosciuti, come bloccare una chat con una password, come bloccare e segnalare, e perché Nevod non fa backup delle conversazioni.
 
 ## Cosa è protetto senza che tu faccia nulla
 
@@ -44,6 +44,17 @@ Puoi bloccare una singola chat con una password: così, anche se qualcuno ha in 
 3. Le password devono essere diverse. Per cambiarle, nello stesso punto: **Cambia password**.
 
 > La password della chat è salvata solo su questo telefono, e non la password stessa ma il suo hash. **Una password dimenticata non si può recuperare**, né da te né dagli sviluppatori, e la chat non si potrà più aprire. Scegli una password che non dimenticherai. La password di emergenza cancella la conversazione solo da te: l'altra persona la conserva.
+
+## Protezione dagli sconosciuti
+
+Non solo le persone a cui hai dato la tua scheda possono scriverti e chiamarti. Su un nodo aperto, come Nevod Open, chiunque può registrarsi, e i membri del nodo si vedono in **Contatti → Su questo nodo**. Inoltre qualcuno con cui scrivi può inoltrare la tua scheda a un altro. Qui sconosciuto è chi non è nei tuoi contatti. Gli account ufficiali Nevod e l'amministratore del tuo nodo non contano come sconosciuti.
+
+In **Profilo → Sicurezza** ci sono due impostazioni. Se attivarle lo decidi tu; all'inizio sono entrambe disattivate:
+
+- **Chiamate solo dai contatti**: una chiamata da qualcuno che non è nei tuoi contatti viene rifiutata in silenzio, il telefono non squilla. Per chi chiama, la chiamata termina subito; nella tua cronologia chiamate compare come **Rifiutata: non nei contatti**.
+- **Immagini dagli sconosciuti: al tocco**: foto e video di qualcuno che non è nei tuoi contatti non vengono mostrati subito: la chat mostra un segnaposto **Foto: mostra** o **Video: mostra**, e l'app apre il file solo dopo che l'hai toccato. Così nemmeno un'immagine preparata può attivarsi da sola.
+
+Su un nodo chiuso, dove l'amministratore conosce tutti i membri, queste impostazioni di solito non servono. Su un nodo aperto conviene attivarle.
 
 ## Bloccare e segnalare
 

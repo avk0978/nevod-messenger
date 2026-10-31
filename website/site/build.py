@@ -473,7 +473,7 @@ DOCS = [
                 "node-turn", "node-maintenance", "node-admin"]),
 ]
 DOC_SLUGS = [slug for _, slugs in DOCS for slug in slugs]
-# NEVOD_SITE_NO_DOCS=1 builds the site as deployed today: no /docs/, "For cities" in the menu.
+# NEVOD_SITE_NO_DOCS=1 builds the site without /docs/ ("For cities" in the menu instead).
 # Published 2026-10-30 (after the real-VPS test); the flag is kept for a build without docs.
 WITH_DOCS = os.environ.get("NEVOD_SITE_NO_DOCS") != "1"
 

@@ -49,6 +49,16 @@ final class AppStore: ObservableObject {
     // handleIncoming/handleReaction drop it here too — covers a node that hasn't been told
     // yet (block made offline) or doesn't run that check.
     @Published var blockedCellIds: Set<String> = []
+    // Protection from strangers (Профиль → Безопасность, WORK_PLAN 2.10) — both off by default,
+    // the user decides. A stranger is anyone not in `contacts` (see isKnownSender).
+    @Published var callsOnlyFromContacts = false {
+        didSet { LocalDefaults.shared.set(callsOnlyFromContacts, forKey: callsOnlyFromContactsKey) }
+    }
+    @Published var strangerMediaOnTap = false {
+        didSet { LocalDefaults.shared.set(strangerMediaOnTap, forKey: strangerMediaOnTapKey) }
+    }
+    /// Stranger photos/videos the user chose to show (tapped "Показать") — those stay shown.
+    @Published private(set) var revealedMediaMsgIds: Set<String> = []
     @Published var selectedTab: MainTab? = .chats
     // Set by AppDelegate's UNUserNotificationCenterDelegate when the user taps a message
     // push notification — ChatsListView watches this (both .onChange for an already-visible
@@ -113,6 +123,12 @@ final class AppStore: ObservableObject {
     private let officialAccountsKey = "nevod.officialAccounts"
     private let nodeAdministratorsKey = "nevod.nodeAdministrators"
     private let blockedKey = "nevod.blockedCellIds"
+    private let callsOnlyFromContactsKey = "nevod.callsOnlyFromContacts"
+    private let strangerMediaOnTapKey = "nevod.strangerMediaOnTap"
+    private let revealedMediaKey = "nevod.revealedMediaMsgIds"
+    // Contacts that already have our current avatar (cleared when we set a new one) — see
+    // sendOwnAvatarWhereMissing.
+    private let avatarSentToKey = "nevod.avatarSentTo"
     // Block/unblock changes not yet confirmed sent to the node (made while offline) —
     // flushed on the next "connected". cellId -> blocked.
     private let pendingBlockSyncKey = "nevod.pendingBlockSync"
@@ -408,6 +424,9 @@ final class AppStore: ObservableObject {
             nodeAdministrators = decoded
         }
         blockedCellIds = Set(LocalDefaults.shared.stringArray(forKey: blockedKey) ?? [])
+        callsOnlyFromContacts = LocalDefaults.shared.bool(forKey: callsOnlyFromContactsKey)
+        strangerMediaOnTap = LocalDefaults.shared.bool(forKey: strangerMediaOnTapKey)
+        revealedMediaMsgIds = Set(LocalDefaults.shared.stringArray(forKey: revealedMediaKey) ?? [])
         loadCallLog()
         if let id = IdentityStore.load() {
             identity = id
@@ -869,6 +888,7 @@ final class AppStore: ObservableObject {
                     self?.flushPendingReactions()
                     self?.resumeInterruptedMedia()
                     self?.flushPendingBlockSync()
+                    self?.sendOwnAvatarWhereMissing()
                     Task { await self?.fetchOfficialAccounts() }
                     if let pending = self?.pendingDisplayNameUpdate {
                         self?.client?.updateDisplayName(pending)
@@ -1716,18 +1736,59 @@ final class AppStore: ObservableObject {
         let ownFile = nevodAvatarsDirectory.appendingPathComponent("\(MediaSafety.safeToken(ownId.cellId))\(Self.avatarSuffix).jpg")
         try? data.write(to: ownFile, options: .completeFileProtectionUnlessOpen)
         contactAvatars[ownId.cellId] = UIImage(data: data)
+        avatarSentTo = []
+        avatarGeneration += 1
+        sendOwnAvatarWhereMissing()
+    }
 
+    private var avatarSentTo: Set<String> {
+        get { Set(LocalDefaults.shared.stringArray(forKey: avatarSentToKey) ?? []) }
+        set { LocalDefaults.shared.set(Array(newValue), forKey: avatarSentToKey) }
+    }
+    private var avatarSendRunning = false
+    private var avatarSendAgain = false
+    // Bumped by setOwnAvatar, so a send still running with the old picture stops and starts
+    // over with the new one instead of marking contacts as having it.
+    private var avatarGeneration = 0
+
+    /// Sends our avatar to every contact that doesn't have the current one yet. It used to go
+    /// out only from setOwnAvatar, to the contacts of that moment: anyone added later (or
+    /// offline then) never got it and saw the default icon (device test 2026-10-31). Runs on
+    /// every "connected" and after addContact; a contact is marked done only after a
+    /// successful send, so a failure is retried on the next connect.
+    func sendOwnAvatarWhereMissing() {
+        guard !avatarSendRunning else { avatarSendAgain = true; return }
+        guard let ownId = identity else { return }
+        let ownFile = nevodAvatarsDirectory.appendingPathComponent("\(MediaSafety.safeToken(ownId.cellId))\(Self.avatarSuffix).jpg")
+        guard let data = try? Data(contentsOf: ownFile) else { return }  // no avatar set (or device locked)
+        avatarSendRunning = true
+        avatarSendAgain = false
+        let generation = avatarGeneration
         let tmpURL = FileManager.default.temporaryDirectory.appendingPathComponent("\(UUID().uuidString).jpg")
         try? data.write(to: tmpURL)
-        defer { try? FileManager.default.removeItem(at: tmpURL) }
-        guard let c = client, c.isConnected else { return }
-        // Best-effort per contact — one failing (offline, etc.) shouldn't block the rest, and
-        // there's no per-contact retry queue for this (same tier as a normal message send:
-        // if it fails, the recipient just doesn't have the new avatar yet, no error surfaced).
-        for contact in contacts {
-            try? await sendChunkedStream(fileURL: tmpURL, mime: "image/jpeg", name: nil,
-                                         msgId: UUID().uuidString, contact: contact, client: c,
-                                         headerTag: "avatar")
+        Task {
+            defer {
+                try? FileManager.default.removeItem(at: tmpURL)
+                avatarSendRunning = false
+                if avatarSendAgain { sendOwnAvatarWhereMissing() }
+            }
+            var failed: Set<String> = []
+            while generation == avatarGeneration, let c = client, c.isConnected,
+                  let contact = contacts.first(where: { !avatarSentTo.contains($0.cellId)
+                                                        && !failed.contains($0.cellId)
+                                                        && !isBlocked($0.cellId) }) {
+                do {
+                    try await sendChunkedStream(fileURL: tmpURL, mime: "image/jpeg", name: nil,
+                                                msgId: UUID().uuidString, contact: contact, client: c,
+                                                headerTag: "avatar")
+                    guard generation == avatarGeneration else { avatarSendAgain = true; break }
+                    avatarSentTo.insert(contact.cellId)
+                    nlog("sendOwnAvatarWhereMissing sent to=\(contact.cellId.prefix(8))")
+                } catch {
+                    failed.insert(contact.cellId)
+                    nlog("sendOwnAvatarWhereMissing FAILED to=\(contact.cellId.prefix(8)) error=\(error)")
+                }
+            }
         }
     }
 
@@ -2310,6 +2371,7 @@ final class AppStore: ObservableObject {
             return
         }
         contacts.append(contact); saveContacts()
+        sendOwnAvatarWhereMissing()
         // Node members already see each other via "On this node" — the proactive
         // notice is only useful for genuinely external contacts (different node,
         // discovered via card/QR), so they don't have to wait for our first real
@@ -2337,6 +2399,7 @@ final class AppStore: ObservableObject {
 
     func removeContact(cellId: String) {
         contacts.removeAll { $0.cellId == cellId }; saveContacts()
+        avatarSentTo.remove(cellId)  // added again later → gets the avatar again
     }
 
     private func loadContacts() {
@@ -2568,6 +2631,34 @@ final class AppStore: ObservableObject {
     func looksLikeImpersonation(cellId: String, name: String) -> Bool {
         !isOfficial(cellId) && nodeAdministrators[cellId.lowercased()] == nil
             && ReservedNames.isReserved(name)
+    }
+
+    // MARK: - Protection from strangers (WORK_PLAN 2.10)
+
+    /// Someone the user knows: a saved contact, a curator-verified official account, or a
+    /// node administrator whose record that node signed. Everyone else — a fellow member of
+    /// an open node, someone a contact forwarded the card to — is a stranger here.
+    func isKnownSender(_ cellId: String) -> Bool {
+        let id = cellId.lowercased()
+        return contacts.contains { $0.cellId.lowercased() == id }
+            || isOfficial(id)
+            || nodeAdministrators[id] != nil
+    }
+
+    /// A call from this cell is declined without ringing ("Звонки только от контактов").
+    func shouldDeclineCall(from cellId: String) -> Bool {
+        callsOnlyFromContacts && !isKnownSender(cellId)
+    }
+
+    /// A received photo/video stays a "Показать" placeholder — not even decoded for a
+    /// thumbnail — until the user taps it ("Картинки от незнакомых — по нажатию").
+    func shouldHoldMedia(msgId: String, chatId: String, fromMe: Bool) -> Bool {
+        strangerMediaOnTap && !fromMe && !isKnownSender(chatId) && !revealedMediaMsgIds.contains(msgId)
+    }
+
+    func revealMedia(msgId: String) {
+        revealedMediaMsgIds.insert(msgId)
+        LocalDefaults.shared.set(Array(revealedMediaMsgIds), forKey: revealedMediaKey)
     }
 
     // MARK: - Blocking (Guideline 1.2)

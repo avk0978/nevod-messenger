@@ -1,6 +1,6 @@
 # Güvenlik ve yedekler
 
-Nevod'un kendiliğinden neyi koruduğu, sizi dolandırıcılara ve saldırılara karşı nasıl koruduğu, sizin ne yapmanız gerektiği, bir sohbeti parolayla nasıl kilitleyeceğiniz, nasıl engelleyip şikâyet edeceğiniz — ve Nevod'da neden yazışma yedeği olmadığı.
+Nevod'un kendiliğinden neyi koruduğu, sizi dolandırıcılara ve saldırılara karşı nasıl koruduğu, sizin ne yapmanız gerektiği, yabancılardan nasıl korunacağınız, bir sohbeti parolayla nasıl kilitleyeceğiniz, nasıl engelleyip şikâyet edeceğiniz — ve Nevod'da neden yazışma yedeği olmadığı.
 
 ## Sizin müdahaleniz olmadan korunanlar
 
@@ -44,6 +44,17 @@ Tek bir sohbeti parolayla kilitleyebilirsiniz — o zaman kilidi açık telefonu
 3. Parolalar farklı olmalıdır. Değiştirmek için aynı yerde **Parolaları değiştir**.
 
 > Sohbet parolası yalnızca bu telefonda saklanır, üstelik parolanın kendisi değil, özeti (hash). **Unutulan parola kurtarılamaz** — ne sizin ne de geliştiricilerin elinden gelir — ve o sohbet bir daha açılamaz. Unutmayacağınız bir parola seçin. Baskı altı parolası yazışmayı yalnızca sizde siler: karşınızdakinde kalır.
+
+## Yabancılara karşı koruma
+
+Size yalnızca kartınızı verdiğiniz kişiler yazamaz ve sizi arayamaz. Nevod Open gibi açık bir düğümde herkes kaydolabilir ve düğümün üyeleri birbirini **Kişiler → Bu düğümde** içinde görür. Ayrıca yazıştığınız biri kartınızı başkasına iletebilir. Burada yabancı, kişileriniz arasında olmayan kişidir. Resmî Nevod hesapları ve düğümünüzün yöneticisi yabancı sayılmaz.
+
+**Profil → Güvenlik** içinde iki ayar vardır. Açıp açmamaya siz karar verirsiniz; başlangıçta ikisi de kapalıdır:
+
+- **Yalnızca kişilerden aramalar** — kişileriniz arasında olmayan birinden gelen arama sessizce reddedilir, telefon çalmaz. Arayan için arama hemen sona erer; sizin arama geçmişinizde **Reddedildi: kişilerde yok** olarak görünür.
+- **Yabancılardan resimler — dokununca** — kişileriniz arasında olmayan birinden gelen fotoğraf ve videolar hemen gösterilmez: sohbette **Fotoğraf — göster** veya **Video — göster** yer tutucusu görünür ve uygulama dosyayı ancak siz dokunduktan sonra açar. Böylece özel hazırlanmış bir resim bile kendiliğinden çalışamaz.
+
+Yöneticinin tüm üyeleri tanıdığı kapalı bir düğümde bu ayarlara genellikle gerek yoktur. Açık bir düğümde açmaya değer.
 
 ## Engelleme ve şikâyet
 

@@ -62,7 +62,7 @@ private struct CallLogRow: View {
         .padding(.vertical, 2)
     }
 
-    private var isMissed: Bool { entry.outcome == .missed && !entry.isOutgoing }
+    private var isMissed: Bool { entry.outcome != .answered && !entry.isOutgoing }
 
     private var subtitle: String {
         switch (entry.isOutgoing, entry.outcome) {
@@ -70,6 +70,8 @@ private struct CallLogRow: View {
         case (true, .missed):    return String(localized: "Исходящий · Не ответили")
         case (false, .answered): return String(localized: "Входящий · \(durationString)")
         case (false, .missed):   return String(localized: "Пропущенный")
+        case (false, .declined): return String(localized: "Отклонён: не из контактов")
+        case (true, .declined):  return String(localized: "Исходящий · Не ответили")  // never written
         }
     }
 

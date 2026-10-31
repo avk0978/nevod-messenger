@@ -161,7 +161,11 @@ struct ProfileView: View {
                     Button("Invite someone") { Task { await generateInvite() } }
                     Button("Церковнославянская клавиатура") { showChurchKeyboardInfo = true }
                 }
-                Section("Безопасность") {
+                Section {
+                    // Protection from strangers (WORK_PLAN 2.10): both off by default — the
+                    // user decides; see AppStore.isKnownSender for who counts as a stranger.
+                    Toggle("Звонки только от контактов", isOn: $store.callsOnlyFromContacts)
+                    Toggle("Картинки от незнакомых — по нажатию", isOn: $store.strangerMediaOnTap)
                     NavigationLink("Заблокированные") { BlockedUsersView() }
                     NavigationLink("AI keys") { AIKeysView() }
                     Link("Условия использования", destination: NevodLinks.terms)
@@ -171,6 +175,10 @@ struct ProfileView: View {
                     } label: {
                         LabeledContent("Сообщить о нарушении", value: AbuseReport.address)
                     }
+                } header: {
+                    Text("Безопасность")
+                } footer: {
+                    Text("Незнакомый — тот, кого нет в ваших контактах. Официальные аккаунты Nevod и администратор вашего узла незнакомыми не считаются.")
                 }
                 Section {
                     NavigationLink("Диагностика") { DiagnosticsView() }

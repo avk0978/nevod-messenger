@@ -43,7 +43,7 @@ You can lock a single chat with a password — then even someone holding your un
    - **Duress password** — for when you are forced to open the chat. If you enter it instead of the real one, the conversation in this chat is **silently deleted** from your phone, and the screen shows the usual "Incorrect password" — to an onlooker it looks like a typo.
 3. The passwords must be different. To change them — in the same place, **Change passwords**.
 
-> The chat password is stored only on this phone, and not the password itself but its hash. **A forgotten password can't be recovered** — neither by you nor by the developers — and the chat can no longer be opened. Choose a password you won't forget. The duress password deletes the conversation only on your phone: the other person keeps it.
+> The chat password is stored only on this phone, and not the password itself but its hash. **A forgotten password can't be recovered** — neither by you nor by the developers. If you've forgotten it, tap **Forgot password?** on the sign-in screen: the conversation in this chat is deleted from the phone, the password lock is removed, and the chat opens again — empty. Choose a password you won't forget. The duress password deletes the conversation only on your phone: the other person keeps it.
 
 ## Protection from strangers
 

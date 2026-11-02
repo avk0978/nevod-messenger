@@ -32,6 +32,7 @@ Solo restableciendo la identidad: **Perfil → Restablecer identidad…** y lueg
 | «Esperando aprobación» | el nodo admite por solicitud: espera la decisión del administrador; recibirás una notificación. |
 | «Solicitud rechazada» | el administrador del nodo rechazó tu solicitud. Puedes elegir otro nodo, como Nevod Open. |
 | abriste una invitación y la app dice «Invitación a otro nodo» | ya estás registrado en un nodo. Consulta «¿Cómo me cambio a otro nodo?» más arriba. |
+| abriste una invitación y la app dice «Ya estás registrado en este nodo» | la invitación es a tu propio nodo: no hace falta hacer nada. |
 
 ## Conexión
 

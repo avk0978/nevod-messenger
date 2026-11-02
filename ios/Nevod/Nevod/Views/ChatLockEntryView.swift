@@ -11,6 +11,7 @@ struct ChatLockEntryView: View {
     @State private var entered = ""
     @State private var showError = false
     @State private var unlocked = false
+    @State private var confirmForgotten = false
 
     private var displayName: String {
         if !contact.alias.isEmpty { return contact.alias }
@@ -37,12 +38,31 @@ struct ChatLockEntryView: View {
                 Button("Войти", action: submit)
                     .buttonStyle(.borderedProminent)
                     .disabled(entered.isEmpty)
+                // A forgotten password used to lock this chat for good — new messages from
+                // this person too (found 2026-10-25 while writing the docs). The way out
+                // costs the history on this phone, so nothing protected is revealed.
+                Button("Забыли пароль?") { confirmForgotten = true }
+                    .font(.footnote)
                 Spacer()
                 Spacer()
             }
             .navigationTitle(displayName)
             .navigationBarTitleDisplayMode(.inline)
+            .confirmationDialog(Text("Удалить переписку и снять защиту?"),
+                                isPresented: $confirmForgotten, titleVisibility: .visible) {
+                Button("Удалить переписку", role: .destructive, action: removeLock)
+                Button("Отмена", role: .cancel) {}
+            } message: {
+                Text("Забытый пароль восстановить нельзя. Переписка с \(displayName) на этом телефоне будет удалена, защита паролем снята. У собеседника переписка останется.")
+            }
         }
+    }
+
+    private func removeLock() {
+        store.deleteChat(chatId: contact.cellId)
+        ChatLockStore.clear(chatId: contact.cellId)
+        store.updateChatLock(chatId: contact.cellId, isLocked: false)
+        unlocked = true
     }
 
     // .duress is deliberately handled identically to .wrong from this view's perspective —

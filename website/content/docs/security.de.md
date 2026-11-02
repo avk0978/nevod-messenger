@@ -43,7 +43,7 @@ Du kannst einen einzelnen Chat mit einem Passwort sperren — dann kann selbst j
    - **Notfallpasswort** — für den Fall, dass du gezwungen wirst, den Chat zu öffnen. Gibst du es statt des echten ein, wird die Unterhaltung in diesem Chat **still gelöscht** von deinem Telefon, und auf dem Bildschirm erscheint das übliche „Falsches Passwort“ — für Zuschauer sieht es wie ein Tippfehler aus.
 3. Die Passwörter müssen verschieden sein. Ändern kannst du sie am selben Ort — **Passwörter ändern**.
 
-> Das Chat-Passwort wird nur auf diesem Telefon gespeichert, und zwar nicht das Passwort selbst, sondern sein Hash. **Ein vergessenes Passwort lässt sich nicht wiederherstellen** — weder von dir noch von den Entwicklern —, und der Chat lässt sich dann nicht mehr öffnen. Wähle ein Passwort, das du nicht vergisst. Das Notfallpasswort löscht die Unterhaltung nur bei dir: Der Gesprächspartner behält sie.
+> Das Chat-Passwort wird nur auf diesem Telefon gespeichert, und zwar nicht das Passwort selbst, sondern sein Hash. **Ein vergessenes Passwort lässt sich nicht wiederherstellen** — weder von dir noch von den Entwicklern. Hast du es vergessen, tippe auf dem Anmeldebildschirm auf **Passwort vergessen?**: Der Verlauf dieses Chats wird vom Telefon gelöscht, die Passwortsperre aufgehoben, und der Chat öffnet sich wieder — leer. Wähle ein Passwort, das du nicht vergisst. Das Notfallpasswort löscht die Unterhaltung nur bei dir: Der Gesprächspartner behält sie.
 
 ## Schutz vor Fremden
 

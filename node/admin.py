@@ -2125,6 +2125,7 @@ class AdminServer:
         self._node.identity.invite_mode = mode
         if self._identity_path:
             self._node.identity.save(self._identity_path)
+        await self._node.storage.set_node_invite_mode(self._node.identity.node_id, mode)
         # _ensure_registrar() normally only runs once, at node startup — gated on
         # invite_mode=="admin" there specifically (see its own doc comment). Switching
         # into "admin" live, from here, without a restart in between, used to leave

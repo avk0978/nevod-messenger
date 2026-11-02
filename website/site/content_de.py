@@ -26,6 +26,8 @@ INDEX = """
 <div class="card"><h3>📭 Nichts herauszugeben</h3><p>Wird ein Chatverlauf angefordert, hat der Entwickler nichts herauszugeben. Nicht, weil er es versteckt — sondern weil er es nicht hat.</p></div>
 </div>
 <p class="note">ZKI ist die Grundlage der Entwicklung von Nevod. Jede technische Entscheidung wird an einer Frage gemessen: Erhält der Schöpfer der Infrastruktur Zugriff auf die Inhalte? <a href="/de/manifesto/">Das Manifest der Zero Knowledge Infrastructure →</a></p>
+<h2>Nicht dezentral, sondern polyzentrisch</h2>
+<p><b>Nevod ist ein polyzentrischer, architektonisch gering belasteter Messenger der Klasse LL-0.</b> Dafür führen wir einen neuen Begriff ein: den <b>polyzentrischen Messenger</b>. Das gewohnte Wort „dezentral“ sagt nur, was fehlt: ein Zentrum. „Polyzentrisch“ sagt, was da ist: <b>viele gleichberechtigte Zentren</b>. Jede Gemeinschaft — Familie, Haus, Organisation, Stadt — ist ihr eigenes Zentrum, mit eigenem Node, eigenem Administrator und eigenen Regeln. Die Zentren sind zu einem Netz verbunden, und schreiben kannst du Menschen auf jedem Node.</p>
 <h2>Gering belastetes verteiltes Netz</h2>
 <p><b>Nevod ist ein verschlüsselter verteilter Messenger der Klasse LL-0: Die Last jedes Nodes hängt nur von seinem eigenen Kreis ab (Familie, Zuhause, Team), nicht von der Größe des Netzes.</b> Unter den Netzen dieser Klasse ist Nevod das einzige, das als vollwertiger Messenger für gewöhnliche Menschen gedacht ist, mit Sprach- und Videoanrufen.</p>
 <p>Eine Million neuer Nutzer anderswo fügt deinem Node kein einziges Byte hinzu. Ein Node läuft auf gewöhnlicher Heim-Hardware, das Netz hat kein Zentrum, und der Node selbst transportiert nur Chiffretext.</p>
@@ -364,7 +366,7 @@ TERMS = """
 """
 
 PAGES = {
-    "index": ("Nevod", "Nevod — die erste Umsetzung der Zero Knowledge Infrastructure: ein Messenger, dessen Entwickler technisch von den Nutzerdaten abgeschnitten ist.", INDEX),
+    "index": ("Nevod", "Nevod — ein polyzentrischer (dezentraler), architektonisch gering belasteter Messenger der Klasse LL-0 und die erste Umsetzung der Zero Knowledge Infrastructure: Der Entwickler ist technisch von den Nutzerdaten abgeschnitten.", INDEX),
     "manifesto": ("Manifest der Zero Knowledge Infrastructure", "Das ZKI-Manifest — die Grundlage der Entwicklung von Nevod. Von Kolpakov Andrey.", MANIFESTO),
     "compare": ("Vergleich", "Nevod im Vergleich zu Signal, Telegram und WhatsApp: warum Verschlüsselung allein noch kein ZKI ist.", COMPARE),
     "security": ("Sicherheit und Verschlüsselung", "Wie Nevod Nachrichten verschlüsselt, was ein Node verarbeitet und warum keine Exportdokumentation nötig ist.", SECURITY),

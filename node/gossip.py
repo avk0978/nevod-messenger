@@ -168,6 +168,7 @@ class GossipEngine:
                 name=n.get("name", ""),
                 push_relay_platforms=n.get("push_relay_platforms", ""),
                 turn_relay=bool(n.get("turn_relay", False)),
+                invite_mode=str(n.get("invite_mode", ""))[:16],
                 last_seen=int(time.time()),
                 status="online",
                 added_at=existing.added_at if existing else int(time.time()),

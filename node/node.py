@@ -212,6 +212,7 @@ class Node:
             name=self.identity.name,
             push_relay_platforms=",".join(self.push_relay_platforms),
             turn_relay=self.turn_relay,
+            invite_mode=self.identity.invite_mode,
             last_seen=int(time.time()),
             status="online",
             added_at=existing.added_at if existing else int(time.time()),
@@ -336,6 +337,7 @@ class Node:
                     name=n.get("name", ""),
                     push_relay_platforms=n.get("push_relay_platforms", ""),
                     turn_relay=bool(n.get("turn_relay", False)),
+                    invite_mode=str(n.get("invite_mode", ""))[:16],
                     last_seen=int(time.time()),
                     status="online",
                     added_at=int(time.time()),
@@ -863,6 +865,16 @@ class Node:
             note = ""
             display_name = ""
         cell_id = conn.peer_node_id
+        # Already denied: say so. The app re-sends its request on every connect, and a plain
+        # ok=True kept a requester who was offline when the admin decided on "waiting for
+        # approval" forever — the real-time JOIN_REQUEST_RESOLVED only reaches a connected
+        # client, and no push goes out for a denial (2026-10-31, Guest-a212bd on Dev Planet).
+        if await self.storage.join_request_status(cell_id) == "denied":
+            ack = make_join_request_ack(self.identity.node_id, cell_id, ok=False, reason="denied")
+            sign_packet(ack, self.identity.signing)
+            await self.transport.send_via(conn, ack)
+            log.info("join request from %s — denied earlier, told so", cell_id[:8])
+            return
         created = await self.storage.create_join_request(
             cell_id, conn.peer_signing_pubkey.hex(), conn.peer_enc_pubkey.hex(), note,
             display_name)
@@ -1580,7 +1592,8 @@ class Node:
         me = self.identity.node_id
         nodes = [
             {"node_id": n.node_id, "name": n.name, "address": n.address,
-             "tls_fingerprint": n.tls_fingerprint}
+             "tls_fingerprint": n.tls_fingerprint,
+             "invite_mode": self.identity.invite_mode if n.node_id == me else n.invite_mode}
             for n in all_nodes
             if n.access == "open" and (n.status != "offline" or n.node_id == me)
         ]
@@ -1610,7 +1623,8 @@ class Node:
         if withheld:
             log.info("node_cells_request %s — withheld (%s)", conn.peer_node_id[:8], withheld)
             await self.transport.send_via(conn, make_node_cells_response(
-                from_node=self.identity.node_id, to_addr=pkt.from_addr, cells=[]))
+                from_node=self.identity.node_id, to_addr=pkt.from_addr, cells=[],
+                invite_mode=self.identity.invite_mode))
             return
 
         published = await self.storage.get_published_cells()
@@ -1635,6 +1649,7 @@ class Node:
             from_node=self.identity.node_id,
             to_addr=pkt.from_addr,
             cells=cells,
+            invite_mode=self.identity.invite_mode,
         )
         await self.transport.send_via(conn, resp)
 

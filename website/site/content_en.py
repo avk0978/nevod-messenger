@@ -26,6 +26,8 @@ INDEX = """
 <div class="card"><h3>📭 Nothing to hand over</h3><p>If someone asks for a conversation, the developer has nothing to give. Not because it's hidden — because the developer doesn't have it.</p></div>
 </div>
 <p class="note">ZKI is the foundation of Nevod's development. Every technical decision is checked against one question: does the infrastructure's creator gain access to the content? <a href="/en/manifesto/">The Zero Knowledge Infrastructure manifesto →</a></p>
+<h2>Not decentralized, but polycentric</h2>
+<p><b>Nevod is a polycentric, architecturally low-load messenger of class LL-0.</b> For it we introduce a new concept: the <b>polycentric messenger</b>. The familiar word “decentralized” only says what is missing: a center. “Polycentric” says what is there: <b>many equal centers</b>. Every community — a family, a building, an organization, a city — is its own center, with its own node, its own administrator and its own rules. The centers are joined into one network, and you can write to people on any node.</p>
 <h2>Low-load distributed network</h2>
 <p><b>Nevod is an encrypted distributed messenger of class LL-0: the load on each node depends only on its own circle (family, home, team), not on the size of the network.</b> Among the networks of this class, Nevod is the only one designed as a full messenger for ordinary people, with voice and video calls.</p>
 <p>A million new users elsewhere add not a single byte to your node. A node runs on ordinary home hardware, the network has no center, and the node itself carries only ciphertext.</p>
@@ -363,7 +365,7 @@ TERMS = """
 """
 
 PAGES = {
-    "index": ("Nevod", "Nevod — the first implementation of Zero Knowledge Infrastructure: a messenger whose developer is technically cut off from users' data.", INDEX),
+    "index": ("Nevod", "Nevod — a polycentric (decentralized), architecturally low-load messenger of class LL-0 and the first implementation of Zero Knowledge Infrastructure: its developer is technically cut off from users' data.", INDEX),
     "manifesto": ("Zero Knowledge Infrastructure Manifesto", "The ZKI manifesto — the foundation of Nevod's development. By Kolpakov Andrey.", MANIFESTO),
     "compare": ("Compare", "Nevod compared with Signal, Telegram and WhatsApp: why encryption alone isn't ZKI.", COMPARE),
     "security": ("Security and encryption", "How Nevod encrypts messages, what a node processes, and why no export documentation is needed.", SECURITY),

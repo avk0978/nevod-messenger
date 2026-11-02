@@ -17,9 +17,11 @@ Yalnızca kendi düğümünüzdekilerle değil, ağdaki her düğümdeki insanla
 
 1. Nevod'u açın. Uygulama bildirim izni ister — izin verin, yoksa Nevod kapalıyken mesajlardan ve aramalardan haberiniz olmaz.
 2. Kullanım Koşulları'nın özetini okuyun, **Kullanım Koşulları'nı kabul ediyorum** seçeneğini açın ve **Devam**'a dokunun.
-3. **Ağı keşfet** açılır — açık düğümlerin listesi. Burada etrafa bakabilirsiniz: düğümler, botları ve sayfaları kayıt olmadan da görülebilir. Hiçbir düğüme kayıtlı değilken listede yalnızca Nevod projesinin düğümleri görünür; ağdaki diğer açık düğümler kayıt olduktan sonra çıkar — uygulama onların listesini kendi düğümünüzden alır.
+3. **Ağı keşfet** açılır — açık düğümlerin listesi. İlk açılışta uygulama kısa bir rehber gösterir: düğüm nedir, nasıl kaydolunur ve kartlar nasıl paylaşılır; sol üstteki **?** düğmesiyle yeniden açabilirsiniz. Burada etrafa bakabilirsiniz: düğümler ve sayfaları kayıt olmadan da görülebilir. Kapalı düğümler kilit 🔒 ile işaretlidir — bunlara davetle veya yöneticinin onayıyla katılınır. Hiçbir düğüme kayıtlı değilken listede yalnızca Nevod projesinin düğümleri görünür; ağdaki diğer açık düğümler kayıt olduktan sonra çıkar — uygulama onların listesini kendi düğümünüzden alır.
 4. **Mesajlaşmaya başla**'ya dokunun (sağ üstte).
 5. **Görünen adınız** alanına bir ad yazın — başkaları sizi bu adla görür. **Başlayın**'a dokunun.
+
+Kayıt olmadan önce bir düğümün sayfasındaki bir bota dokunursanız uygulama bir **ad veya takma ad** ister ve sizi o düğüme kaydeder — ad olmadan kayıt mümkün değildir. Düğüm kapalıysa uygulama önce yöneticiye istek gönderilip gönderilmeyeceğini sorar.
 
 Tamam: **Nevod Open** düğümüne kaydoldunuz. Birkaç saniye içinde düğüm yönetiminin hesabı olan **administrator**'dan bir karşılama mesajı gelir. Adının yanında mavi bir ✓ rozeti vardır.
 
@@ -39,7 +41,7 @@ Bir davet bağlantısı veya QR kodu aldıysanız — örneğin ailenizin ya da 
 
 Davet kodu bir kez ve sınırlı bir süre için geçerlidir. Uygulama "Geçersiz veya süresi dolmuş kod — yeni bir kod alın" derse yeni bir davet isteyin.
 
-Bu telefondaki Nevod zaten başka bir düğüme kayıtlıysa davet sizi kendiliğinden taşımaz: bir kimliğin tek bir ev düğümü vardır. Ne yapmanız gerektiği — [Kişiler](../contacts/), "Başka düğümlerdeki insanlar".
+Bu telefondaki Nevod zaten başka bir düğüme kayıtlıysa davet sizi kendiliğinden taşımaz: bir kimliğin tek bir ev düğümü vardır. Ne yapmanız gerektiği — [Kişiler](../contacts/), "Başka düğümlerdeki insanlar". Davet kendi düğümünüze ise uygulama "Bu düğüme zaten kayıtlısınız" der — bir şey yapmanıza gerek yok.
 
 Bazı düğümler başvuruyla kabul eder: o zaman uygulama **Onay bekleniyor** gösterir — düğüm yöneticisi başvurunuzu inceler ve size bir bildirim gelir.
 
@@ -50,7 +52,7 @@ Bazı düğümler başvuruyla kabul eder: o zaman uygulama **Onay bekleniyor** g
 | **Sohbetler** | Yazışmalarınız. |
 | **Aramalar** | Arama geçmişi. |
 | **Kişiler** | Yazıştığınız kişiler; **Kişi ekle** de buradadır. |
-| **Düğümler** | Ağı keşfet: düğümler, botları ve sayfaları. |
+| **Düğümler** | Ağı keşfet: düğümler, botları ve sayfaları; kapalı düğümler kilitle işaretlidir. |
 | **Profil** | Adınız ve avatarınız, kişi alışverişi için kartınız, davetler, güvenlik. |
 
 ## İlk mesajınız

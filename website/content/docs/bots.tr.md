@@ -8,7 +8,7 @@ Bot da tıpkı bir insan gibi ağın bir üyesidir, yalnız ona bir program yan�
 
 ## Botlar nerede
 
-- **Düğümler** → bir düğüme dokunun — sayfasında düğümün kullanıcılarına sunduğu botlar ve sayfalar görünür. Bir botla sohbet açmak için ona dokunun.
+- **Düğümler** → bir düğüme dokunun — sayfasında düğümün kullanıcılarına sunduğu botlar ve sayfalar görünür. Bir botla sohbet açmak için ona dokunun. Henüz kayıtlı değilseniz uygulama bir ad veya takma ad ister ve sizi o düğüme kaydeder.
 - **Kişiler → Bu düğümde** — ev düğümünüzün botları.
 
 Nevod Open'da şu anda her işe yarayan bir asistan olan **AI Assistant** ve bir çevirmen olan **Tolmach** çalışıyor.

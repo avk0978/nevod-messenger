@@ -25,6 +25,8 @@ INDEX = """
 <div class="card"><h3>📭 Rien à remettre</h3><p>Si quelqu'un exige une conversation, le développeur n'a rien à donner. Non parce qu'il la cache, mais parce qu'il ne l'a pas.</p></div>
 </div>
 <p class="note">ZKI est le fondement du développement de Nevod. Chaque décision technique est soumise à une seule question : le créateur de l'infrastructure obtient-il un accès au contenu ? <a href="/fr/manifesto/">Manifeste de la Zero Knowledge Infrastructure →</a></p>
+<h2>Pas décentralisé, mais polycentrique</h2>
+<p><b>Nevod est une messagerie polycentrique, à faible charge par son architecture, de classe LL-0.</b> Pour elle, nous introduisons une notion nouvelle : la <b>messagerie polycentrique</b>. Le mot habituel « décentralisé » ne dit que ce qui manque : un centre. « Polycentrique » dit ce qui existe : <b>de nombreux centres égaux</b>. Chaque communauté — une famille, un immeuble, une organisation, une ville — est son propre centre, avec son propre nœud, son propre administrateur et ses propres règles. Les centres sont reliés en un seul réseau, et vous pouvez écrire aux personnes de n’importe quel nœud.</p>
 <h2>Réseau distribué à faible charge</h2>
 <p><b>Nevod est une messagerie distribuée et chiffrée de classe LL-0 : la charge de chaque nœud ne dépend que de son propre cercle (famille, foyer, équipe), et non de la taille du réseau.</b> Parmi les réseaux de cette classe, Nevod est le seul conçu comme une messagerie complète pour le grand public, avec appels vocaux et vidéo.</p>
 <p>Un million de nouveaux utilisateurs ailleurs n'ajoutent pas un seul octet à votre nœud. Le nœud tourne sur du matériel domestique ordinaire, le réseau n'a pas de centre et le nœud lui-même ne transporte que du texte chiffré.</p>
@@ -363,7 +365,7 @@ TERMS = """
 """
 
 PAGES = {
-    "index": ("Nevod", "Nevod, première mise en œuvre de la Zero Knowledge Infrastructure : une messagerie dont le développeur n'a techniquement pas accès aux données des utilisateurs.", INDEX),
+    "index": ("Nevod", "Nevod, messagerie polycentrique (décentralisée), à faible charge par son architecture, de classe LL-0, et première mise en œuvre de la Zero Knowledge Infrastructure : son développeur n'a techniquement pas accès aux données des utilisateurs.", INDEX),
     "manifesto": ("Manifeste de la Zero Knowledge Infrastructure", "Le manifeste ZKI, fondement du développement de Nevod. Auteur : Kolpakov Andrey.", MANIFESTO),
     "compare": ("Comparaison", "Nevod face à Signal, Telegram et WhatsApp : pourquoi le chiffrement seul n'est pas ZKI.", COMPARE),
     "security": ("Sécurité et chiffrement", "Comment Nevod chiffre les messages, ce que traite un nœud et pourquoi aucun document d'exportation n'est nécessaire.", SECURITY),

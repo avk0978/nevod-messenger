@@ -17,9 +17,11 @@ Du kannst mit Menschen auf allen Nodes des Netzes schreiben, nicht nur auf deine
 
 1. Öffne Nevod. Die App fragt nach der Erlaubnis für Mitteilungen — erlaube sie, sonst erfährst du nichts von Nachrichten und Anrufen, solange Nevod geschlossen ist.
 2. Lies das Wichtigste aus den Nutzungsbedingungen, schalte **Ich akzeptiere die Nutzungsbedingungen** ein und tippe auf **Weiter**.
-3. **Netzwerk erkunden** öffnet sich — eine Liste offener Nodes. Hier kannst du dich umsehen: Nodes, ihre Bots und Seiten sind auch ohne Registrierung zugänglich. Solange du auf keinem Node registriert bist, stehen in der Liste nur die Nodes des Nevod-Projekts; die übrigen offenen Nodes des Netzes erscheinen nach der Registrierung — ihre Liste bekommt die App von deinem Node.
+3. **Netzwerk erkunden** öffnet sich — eine Liste offener Nodes. Beim ersten Start zeigt die App eine kurze Anleitung: was ein Node ist, wie du dich registrierst und wie man Karten austauscht; mit der Taste **?** oben links öffnest du sie wieder. Hier kannst du dich umsehen: Nodes und ihre Seiten sind auch ohne Registrierung zugänglich. Geschlossene Nodes sind mit einem Schloss 🔒 markiert — ihnen trittst du auf Einladung oder mit Zustimmung des Administrators bei. Solange du auf keinem Node registriert bist, stehen in der Liste nur die Nodes des Nevod-Projekts; die übrigen offenen Nodes des Netzes erscheinen nach der Registrierung — ihre Liste bekommt die App von deinem Node.
 4. Tippe auf **Chatten beginnen** (oben rechts).
 5. Gib **Dein Anzeigename** ein — so sehen dich andere. Tippe auf **Los geht's**.
+
+Tippst du vor der Registrierung auf einer Node-Seite auf einen Bot, fragt die App nach einem **Namen oder Spitznamen** und registriert dich auf diesem Node — ohne Namen ist keine Registrierung möglich. Ist der Node geschlossen, fragt die App zuerst, ob eine Anfrage an den Administrator gesendet werden soll.
 
 Fertig: Du bist auf dem Node **Nevod Open** registriert. In wenigen Sekunden kommt eine Begrüßungsnachricht von **administrator**, dem Konto der Node-Administration. Neben seinem Namen steht ein blaues ✓-Abzeichen.
 
@@ -39,7 +41,7 @@ Falls „In Nevod öffnen“ nicht funktioniert hat: Tippe in der App auf **Chat
 
 Ein Einladungscode gilt einmal und nur für begrenzte Zeit. Meldet die App „Ungültiger oder abgelaufener Code — hol dir einen neuen“, bitte um eine neue Einladung.
 
-Ist Nevod auf diesem Telefon schon auf einem anderen Node registriert, verschiebt dich die Einladung nicht von selbst: Eine Identität hat einen Heim-Node. Was zu tun ist — siehe [Kontakte](../contacts/), „Menschen auf anderen Nodes“.
+Ist Nevod auf diesem Telefon schon auf einem anderen Node registriert, verschiebt dich die Einladung nicht von selbst: Eine Identität hat einen Heim-Node. Was zu tun ist — siehe [Kontakte](../contacts/), „Menschen auf anderen Nodes“. Ist die Einladung für deinen eigenen Node, zeigt die App „Du bist auf diesem Node bereits registriert“ — es ist nichts zu tun.
 
 Manche Nodes nehmen auf Antrag auf: Dann zeigt die App **Warten auf Freigabe** — der Administrator des Nodes prüft deinen Antrag, und du bekommst eine Mitteilung.
 
@@ -50,7 +52,7 @@ Manche Nodes nehmen auf Antrag auf: Dann zeigt die App **Warten auf Freigabe** �
 | **Chats** | Deine Unterhaltungen. |
 | **Anrufe** | Anrufverlauf. |
 | **Kontakte** | Deine Gesprächspartner; hier ist auch **Kontakt hinzufügen**. |
-| **Nodes** | Netzwerk erkunden: Nodes, ihre Bots und Seiten. |
+| **Nodes** | Netzwerk erkunden: Nodes, ihre Bots und Seiten; geschlossene Nodes sind mit einem Schloss markiert. |
 | **Profil** | Dein Name und Avatar, deine Karte zum Austausch von Kontakten, Einladungen, Sicherheit. |
 
 ## Deine erste Nachricht

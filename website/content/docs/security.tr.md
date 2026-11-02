@@ -43,7 +43,7 @@ Tek bir sohbeti parolayla kilitleyebilirsiniz — o zaman kilidi açık telefonu
    - **Baskı altı parolası** — sohbeti açmaya zorlandığınız durumlar için. Gerçeğinin yerine bunu girerseniz bu sohbetteki yazışma telefonunuzdan **sessizce silinir** ve ekranda olağan "Yanlış parola" görünür — dışarıdan bakan için bir yazım hatası gibidir.
 3. Parolalar farklı olmalıdır. Değiştirmek için aynı yerde **Parolaları değiştir**.
 
-> Sohbet parolası yalnızca bu telefonda saklanır, üstelik parolanın kendisi değil, özeti (hash). **Unutulan parola kurtarılamaz** — ne sizin ne de geliştiricilerin elinden gelir — ve o sohbet bir daha açılamaz. Unutmayacağınız bir parola seçin. Baskı altı parolası yazışmayı yalnızca sizde siler: karşınızdakinde kalır.
+> Sohbet parolası yalnızca bu telefonda saklanır, üstelik parolanın kendisi değil, özeti (hash). **Unutulan parola kurtarılamaz** — ne sizin ne de geliştiricilerin elinden gelir. Parolayı unuttuysanız giriş ekranında **Parolayı mı unuttunuz?** düğmesine dokunun: bu sohbetteki yazışma telefondan silinir, parola kilidi kaldırılır ve sohbet yeniden — boş olarak — açılır. Unutmayacağınız bir parola seçin. Baskı altı parolası yazışmayı yalnızca sizde siler: karşınızdakinde kalır.
 
 ## Yabancılara karşı koruma
 

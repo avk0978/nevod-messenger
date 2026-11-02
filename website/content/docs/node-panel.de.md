@@ -26,7 +26,7 @@ Den Namen sehen Nutzer in der App. Andere Nodes des Netzes erfahren den neuen Na
 
 ## 2. Entscheide, wen du zulässt
 
-**Einstellungen → Zulassungsmodus für Zellen.** Ein neuer Node arbeitet standardmäßig **auf Einladung**: Registrieren kann man sich nur mit einem Code, den du ausgegeben hast. Meist ist das genau richtig.
+**Einstellungen → Zulassungsmodus für Zellen.** Ein neuer Node arbeitet standardmäßig **auf Einladung**: Registrieren kann man sich nur mit einem Code, den du ausgegeben hast. Meist ist das genau richtig. In der App, unter **Netzwerk erkunden**, ist ein Node im Einladungs- oder Freigabemodus mit einem Schloss 🔒 markiert — so sehen Menschen vorher, dass sie sich nicht einfach registrieren können.
 
 | Modus im Panel | Wer sich registrieren kann | Wer Einladungscodes erstellt |
 |---|---|---|

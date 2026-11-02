@@ -104,6 +104,10 @@ final class AppStore: ObservableObject {
     // of leaving the waiting screen up forever with no explanation. Reset on every fresh
     // join_request_ack, so it can't leak into a later resubmitted request.
     @Published var joinRequestDenied: Bool = false
+    // Signing up from a bot on a planet (registerAnonymously) reached a node that admits only
+    // with the administrator's approval: BotSignUpSheet asks before the request goes out.
+    @Published var awaitingJoinConfirm = false
+    private var confirmBeforeJoinRequest = false
     // Set the moment the user taps "Request access", cleared only once join_request_ack(ok:true)
     // actually arrives — see sendJoinRequest/attemptSendJoinRequest's own comments for why this
     // exists: a device log (2026-09-11) showed the packet silently never leaving the client
@@ -498,16 +502,6 @@ final class AppStore: ObservableObject {
         startClient(id, inviteCode: inviteCode)
     }
 
-    /// Silent registration for the "message a public bot" path — no form, no user-chosen name.
-    /// "Guest" alone would collide (display_name is unique per node, see node.py's
-    /// _handle_cell_register) the moment a second anonymous visitor showed up — the cellId
-    /// prefix guarantees uniqueness without a network round trip. Rename later via Profile.
-    ///
-    /// nodeAddr MUST be the address of the node hosting the bot being messaged — startClient()
-    /// connects via IdentityStore.nodeRoutes, which without this would still hold whatever
-    /// address was last used (a stale/unreachable route from earlier testing, the shipped
-    /// default, anything) and silently try to register there instead, hanging on "Подключение…"
-    /// forever with no visible reason why.
     // MARK: - Invite links (nevod://join?t=…, from nevod.network/join/)
 
     /// Invite opened from a link, waiting for SetupView to pick it up (NodesView presents the
@@ -516,6 +510,8 @@ final class AppStore: ObservableObject {
     /// Node host of an invite link that arrived while this identity is already a member of a
     /// node — RootView explains instead of silently moving an established identity.
     @Published var inviteLinkForOtherNode: String? = nil
+    // An invitation to the node this identity is already a member of — nothing to do.
+    @Published var inviteLinkForOwnNode: String? = nil
 
     func handleOpenURL(_ url: URL) {
         guard let raw = cellInviteTokenFromLink(url.absoluteString),
@@ -534,8 +530,23 @@ final class AppStore: ObservableObject {
             client?.connect(to: [token.address], pinnedFingerprint: token.fingerprint,
                             inviteCode: token.code)
         } else {
-            inviteLinkForOtherNode = String(token.address.split(separator: "/").first ?? "")
+            let host = Self.inviteHost(token.address)
+            let ownHosts = (IdentityStore.nodeRoutes + [client?.activeAddr ?? ""]).map(Self.inviteHost)
+            // Was "invitation to another node" even for one's own node (WORK_PLAN 2.7).
+            if ownHosts.contains(host) {
+                inviteLinkForOwnNode = host
+            } else {
+                inviteLinkForOtherNode = host
+            }
         }
+    }
+
+    /// "wss://Node1.example.org:443/nevod-ws" → "node1.example.org", to compare node addresses.
+    private static func inviteHost(_ address: String) -> String {
+        var a = address.lowercased()
+        if let r = a.range(of: "://") { a = String(a[r.upperBound...]) }
+        a = String(a.split(separator: "/").first ?? "")
+        return String(a.split(separator: ":").first ?? "")
     }
 
     // MARK: - BYOK AI bots
@@ -657,10 +668,52 @@ final class AppStore: ObservableObject {
         }
     }
 
-    func registerAnonymously(nodeAddr: String) {
-        guard !isRegistered, let id = identity else { return }
+    /// Sign-up from a bot on a planet (BotSignUpSheet). The name is required: it used to be a
+    /// generated "Guest-xxxxxx", and on a closed node the join request then went out on its
+    /// own — the visitor only wanted to try a bot (2026-10-31, Guest-a212bd on Dev Planet).
+    /// On an admin-approval node, BotSignUpSheet asks first (awaitingJoinConfirm).
+    ///
+    /// nodeAddr MUST be the address of the node hosting the bot — startClient() connects via
+    /// IdentityStore.nodeRoutes, which would otherwise still hold whatever address was last
+    /// used and silently try to register there instead. Same for a fingerprint pinned for
+    /// another node by an earlier invite link.
+    func registerAnonymously(nodeAddr: String, displayName: String) {
+        guard !isRegistered, identity != nil else { return }
         IdentityStore.nodeAddr = nodeAddr
-        try? createIdentity(displayName: "Guest-\(id.cellId.prefix(6))")
+        IdentityStore.nodeFingerprint = ""
+        confirmBeforeJoinRequest = true
+        awaitingJoinConfirm = false
+        try? createIdentity(displayName: displayName)
+    }
+
+    /// The visitor agreed to ask the administrator (BotSignUpSheet).
+    func confirmJoinRequest() {
+        confirmBeforeJoinRequest = false
+        awaitingJoinConfirm = false
+        pendingJoinRequestNote = ""
+        attemptSendJoinRequest()
+    }
+
+    /// Back to a browsing-only identity, as before signing up: the same keys, no name, no
+    /// home node. For a sign-up that didn't happen — cancelled, name taken, invite-only
+    /// node, or the administrator denied the request (closing "Request denied"; otherwise
+    /// every launch would ask that node again).
+    func abandonRegistration() {
+        nlog("abandonRegistration name=«\(IdentityStore.displayName)» status=\(connectionStatus)")
+        client?.disconnect()
+        client = nil
+        cancellables.removeAll()
+        connectionStatus = "disconnected"
+        IdentityStore.displayName = ""
+        isRegistered = false
+        IdentityStore.joinRequestPending = false
+        joinRequestPending = false
+        joinRequestDenied = false
+        pendingInviteMode = nil
+        pendingJoinRequestNote = nil
+        confirmBeforeJoinRequest = false
+        awaitingJoinConfirm = false
+        pendingChatCellId = nil
     }
 
     /// invite_mode="admin" registration channel — auto-fired from onInviteRequired the first
@@ -796,6 +849,9 @@ final class AppStore: ObservableObject {
                 nlog("onInviteRequired inviteMode=\(inviteMode)")
                 self?.client?.status = "invite required"
                 self?.pendingInviteMode = inviteMode
+                if let nodeId = self?.client?.nodeId, !nodeId.isEmpty {
+                    self?.noteInviteMode(inviteMode, nodeId: nodeId)
+                }
                 // admin-approval nodes: send the join request automatically, no separate
                 // "Request access" tap. There's no real decision for the user to make here —
                 // they already chose to join this node — and a manual button only added an
@@ -805,6 +861,10 @@ final class AppStore: ObservableObject {
                 // NACK just retries the same request over whatever socket it arrived on (see
                 // sendJoinRequest's comment).
                 if inviteMode == "admin" && self?.pendingJoinRequestNote == nil {
+                    if self?.confirmBeforeJoinRequest == true {
+                        self?.awaitingJoinConfirm = true
+                        return
+                    }
                     self?.pendingJoinRequestNote = ""
                 }
                 self?.attemptSendJoinRequest()
@@ -813,7 +873,21 @@ final class AppStore: ObservableObject {
         c.onNameTaken = { [weak self] in
             Task { @MainActor in self?.handleNameTaken() }
         }
-        c.onJoinRequestAck = { [weak self] ok, _ in
+        c.onJoinRequestAck = { [weak self] ok, reason in
+            // Denied while this device was offline: the node says so when the request is
+            // re-sent (the real-time JOIN_REQUEST_RESOLVED only reaches a connected client).
+            if !ok && reason == "denied" {
+                Task { @MainActor in
+                    // Nothing more to ask this node: it kept reconnecting and re-asking
+                    // until "Close" (node1 log 2026-11-01).
+                    self?.client?.disconnect()
+                    IdentityStore.joinRequestPending = false
+                    self?.joinRequestPending = false
+                    self?.pendingInviteMode = nil
+                    self?.joinRequestDenied = true
+                }
+                return
+            }
             guard ok else { return }
             Task { @MainActor in
                 self?.pendingJoinRequestNote = nil
@@ -836,6 +910,7 @@ final class AppStore: ObservableObject {
                     // status sink is what clears joinRequestPending once that lands.
                     self?.startClient(id)
                 } else {
+                    self?.client?.disconnect()
                     IdentityStore.joinRequestPending = false
                     self?.joinRequestPending = false
                     self?.pendingInviteMode = nil
@@ -890,6 +965,10 @@ final class AppStore: ObservableObject {
                     self?.flushPendingBlockSync()
                     self?.sendOwnAvatarWhereMissing()
                     Task { await self?.fetchOfficialAccounts() }
+                    // Explore Network asks for the node list when it appears — before the
+                    // connection is up that request fails, and the planets (and their locks)
+                    // waited for a manual refresh (device test 2026-11-01).
+                    Task { await self?.fetchPublicNodes() }
                     if let pending = self?.pendingDisplayNameUpdate {
                         self?.client?.updateDisplayName(pending)
                         self?.pendingDisplayNameUpdate = nil
@@ -1882,12 +1961,15 @@ final class AppStore: ObservableObject {
             let isLast = i == dataChunks
             // Only the last chunk is push-eligible (type "msg") — the node can't see
             // chunk index/total itself (E2E encrypted), so it relies on us to mark
-            // every other fragment "msg_chunk" to avoid one push per chunk.
+            // every other fragment "msg_chunk" to avoid one push per chunk. An avatar is no
+            // message at all, so none of its chunks is (a new avatar pushed "New message" to
+            // every contact — device test 2026-11-02).
+            let pushable = isLast && headerTag != "avatar"
             try await c.send(toCellId: contact.cellId, toNodeId: contact.nodeId ?? c.nodeId,
                              recipientEncPub: contact.encPub,
                              text: "chunk:\(transferId):\(i)/\(totalChunks)/\(rawChunkSize)\n\(b64)",
                              id: isLast ? msgId : nil,
-                             type: isLast ? "msg" : "msg_chunk", fileData: true)
+                             type: pushable ? "msg" : "msg_chunk", fileData: true)
 
             sentBytes += raw.count
             let p  = Double(sentBytes) / Double(max(1, fileSize))
@@ -2514,8 +2596,37 @@ final class AppStore: ObservableObject {
     /// "flash empty" on relaunch for chat-relevant identity resolution); this is just an
     /// on-demand browse list, re-fetched whenever NodesView appears.
     func fetchPublicNodes() async {
+        // No home node yet (a new visitor): the planets come from the curator's list, which
+        // says nothing about how a node admits people — ask Nevod Open for the modes so the
+        // closed ones carry their lock (device test 2026-11-01). The list itself stays the
+        // curator's until sign-up, as the docs describe.
+        if client?.isConnected != true, let id = identity {
+            let modes = await NodeCellsBrowser.fetchInviteModes(nodeAddr: IdentityStore.defaultNodeAddr, identity: id)
+            for (nodeId, mode) in modes { noteInviteMode(mode, nodeId: nodeId) }
+            return
+        }
         guard let nodes = try? await client?.getPublicNodes() else { return }
         publicNodes = nodes
+        for n in nodes where !n.inviteMode.isEmpty { noteInviteMode(n.inviteMode, nodeId: n.nodeId) }
+    }
+
+    /// How each node admits new members ("open" / "admin" / "delegated"), from the node list
+    /// and from the node itself when its planet is opened. Kept across launches: a node that
+    /// is only in the curator's list (no live connection yet) otherwise shows no lock until
+    /// its planet is opened again.
+    @Published private(set) var nodeInviteModes: [String: String] =
+        (LocalDefaults.shared.dictionary(forKey: "nevod.nodeInviteModes") as? [String: String]) ?? [:]
+
+    func noteInviteMode(_ mode: String, nodeId: String) {
+        guard nodeInviteModes[nodeId] != mode else { return }
+        nodeInviteModes[nodeId] = mode
+        LocalDefaults.shared.set(nodeInviteModes, forKey: "nevod.nodeInviteModes")
+    }
+
+    /// A node that doesn't let just anyone in: by invitation or with the administrator's approval.
+    func isClosedNode(_ nodeId: String) -> Bool {
+        let mode = nodeInviteModes[nodeId] ?? ""
+        return !mode.isEmpty && mode != "open"
     }
 
     /// Live refresh of the curator-signed bootstrap manifest — triggered from NodesView.refresh()

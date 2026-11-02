@@ -43,7 +43,7 @@ Puedes bloquear un chat con contraseña: así, aunque alguien tenga tu teléfono
    - **Contraseña de coacción**: para cuando te obliguen a abrir el chat. Si la introduces en lugar de la verdadera, la conversación de este chat se **borra en silencio** de tu teléfono y en la pantalla aparece el habitual «Contraseña incorrecta»; para quien mira, parece un error al teclear.
 3. Las contraseñas deben ser distintas. Para cambiarlas, en el mismo sitio: **Cambiar contraseñas**.
 
-> La contraseña del chat se guarda solo en este teléfono, y no la contraseña en sí sino su hash. **Una contraseña olvidada no se puede recuperar**, ni por ti ni por los desarrolladores, y el chat ya no podrá abrirse. Elige una contraseña que no vayas a olvidar. La contraseña de coacción borra la conversación solo en tu teléfono: la otra persona la conserva.
+> La contraseña del chat se guarda solo en este teléfono, y no la contraseña en sí sino su hash. **Una contraseña olvidada no se puede recuperar**, ni por ti ni por los desarrolladores. Si la olvidaste, toca **¿Olvidaste la contraseña?** en la pantalla de acceso: la conversación de este chat se borra del teléfono, se quita la protección con contraseña y el chat vuelve a abrirse, ya vacío. Elige una contraseña que no vayas a olvidar. La contraseña de coacción borra la conversación solo en tu teléfono: la otra persona la conserva.
 
 ## Protección frente a desconocidos
 

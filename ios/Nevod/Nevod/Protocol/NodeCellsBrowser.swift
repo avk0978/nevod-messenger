@@ -24,8 +24,39 @@ struct PublishedCell: Identifiable {
 /// registration behind on a node you don't otherwise use.
 enum NodeCellsBrowser {
     static func fetch(nodeAddr: String, expectedFingerprint: String?,
-                      identity: NevdIdentity) async throws -> [PublishedCell] {
-        nlog("NodeCellsBrowser fetch addr=\(nodeAddr) pinned=\(expectedFingerprint?.prefix(16).description ?? "nil")")
+                      identity: NevdIdentity,
+                      onInviteMode: (String) -> Void = { _ in }) async throws -> [PublishedCell] {
+        guard let resp = try await exchange(nodeAddr: nodeAddr, expectedFingerprint: expectedFingerprint,
+                                            identity: identity, request: "node_cells_request"),
+              resp.type == "node_cells_response" else { return [] }
+        let cells = parseCellsPayload(resp.payload)
+        if let mode = (try? decodePayload(resp.payload))?["invite_mode"].string { onInviteMode(mode) }
+        nlog("NodeCellsBrowser addr=\(nodeAddr) parsed \(cells.count) cell(s)")
+        return cells
+    }
+
+    /// How the nodes in a node's list admit new members (node_id → "open"/"admin"/
+    /// "delegated"), for a visitor with no home node yet: without it, the curator's planets
+    /// showed no lock until each one was opened (device test 2026-11-01). Asked of one node
+    /// (Nevod Open) over the same unregistered one-off connection.
+    static func fetchInviteModes(nodeAddr: String, identity: NevdIdentity) async -> [String: String] {
+        guard let resp = try? await exchange(nodeAddr: nodeAddr, expectedFingerprint: nil,
+                                             identity: identity, request: "node_list_request"),
+              resp.type == "node_list_response",
+              let nodes = (try? decodePayload(resp.payload))?["nodes"].array else { return [:] }
+        var modes: [String: String] = [:]
+        for n in nodes {
+            if let id = n["node_id"].string, let mode = n["invite_mode"].string, !mode.isEmpty {
+                modes[id] = mode
+            }
+        }
+        return modes
+    }
+
+    /// Connect, authenticate, send one request, return the first reply — never cell_register.
+    private static func exchange(nodeAddr: String, expectedFingerprint: String?,
+                                 identity: NevdIdentity, request: String) async throws -> NevdPacket? {
+        nlog("NodeCellsBrowser \(request) addr=\(nodeAddr) pinned=\(expectedFingerprint?.prefix(16).description ?? "nil")")
         guard let url = URL(string: "wss://\(nodeAddr)"), let host = url.host else {
             nlog("NodeCellsBrowser FAILED invalid address \(nodeAddr)")
             throw NevdError.invalidAddress
@@ -77,18 +108,15 @@ enum NodeCellsBrowser {
             }
 
             let nodeId = Hex.encode(X_peer)
-            var req = makePacket(type: "node_cells_request", payload: Data(),
+            var req = makePacket(type: request, payload: Data(),
                                  from: "\(cid)@\(nodeId)", to: nodeId)
             try signPacket(&req, seed: identity.signingPriv)
             try await ws.send(packPacket(req))
-            nlog("NodeCellsBrowser addr=\(nodeAddr) auth OK, sent node_cells_request")
+            nlog("NodeCellsBrowser addr=\(nodeAddr) auth OK, sent \(request)")
 
             let resp = try unpackPacket(try await ws.receive())
             nlog("NodeCellsBrowser addr=\(nodeAddr) received type=\(resp.type)")
-            guard resp.type == "node_cells_response" else { return [] }
-            let cells = parseCellsPayload(resp.payload)
-            nlog("NodeCellsBrowser addr=\(nodeAddr) parsed \(cells.count) cell(s)")
-            return cells
+            return resp
         } catch {
             nlog("NodeCellsBrowser addr=\(nodeAddr) FAILED error=\(error) "
                  + "detail=\(fullErrorDetail(error))")

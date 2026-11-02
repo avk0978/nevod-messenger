@@ -2480,7 +2480,7 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Очистить лог"
+            "value" : "Очистить журнал"
           }
         },
         "tr" : {
@@ -11547,6 +11547,1826 @@
         }
       }
     },
+    "Имя или псевдоним" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Name oder Spitzname"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Name or nickname"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nombre o apodo"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nom ou pseudo"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nome o soprannome"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Имя или псевдоним"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ad veya takma ad"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ім’я або псевдонім"
+          }
+        }
+      }
+    },
+    "Ваше имя" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dein Name"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your name"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tu nombre"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Votre nom"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Il tuo nome"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ваше имя"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Adınız"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ваше ім’я"
+          }
+        }
+      }
+    },
+    "Чтобы написать боту, зарегистрируйтесь на узле «%@». Введите имя или псевдоним — его увидят ваши собеседники. Без имени регистрация невозможна." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Um dem Bot zu schreiben, registriere dich auf dem Node „%@“. Gib einen Namen oder Spitznamen ein — deine Gesprächspartner sehen ihn. Ohne Namen ist keine Registrierung möglich."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "To message the bot, sign up on the node “%@”. Enter a name or nickname — the people you talk to will see it. You can’t sign up without a name."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Para escribir al bot, regístrate en el nodo «%@». Escribe un nombre o apodo: lo verán las personas con las que hables. Sin nombre no es posible registrarse."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pour écrire au bot, inscrivez-vous sur le nœud « %@ ». Saisissez un nom ou un pseudo : vos interlocuteurs le verront. Sans nom, l’inscription est impossible."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Per scrivere al bot, registrati sul nodo «%@». Inserisci un nome o un soprannome: lo vedranno le persone con cui parli. Senza nome non è possibile registrarsi."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Чтобы написать боту, зарегистрируйтесь на узле «%@». Введите имя или псевдоним — его увидят ваши собеседники. Без имени регистрация невозможна."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bota yazmak için “%@” düğümüne kaydolun. Bir ad veya takma ad girin — konuştuğunuz kişiler bunu görür. Ad olmadan kayıt mümkün değildir."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Щоб написати боту, зареєструйтеся на вузлі «%@». Введіть ім’я або псевдонім — його побачать ваші співрозмовники. Без імені реєстрація неможлива."
+          }
+        }
+      }
+    },
+    "Узел «%@» принимает новых участников только с одобрения администратора. Отправить заявку на вступление?" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Der Node „%@“ nimmt neue Mitglieder nur mit Zustimmung des Administrators auf. Beitrittsanfrage senden?"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The node “%@” admits new members only with the administrator’s approval. Send a request to join?"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El nodo «%@» solo admite nuevos miembros con la aprobación del administrador. ¿Enviar una solicitud para unirte?"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Le nœud « %@ » n’accepte de nouveaux membres qu’avec l’accord de l’administrateur. Envoyer une demande d’adhésion ?"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Il nodo «%@» accetta nuovi membri solo con l’approvazione dell’amministratore. Inviare una richiesta di adesione?"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Узел «%@» принимает новых участников только с одобрения администратора. Отправить заявку на вступление?"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“%@” düğümü yeni üyeleri yalnızca yöneticinin onayıyla kabul ediyor. Katılma isteği gönderilsin mi?"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Вузол «%@» приймає нових учасників лише за схваленням адміністратора. Надіслати заявку на вступ?"
+          }
+        }
+      }
+    },
+    "Отправить заявку" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anfrage senden"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Send request"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enviar solicitud"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Envoyer la demande"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Invia richiesta"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Отправить заявку"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "İstek gönder"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Надіслати заявку"
+          }
+        }
+      }
+    },
+    "Узел «%@» принимает новых участников только по приглашению." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Der Node „%@“ nimmt neue Mitglieder nur auf Einladung auf."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The node “%@” admits new members by invitation only."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El nodo «%@» solo admite nuevos miembros por invitación."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Le nœud « %@ » n’accepte de nouveaux membres que sur invitation."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Il nodo «%@» accetta nuovi membri solo su invito."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Узел «%@» принимает новых участников только по приглашению."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“%@” düğümü yeni üyeleri yalnızca davetle kabul ediyor."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Вузол «%@» приймає нових учасників лише за запрошенням."
+          }
+        }
+      }
+    },
+    "Не удалось связаться с узлом. Попробуйте позже." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Der Node ist nicht erreichbar. Versuche es später erneut."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Couldn’t reach the node. Try again later."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No se pudo contactar con el nodo. Inténtalo más tarde."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Impossible de joindre le nœud. Réessayez plus tard."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Impossibile raggiungere il nodo. Riprova più tardi."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Не удалось связаться с узлом. Попробуйте позже."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Düğüme ulaşılamadı. Daha sonra tekrar deneyin."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Не вдалося зв’язатися з вузлом. Спробуйте пізніше."
+          }
+        }
+      }
+    },
+    "Как зарегистрироваться" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "So registrierst du dich"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "How to sign up"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cómo registrarse"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Comment s’inscrire"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Come registrarsi"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Как зарегистрироваться"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nasıl kaydolunur"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Як зареєструватися"
+          }
+        }
+      }
+    },
+    "Nevod — сеть узлов" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nevod ist ein Netz aus Nodes"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nevod is a network of nodes"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nevod es una red de nodos"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nevod est un réseau de nœuds"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nevod è una rete di nodi"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nevod — сеть узлов"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nevod bir düğüm ağıdır"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nevod — мережа вузлів"
+          }
+        }
+      }
+    },
+    "Нет приглашения" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Keine Einladung"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No invitation"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sin invitación"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pas d’invitation"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nessun invito"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Нет приглашения"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Davet yok"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Немає запрошення"
+          }
+        }
+      }
+    },
+    "Нажмите «Начать переписку» и введите имя или псевдоним — вы попадёте на узел Nevod Open, он открыт для всех." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tippe auf „Chatten beginnen“ und gib einen Namen oder Spitznamen ein — du landest auf dem Node Nevod Open, der für alle offen ist."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tap “Start messaging” and enter a name or nickname — you’ll join the Nevod Open node, which is open to everyone."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Toca «Empezar a chatear» y escribe un nombre o apodo: entrarás en el nodo Nevod Open, abierto a todos."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Touchez « Commencer à discuter » et saisissez un nom ou un pseudo : vous rejoindrez le nœud Nevod Open, ouvert à tous."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tocca «Inizia a scrivere» e inserisci un nome o un soprannome: entrerai nel nodo Nevod Open, aperto a tutti."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Нажмите «Начать переписку» и введите имя или псевдоним — вы попадёте на узел Nevod Open, он открыт для всех."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“Mesajlaşmaya başla”ya dokunun ve bir ad veya takma ad girin — herkese açık Nevod Open düğümüne katılırsınız."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Натисніть «Почати листування» і введіть ім’я або псевдонім — ви потрапите на вузол Nevod Open, він відкритий для всіх."
+          }
+        }
+      }
+    },
+    "Есть приглашение" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Du hast eine Einladung"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You have an invitation"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tienes una invitación"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vous avez une invitation"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hai un invito"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Есть приглашение"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Davetiniz var"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Є запрошення"
+          }
+        }
+      }
+    },
+    "Откройте ссылку из приглашения или введите код: «Начать переписку» → «Есть код приглашения?»." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Öffne den Link aus der Einladung oder gib den Code ein: „Chatten beginnen“ → „Hast du einen Einladungscode?“."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open the link from the invitation or enter the code: “Start messaging” → “Have an invite code?”."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abre el enlace de la invitación o escribe el código: «Empezar a chatear» → «¿Tienes un código de invitación?»."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ouvrez le lien de l’invitation ou saisissez le code : « Commencer à discuter » → « Vous avez un code d'invitation ? »."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apri il link dell’invito o inserisci il codice: «Inizia a scrivere» → «Hai un codice di invito?»."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Откройте ссылку из приглашения или введите код: «Начать переписку» → «Есть код приглашения?»."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Davetteki bağlantıyı açın veya kodu girin: “Mesajlaşmaya başla” → “Davet kodunuz var mı?”."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Відкрийте посилання із запрошення або введіть код: «Почати листування» → «Маєте код запрошення?»."
+          }
+        }
+      }
+    },
+    "Частные узлы принимают новых участников по приглашению или с одобрения администратора." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Private Nodes nehmen neue Mitglieder auf Einladung oder mit Zustimmung des Administrators auf."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Private nodes admit new members by invitation or with the administrator’s approval."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Los nodos privados admiten nuevos miembros por invitación o con la aprobación del administrador."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Les nœuds privés acceptent de nouveaux membres sur invitation ou avec l’accord de l’administrateur."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "I nodi privati accettano nuovi membri su invito o con l’approvazione dell’amministratore."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Частные узлы принимают новых участников по приглашению или с одобрения администратора."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Özel düğümler yeni üyeleri davetle veya yöneticinin onayıyla kabul eder."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Приватні вузли приймають нових учасників за запрошенням або за схваленням адміністратора."
+          }
+        }
+      }
+    },
+    "Дальше" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Weiter"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Next"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Siguiente"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Suivant"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Avanti"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Дальше"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "İleri"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Далі"
+          }
+        }
+      }
+    },
+    "Осмотреться" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Umsehen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Look around"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Echar un vistazo"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Faire un tour"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dai un’occhiata"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Осмотреться"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Göz at"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Роздивитися"
+          }
+        }
+      }
+    },
+    "Пропустить" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Überspringen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skip"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Omitir"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Passer"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Salta"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Пропустить"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Atla"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Пропустити"
+          }
+        }
+      }
+    },
+    "Узел — сервер, через который идут ваши сообщения. Вы регистрируетесь на одном узле — это ваш дом в сети. Писать можно людям с любых узлов — для этого нужна карточка собеседника: его контактные данные в Nevod." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ein Node ist der Server, über den deine Nachrichten laufen. Du registrierst dich auf einem Node — das ist dein Zuhause im Netz. Schreiben kannst du Menschen auf jedem Node — dafür brauchst du die Karte der anderen Person: ihre Kontaktdaten in Nevod."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A node is the server your messages go through. You sign up on one node — it’s your home on the network. You can write to people on any node — for that you need the other person’s card: their contact details in Nevod."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un nodo es el servidor por el que pasan tus mensajes. Te registras en un nodo: es tu casa en la red. Puedes escribir a personas de cualquier nodo; para ello necesitas la tarjeta de la otra persona: sus datos de contacto en Nevod."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un nœud est le serveur par lequel passent vos messages. Vous vous inscrivez sur un nœud : c’est votre maison sur le réseau. Vous pouvez écrire aux personnes de n’importe quel nœud — il vous faut pour cela la carte de votre interlocuteur : ses coordonnées dans Nevod."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un nodo è il server attraverso cui passano i tuoi messaggi. Ti registri su un nodo: è la tua casa nella rete. Puoi scrivere a persone di qualsiasi nodo; per farlo ti serve la scheda dell’altra persona: i suoi dati di contatto in Nevod."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Узел — сервер, через который идут ваши сообщения. Вы регистрируетесь на одном узле — это ваш дом в сети. Писать можно людям с любых узлов — для этого нужна карточка собеседника: его контактные данные в Nevod."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Düğüm, mesajlarınızın üzerinden geçtiği sunucudur. Bir düğüme kaydolursunuz — orası ağdaki eviniz olur. Her düğümdeki kişilere yazabilirsiniz — bunun için karşınızdakinin kartı, yani Nevod'daki iletişim bilgileri gerekir."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Вузол — сервер, через який ідуть ваші повідомлення. Ви реєструєтеся на одному вузлі — це ваш дім у мережі. Писати можна людям з будь-яких вузлів — для цього потрібна картка співрозмовника: його контактні дані в Nevod."
+          }
+        }
+      }
+    },
+    "Карточка вместо номера телефона" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eine Karte statt Telefonnummer"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A card instead of a phone number"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Una tarjeta en lugar del número de teléfono"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Une carte au lieu d’un numéro de téléphone"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Una scheda al posto del numero di telefono"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Карточка вместо номера телефона"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Telefon numarası yerine kart"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Картка замість номера телефону"
+          }
+        }
+      }
+    },
+    "В Nevod нет номеров телефонов и почты. Вместо них у вас карточка контакта — ваш идентификатор в сети: по ней собеседники находят и добавляют вас." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nevod kennt keine Telefonnummern und keine E-Mail. Stattdessen hast du eine Kontaktkarte — deine Kennung im Netz: Darüber finden und fügen dich andere hinzu."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nevod has no phone numbers or e-mail. Instead you have a contact card — your identifier on the network: people use it to find and add you."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "En Nevod no hay números de teléfono ni correo. En su lugar tienes una tarjeta de contacto, tu identificador en la red: con ella los demás te encuentran y te añaden."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nevod n’utilise ni numéro de téléphone ni e-mail. À la place, vous avez une carte de contact — votre identifiant sur le réseau : c’est avec elle qu’on vous trouve et vous ajoute."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "In Nevod non ci sono numeri di telefono né e-mail. Al loro posto hai una scheda contatto, il tuo identificativo nella rete: con essa gli altri ti trovano e ti aggiungono."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "В Nevod нет номеров телефонов и почты. Вместо них у вас карточка контакта — ваш идентификатор в сети: по ней собеседники находят и добавляют вас."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nevod'da telefon numarası ve e-posta yoktur. Onların yerine bir kişi kartınız vardır — ağdaki kimliğiniz: insanlar sizi onunla bulur ve ekler."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "У Nevod немає номерів телефонів і пошти. Замість них у вас картка контакту — ваш ідентифікатор у мережі: за нею співрозмовники знаходять і додають вас."
+          }
+        }
+      }
+    },
+    "Показать" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zeigen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Show"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostrar"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Montrer"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostra"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Показать"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Göster"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Показати"
+          }
+        }
+      }
+    },
+    "Профиль → «Поделиться карточкой»: на экране появится QR-код и сама карточка. Собеседник сканирует QR-код своим телефоном." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Profil → „Meine Karte teilen“: Der Bildschirm zeigt einen QR-Code und die Karte selbst. Die andere Person scannt den QR-Code mit ihrem Telefon."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Profile → “Share my card”: the screen shows a QR code and the card itself. The other person scans the QR code with their phone."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Perfil → «Compartir mi tarjeta»: en pantalla aparecen un código QR y la tarjeta. La otra persona escanea el código QR con su teléfono."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Profil → « Partager ma carte » : l’écran affiche un QR code et la carte elle-même. Votre interlocuteur scanne le QR code avec son téléphone."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Profilo → «Condividi la mia scheda»: sullo schermo compaiono un codice QR e la scheda stessa. L’altra persona scansiona il codice QR con il suo telefono."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Профиль → «Поделиться карточкой»: на экране появится QR-код и сама карточка. Собеседник сканирует QR-код своим телефоном."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Profil → “Kartımı paylaş”: ekranda bir QR kodu ve kartın kendisi görünür. Karşınızdaki QR kodu kendi telefonuyla tarar."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Профіль → «Поділитися карткою»: на екрані з’явиться QR-код і сама картка. Співрозмовник сканує QR-код своїм телефоном."
+          }
+        }
+      }
+    },
+    "Отправить" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Senden"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Send"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enviar"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Envoyer"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Invia"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Отправить"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gönder"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Надіслати"
+          }
+        }
+      }
+    },
+    "Там же «Скопировать» или «Поделиться…»: отправьте карточку текстом — почтой, в SMS, в другом мессенджере." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Auf demselben Bildschirm „In die Zwischenablage kopieren“ oder „Teilen…“: Schick die Karte als Text — per E-Mail, SMS oder über einen anderen Messenger."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "On the same screen, “Copy to clipboard” or “Share…”: send the card as text — by e-mail, SMS or another messenger."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "En la misma pantalla, «Copiar al portapapeles» o «Compartir…»: envía la tarjeta como texto, por correo, SMS u otra app de mensajería."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sur le même écran, « Copier dans le presse-papiers » ou « Partager… » : envoyez la carte sous forme de texte — par e-mail, SMS ou une autre messagerie."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nella stessa schermata, «Copia negli appunti» o «Condividi…»: invia la scheda come testo, per e-mail, SMS o con un’altra app di messaggistica."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Там же «Скопировать» или «Поделиться…»: отправьте карточку текстом — почтой, в SMS, в другом мессенджере."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aynı ekranda “Panoya kopyala” veya “Paylaş…”: kartı metin olarak gönderin — e-postayla, SMS ile ya da başka bir mesajlaşma uygulamasıyla."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Там само «Скопіювати» або «Поділитися…»: надішліть картку текстом — поштою, в SMS, в іншому месенджері."
+          }
+        }
+      }
+    },
+    "Добавить собеседника" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jemanden hinzufügen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add someone"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Añadir a alguien"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ajouter quelqu’un"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aggiungere qualcuno"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Добавить собеседника"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Birini ekleyin"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Додати співрозмовника"
+          }
+        }
+      }
+    },
+    "Контакты → «Добавить контакт» (значок с плюсом): отсканируйте QR-код собеседника или вставьте присланную им карточку." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kontakte → „Kontakt hinzufügen“ (das Symbol mit Plus): Scanne den QR-Code der anderen Person oder füge die Karte ein, die sie dir geschickt hat."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Contacts → “Add Contact” (the icon with a plus): scan the other person’s QR code or paste the card they sent you."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Contactos → «Añadir contacto» (el icono con un más): escanea el código QR de la otra persona o pega la tarjeta que te envió."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Contacts → « Ajouter un contact » (l’icône avec un plus) : scannez le QR code de votre interlocuteur ou collez la carte qu’il vous a envoyée."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Contatti → «Aggiungi contatto» (l’icona con il più): scansiona il codice QR dell’altra persona o incolla la scheda che ti ha inviato."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Контакты → «Добавить контакт» (значок с плюсом): отсканируйте QR-код собеседника или вставьте присланную им карточку."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kişiler → “Kişi ekle” (artılı simge): karşınızdakinin QR kodunu tarayın veya size gönderdiği kartı yapıştırın."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Контакти → «Додати контакт» (значок із плюсом): відскануйте QR-код співрозмовника або вставте надіслану ним картку."
+          }
+        }
+      }
+    },
+    "Забыли пароль?" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Passwort vergessen?"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Forgot password?"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "¿Olvidaste la contraseña?"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mot de passe oublié ?"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Password dimenticata?"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Забыли пароль?"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Parolayı mı unuttunuz?"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Забули пароль?"
+          }
+        }
+      }
+    },
+    "Удалить переписку и снять защиту?" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chatverlauf löschen und Sperre aufheben?"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete the chat history and remove the lock?"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "¿Eliminar la conversación y quitar la protección?"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Supprimer la conversation et retirer la protection ?"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eliminare la conversazione e togliere la protezione?"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Удалить переписку и снять защиту?"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sohbet geçmişi silinsin ve kilit kaldırılsın mı?"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Видалити листування і зняти захист?"
+          }
+        }
+      }
+    },
+    "Удалить переписку" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chatverlauf löschen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete chat history"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eliminar conversación"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Supprimer la conversation"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Elimina conversazione"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Удалить переписку"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sohbet geçmişini sil"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Видалити листування"
+          }
+        }
+      }
+    },
+    "Забытый пароль восстановить нельзя. Переписка с %@ на этом телефоне будет удалена, защита паролем снята. У собеседника переписка останется." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ein vergessenes Passwort lässt sich nicht wiederherstellen. Der Chatverlauf mit %@ auf diesem Telefon wird gelöscht und die Passwortsperre aufgehoben. Die andere Person behält ihren Verlauf."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A forgotten password can’t be recovered. Your chat history with %@ on this phone will be deleted and the password lock removed. The other person keeps their copy."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Una contraseña olvidada no se puede recuperar. La conversación con %@ en este teléfono se eliminará y se quitará la protección con contraseña. La otra persona conserva la suya."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un mot de passe oublié ne peut pas être récupéré. La conversation avec %@ sur ce téléphone sera supprimée et la protection par mot de passe retirée. Votre interlocuteur garde la sienne."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Una password dimenticata non si può recuperare. La conversazione con %@ su questo telefono verrà eliminata e la protezione con password tolta. L’altra persona conserva la sua."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Забытый пароль восстановить нельзя. Переписка с %@ на этом телефоне будет удалена, защита паролем снята. У собеседника переписка останется."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unutulan parola kurtarılamaz. Bu telefondaki %@ ile sohbet geçmişi silinecek ve parola kilidi kaldırılacak. Karşınızdaki kişinin geçmişi kalır."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Забутий пароль відновити неможливо. Листування з %@ на цьому телефоні буде видалено, захист паролем знято. У співрозмовника листування залишиться."
+          }
+        }
+      }
+    },
+    "Вы уже зарегистрированы на этом узле" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Du bist auf diesem Node bereits registriert"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You’re already registered on this node"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ya estás registrado en este nodo"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vous êtes déjà inscrit sur ce nœud"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sei già registrato su questo nodo"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Вы уже зарегистрированы на этом узле"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bu düğüme zaten kayıtlısınız"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ви вже зареєстровані на цьому вузлі"
+          }
+        }
+      }
+    },
+    "Это приглашение на узел %@, а вы уже его участник. Ничего делать не нужно." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Das ist eine Einladung auf den Node %@, und du bist bereits Mitglied. Es ist nichts zu tun."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This is an invitation to the node %@, and you’re already a member. Nothing to do."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Es una invitación al nodo %@ y ya eres miembro. No hace falta hacer nada."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "C’est une invitation au nœud %@, et vous en êtes déjà membre. Rien à faire."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "È un invito al nodo %@ e sei già un membro. Non serve fare nulla."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Это приглашение на узел %@, а вы уже его участник. Ничего делать не нужно."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bu, %@ düğümüne bir davet ve siz zaten üyesiniz. Bir şey yapmanıza gerek yok."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Це запрошення на вузол %@, а ви вже його учасник. Нічого робити не потрібно."
+          }
+        }
+      }
+    },
+    "Вступление — с одобрения администратора" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Beitritt — mit Zustimmung des Administrators"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Joining — with the administrator’s approval"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ingreso: con la aprobación del administrador"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Adhésion — avec l’accord de l’administrateur"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Adesione: con l’approvazione dell’amministratore"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Вступление — с одобрения администратора"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Katılım — yöneticinin onayıyla"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Вступ — за схваленням адміністратора"
+          }
+        }
+      }
+    },
+    "Вступление — только по приглашению" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Beitritt — nur auf Einladung"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Joining — by invitation only"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ingreso: solo por invitación"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Adhésion — sur invitation uniquement"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Adesione: solo su invito"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Вступление — только по приглашению"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Katılım — yalnızca davetle"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Вступ — лише за запрошенням"
+          }
+        }
+      }
+    },
+    "Закрытый узел" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Geschlossener Node"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Closed node"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nodo cerrado"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nœud fermé"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nodo chiuso"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Закрытый узел"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kapalı düğüm"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Закритий вузол"
+          }
+        }
+      }
+    },
     "Подключено" : {
       "localizations" : {
         "de" : {
@@ -15339,6 +17159,266 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Адміністратор вузла"
+          }
+        }
+      }
+    },
+    "Очистить журнал?" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Log löschen?"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Clear the log?"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "¿Borrar el registro?"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Effacer le journal ?"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cancellare il log?"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Очистить журнал?"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Günlük temizlensin mi?"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Очистити журнал?"
+          }
+        }
+      }
+    },
+    "Очистить" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Löschen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Clear"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Borrar"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Effacer"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cancella"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Очистить"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Temizle"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Очистити"
+          }
+        }
+      }
+    },
+    "Все записи журнала на этом устройстве будут удалены." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alle Log-Einträge auf diesem Gerät werden gelöscht."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "All log entries on this device will be deleted."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Se eliminarán todas las entradas del registro en este dispositivo."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Toutes les entrées du journal sur cet appareil seront supprimées."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tutte le voci del log su questo dispositivo verranno eliminate."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Все записи журнала на этом устройстве будут удалены."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bu cihazdaki tüm günlük kayıtları silinecek."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Усі записи журналу на цьому пристрої буде видалено."
+          }
+        }
+      }
+    },
+    "Журнал очищен" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Log gelöscht"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Log cleared"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Registro borrado"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Journal effacé"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Log cancellato"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Журнал очищен"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Günlük temizlendi"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Журнал очищено"
+          }
+        }
+      }
+    },
+    "Не удалось очистить журнал" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Log konnte nicht gelöscht werden"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Couldn't clear the log"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No se pudo borrar el registro"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Impossible d'effacer le journal"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Impossibile cancellare il log"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Не удалось очистить журнал"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Günlük temizlenemedi"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Не вдалося очистити журнал"
           }
         }
       }

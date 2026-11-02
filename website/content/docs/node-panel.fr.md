@@ -26,7 +26,7 @@ Les utilisateurs voient ce nom dans l'app. Les autres nœuds du réseau apprenne
 
 ## 2. Décidez qui admettre
 
-**Paramètres → Mode d'admission des cellules.** Un nouveau nœud fonctionne par défaut **sur invitation** : on ne peut s'inscrire qu'avec un code que vous avez délivré. C'est généralement ce qu'il faut.
+**Paramètres → Mode d'admission des cellules.** Un nouveau nœud fonctionne par défaut **sur invitation** : on ne peut s'inscrire qu'avec un code que vous avez délivré. C'est généralement ce qu'il faut. Dans l'app, sous **Explorer le réseau**, un nœud en mode invitation ou approbation est marqué d'un cadenas 🔒 : chacun voit ainsi d'avance qu'on ne peut pas s'y inscrire librement.
 
 | Mode dans le panneau | Qui peut s'inscrire | Qui crée les codes d'invitation |
 |---|---|---|

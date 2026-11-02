@@ -25,6 +25,8 @@ INDEX = """
 <div class="card"><h3>📭 Teslim edecek bir şey yok</h3><p>Biri bir yazışmayı talep ederse geliştiricinin verecek hiçbir şeyi yoktur. Sakladığı için değil — elinde olmadığı için.</p></div>
 </div>
 <p class="note">ZKI, Nevod'un geliştirilmesinin temelidir. Her teknik karar tek bir soruyla sınanır: altyapının yaratıcısı içeriğe erişim kazanıyor mu? <a href="/tr/manifesto/">Zero Knowledge Infrastructure Manifestosu →</a></p>
+<h2>Merkeziyetsiz değil, çok merkezli</h2>
+<p><b>Nevod, LL-0 sınıfından çok merkezli ve mimari olarak az yüklü bir mesajlaşma uygulamasıdır.</b> Bunun için yeni bir kavram öneriyoruz: <b>çok merkezli mesajlaşma uygulaması</b>. Alışılmış “merkeziyetsiz” sözcüğü yalnızca neyin olmadığını söyler: merkezin. “Çok merkezli” ise neyin olduğunu söyler: <b>birçok eşit merkez</b>. Her topluluk — aile, apartman, kurum, şehir — kendi merkezidir: kendi düğümü, kendi yöneticisi ve kendi kuralları vardır. Merkezler tek bir ağda birleşir ve her düğümdeki kişilere yazabilirsiniz.</p>
 <h2>Az yüklü dağıtık ağ</h2>
 <p><b>Nevod, LL-0 sınıfından şifreli ve dağıtık bir mesajlaşma uygulamasıdır: her düğümün yükü ağın büyüklüğüne değil, yalnızca kendi çevresine (aile, ev, ekip) bağlıdır.</b> Bu sınıftaki ağlar arasında Nevod, sıradan insanlar için sesli ve görüntülü aramalarıyla tam bir mesajlaşma uygulaması olarak tasarlanmış tek ağdır.</p>
 <p>Başka bir yerdeki bir milyon yeni kullanıcı düğümünüze tek bir bayt bile eklemez. Düğüm sıradan ev donanımında çalışır, ağın merkezi yoktur ve düğümün kendisi yalnızca şifreli metin taşır.</p>
@@ -363,7 +365,7 @@ TERMS = """
 """
 
 PAGES = {
-    "index": ("Nevod", "Nevod — Zero Knowledge Infrastructure'ın ilk uygulaması: geliştiricisi kullanıcı verilerine teknik olarak erişemeyen bir mesajlaşma uygulaması.", INDEX),
+    "index": ("Nevod", "Nevod — LL-0 sınıfından çok merkezli (merkeziyetsiz), mimari olarak az yüklü bir mesajlaşma uygulaması ve Zero Knowledge Infrastructure'ın ilk uygulaması: geliştiricisi kullanıcı verilerine teknik olarak erişemez.", INDEX),
     "manifesto": ("Zero Knowledge Infrastructure Manifestosu", "ZKI manifestosu — Nevod'un geliştirilmesinin temeli. Yazar: Kolpakov Andrey.", MANIFESTO),
     "compare": ("Karşılaştırma", "Nevod ile Signal, Telegram ve WhatsApp karşılaştırması: neden yalnızca şifreleme ZKI değildir.", COMPARE),
     "security": ("Güvenlik ve şifreleme", "Nevod mesajları nasıl şifreler, bir düğüm neleri işler ve neden ihracat belgesi gerekmez.", SECURITY),

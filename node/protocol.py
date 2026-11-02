@@ -378,13 +378,18 @@ def make_node_cells_request(from_addr: str, to_node: str) -> Packet:
     )
 
 
-def make_node_cells_response(from_node: str, to_addr: str, cells: list) -> Packet:
+def make_node_cells_response(from_node: str, to_addr: str, cells: list,
+                             invite_mode: str = "") -> Packet:
     """cells: list of {"cell_id", "name", "description", "kind", "enc_pubkey" (bytes,
     only for kind="bot"), "ai_providers" (BYOK AI bots only), "landing_md" (only for
-    kind="page")}"""
+    kind="page")}. invite_mode: how this node admits new cells — the app marks a closed
+    node with a lock."""
+    payload = {"cells": cells}
+    if invite_mode:
+        payload["invite_mode"] = invite_mode
     return Packet(
         type=T.NODE_CELLS_RESPONSE,
-        payload=encode_payload({"cells": cells}),
+        payload=encode_payload(payload),
         from_addr=from_node,
         to_addr=to_addr,
     )

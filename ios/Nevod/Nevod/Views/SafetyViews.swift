@@ -305,6 +305,8 @@ struct DiagnosticsView: View {
     @State private var sentInApp = false
     @State private var sending = false
     @State private var sendError: String?
+    @State private var confirmClear = false
+    @State private var clearResult: Bool?
 
     private var trimmedReason: String { reason.trimmingCharacters(in: .whitespacesAndNewlines) }
 
@@ -332,10 +334,26 @@ struct DiagnosticsView: View {
                 Text("Описание и журнал уйдут письмом на \(DiagnosticReport.address), а если на телефоне не настроена почта — администратору в Nevod. Журнал хранится только на этом устройстве и не содержит текста сообщений.")
             }
             Section {
-                Button("Clear log", role: .destructive) { NevLogger.shared.clear() }
+                Button("Clear log", role: .destructive) { confirmClear = true }
+                // Shown right under the button — a second alert opened from the first one's
+                // button doesn't reliably appear while the first is still closing.
+                if clearResult == true {
+                    Label("Журнал очищен", systemImage: "checkmark.circle")
+                        .foregroundStyle(.green)
+                } else if clearResult == false {
+                    Label("Не удалось очистить журнал", systemImage: "exclamationmark.triangle")
+                        .foregroundStyle(.red)
+                }
             }
         }
         .navigationTitle("Диагностика")
+        // Ask first, then say what happened (user request 2026-11-02).
+        .alert("Очистить журнал?", isPresented: $confirmClear) {
+            Button("Очистить", role: .destructive) { clearResult = NevLogger.shared.clear() }
+            Button("Отмена", role: .cancel) {}
+        } message: {
+            Text("Все записи журнала на этом устройстве будут удалены.")
+        }
         .sheet(isPresented: $showMail) {
             MailComposer(to: DiagnosticReport.address, subject: DiagnosticReport.subject(trimmedReason),
                          body: DiagnosticReport.body(reason: trimmedReason, cellId: store.identity?.cellId ?? "?",

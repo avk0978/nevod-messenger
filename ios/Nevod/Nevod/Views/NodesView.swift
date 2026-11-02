@@ -12,6 +12,11 @@ struct NodesView: View {
     @State private var isLoading = false
     @State private var searchText = ""
     @State private var showSetup = false
+    @State private var showGuide = false
+    @State private var setupAfterGuide = false
+    // The first-registration guide (RegistrationGuideView) opens by itself once, on the first
+    // visit to this screen before signing up; the "?" button reopens it.
+    @AppStorage("nevod.registrationGuideSeen") private var guideSeen = false
 
     /// Own home node always comes first, regardless of what node_list_request returns — a
     /// closed home node can never appear there itself (that query is access=="open"-only, see
@@ -114,6 +119,11 @@ struct NodesView: View {
                             Label("Start messaging", systemImage: "person.badge.plus")
                         }
                     }
+                    ToolbarItem(placement: .topBarLeading) {
+                        Button { showGuide = true } label: {
+                            Label("Как зарегистрироваться", systemImage: "questionmark.circle")
+                        }
+                    }
                 }
             }
             .navigationDestination(for: ExploreNode.self) { node in
@@ -122,8 +132,18 @@ struct NodesView: View {
             .refreshable { await refresh() }
             .task { await refresh() }
             .sheet(isPresented: $showSetup) { SetupView() }
+            .sheet(isPresented: $showGuide, onDismiss: {
+                guideSeen = true
+                if setupAfterGuide { setupAfterGuide = false; showSetup = true }
+            }) {
+                RegistrationGuideView(onStart: { setupAfterGuide = true; showGuide = false },
+                                      onBrowse: { showGuide = false })
+            }
             // Invite link (AppStore.handleOpenURL): open the form, SetupView fills it in.
-            .onAppear { if store.pendingInviteLink != nil { showSetup = true } }
+            .onAppear {
+                if store.pendingInviteLink != nil { showSetup = true }
+                else if !guideSeen && !store.isRegistered { showGuide = true }
+            }
             .onChange(of: store.pendingInviteLink) { _, token in if token != nil { showSetup = true } }
         }
     }
@@ -171,10 +191,20 @@ private struct NodePlanetCard: View {
             PlanetView(purpose: purpose, verified: isVerified, isHome: node.isHome)
                 .frame(height: 84)
             VStack(spacing: 3) {
-                Text(displayName)
-                    .font(.system(size: 14, weight: .semibold))
-                    .foregroundStyle(.white)
-                    .lineLimit(1)
+                HStack(spacing: 4) {
+                    // Closed: by invitation or with the administrator's approval. Not on the
+                    // home planet — its member is already in.
+                    if !node.isHome && store.isClosedNode(node.nodeId) {
+                        Image(systemName: "lock.fill")
+                            .font(.system(size: 11, weight: .semibold))
+                            .foregroundStyle(.white.opacity(0.75))
+                            .accessibilityLabel(Text("Закрытый узел"))
+                    }
+                    Text(displayName)
+                        .font(.system(size: 14, weight: .semibold))
+                        .foregroundStyle(.white)
+                        .lineLimit(1)
+                }
                 Text(badgeLabel)
                     .font(.system(size: 11, weight: .semibold))
                     .foregroundStyle(purpose.badgeColor)
@@ -327,5 +357,99 @@ struct NodeSkyBackground: View {
                            center: UnitPoint(x: 0.9, y: 0.35), startRadius: 0, endRadius: 300)
         }
         .ignoresSafeArea()
+    }
+}
+
+/// Short first-registration guide: what a node is, the two ways in (no invitation → Nevod
+/// Open; an invitation → its link or code), and how to add people. Requested 2026-11-01 after
+/// a visitor tried a bot on a closed node without knowing how registration works.
+struct RegistrationGuideView: View {
+    let onStart: () -> Void
+    let onBrowse: () -> Void
+    @State private var page = 0
+    private let lastPage = 2
+
+    var body: some View {
+        NavigationStack {
+            VStack(spacing: 0) {
+                TabView(selection: $page) {
+                    guidePage(icon: "globe", title: "Nevod — сеть узлов") {
+                        Text("Узел — сервер, через который идут ваши сообщения. Вы регистрируетесь на одном узле — это ваш дом в сети. Писать можно людям с любых узлов — для этого нужна карточка собеседника: его контактные данные в Nevod.")
+                    }.tag(0)
+                    guidePage(icon: "person.badge.plus", title: "Как зарегистрироваться") {
+                        VStack(alignment: .leading, spacing: 18) {
+                            guideStep(icon: "person.fill", title: "Нет приглашения",
+                                      text: "Нажмите «Начать переписку» и введите имя или псевдоним — вы попадёте на узел Nevod Open, он открыт для всех.")
+                            guideStep(icon: "envelope.open.fill", title: "Есть приглашение",
+                                      text: "Откройте ссылку из приглашения или введите код: «Начать переписку» → «Есть код приглашения?».")
+                            HStack(alignment: .top, spacing: 14) {
+                                Image(systemName: "exclamationmark.triangle.fill")
+                                    .font(.title3).foregroundStyle(.orange).frame(width: 28)
+                                Text("Частные узлы принимают новых участников по приглашению или с одобрения администратора.")
+                            }
+                        }
+                    }.tag(1)
+                    guidePage(icon: "person.text.rectangle", title: "Карточка вместо номера телефона") {
+                        VStack(alignment: .leading, spacing: 18) {
+                            Text("В Nevod нет номеров телефонов и почты. Вместо них у вас карточка контакта — ваш идентификатор в сети: по ней собеседники находят и добавляют вас.")
+                            guideStep(icon: "qrcode", title: "Показать",
+                                      text: "Профиль → «Поделиться карточкой»: на экране появится QR-код и сама карточка. Собеседник сканирует QR-код своим телефоном.")
+                            guideStep(icon: "square.and.arrow.up", title: "Отправить",
+                                      text: "Там же «Скопировать» или «Поделиться…»: отправьте карточку текстом — почтой, в SMS, в другом мессенджере.")
+                            guideStep(icon: "person.badge.plus", title: "Добавить собеседника",
+                                      text: "Контакты → «Добавить контакт» (значок с плюсом): отсканируйте QR-код собеседника или вставьте присланную им карточку.")
+                        }
+                    }.tag(2)
+                }
+                .tabViewStyle(.page(indexDisplayMode: .always))
+                .indexViewStyle(.page(backgroundDisplayMode: .always))
+
+                VStack(spacing: 10) {
+                    if page < lastPage {
+                        Button { withAnimation { page += 1 } } label: {
+                            Text("Дальше").frame(maxWidth: .infinity)
+                        }
+                        .buttonStyle(.borderedProminent).controlSize(.large)
+                    } else {
+                        Button(action: onStart) {
+                            Text("Start messaging").frame(maxWidth: .infinity)
+                        }
+                        .buttonStyle(.borderedProminent).controlSize(.large)
+                        Button("Осмотреться", action: onBrowse)
+                    }
+                }
+                .padding(.horizontal, 24).padding(.bottom, 20)
+            }
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    if page < lastPage { Button("Пропустить", action: onBrowse) }
+                }
+            }
+        }
+    }
+
+    private func guidePage<Content: View>(icon: String, title: LocalizedStringKey,
+                                          @ViewBuilder content: () -> Content) -> some View {
+        ScrollView {
+            VStack(spacing: 20) {
+                Image(systemName: icon)
+                    .font(.system(size: 56)).foregroundStyle(.tint)
+                    .padding(.top, 24)
+                Text(title).font(.title2.bold()).multilineTextAlignment(.center)
+                content()
+                    .frame(maxWidth: .infinity, alignment: .leading)
+            }
+            .padding(.horizontal, 28).padding(.bottom, 48)
+        }
+    }
+
+    private func guideStep(icon: String, title: LocalizedStringKey, text: LocalizedStringKey) -> some View {
+        HStack(alignment: .top, spacing: 14) {
+            Image(systemName: icon).font(.title3).foregroundStyle(.tint).frame(width: 28)
+            VStack(alignment: .leading, spacing: 4) {
+                Text(title).font(.headline)
+                Text(text).foregroundStyle(.secondary)
+            }
+        }
     }
 }

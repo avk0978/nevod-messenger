@@ -37,3 +37,30 @@ async def test_open_nodes_with_fingerprint(tmp_path):
     nodes = decode_payload(resp.payload)["nodes"]
     assert [(n["node_id"], n["tls_fingerprint"]) for n in nodes] == [("aa" * 32, "f1" * 32)]
     await node.storage.close()
+
+
+async def test_invite_mode_listed_and_kept(tmp_path):
+    """Each node reports its own invite_mode (the app shows a lock on closed nodes). A
+    later entry without the field (an older node's gossip) doesn't erase a known mode."""
+    id_path = str(tmp_path / "n.json")
+    NodeIdentity.generate("127.0.0.1:19841").save(id_path)
+    node = await Node.create(id_path, str(tmp_path / "n.db"))
+    now = int(time.time())
+    await node.storage.upsert_node(NodeEntry(
+        node_id="aa" * 32, address="aa.example:8765", access="open", name="aa",
+        invite_mode="admin", last_seen=now, added_at=now))
+    await node.storage.upsert_node(NodeEntry(
+        node_id="aa" * 32, address="aa.example:8765", access="open", name="aa",
+        last_seen=now, added_at=now))
+    assert (await node.storage.get_node("aa" * 32)).invite_mode == "admin"
+    sent = []
+
+    async def send_via(conn, pkt):
+        sent.append(pkt)
+
+    node.transport.send_via = send_via
+    req = Packet(type=T.NODE_LIST_REQUEST, payload=b"", from_addr="cc" * 32, to_addr=node.identity.node_id)
+    await node._handle_node_list_request(req, SimpleNamespace(peer_node_id="cc" * 32))
+    nodes = decode_payload(sent[0].payload)["nodes"]
+    assert [(n["node_id"], n["invite_mode"]) for n in nodes] == [("aa" * 32, "admin")]
+    await node.storage.close()

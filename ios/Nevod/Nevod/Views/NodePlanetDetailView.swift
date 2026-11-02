@@ -47,6 +47,15 @@ struct NodePlanetDetailView: View {
                     Text(node.address)
                         .font(.footnote)
                         .foregroundStyle(.white.opacity(0.4))
+                    if !node.isHome && store.isClosedNode(node.nodeId) {
+                        Label(store.nodeInviteModes[node.nodeId] == "admin"
+                              ? LocalizedStringKey("Вступление — с одобрения администратора")
+                              : LocalizedStringKey("Вступление — только по приглашению"),
+                              systemImage: "lock.fill")
+                            .font(.footnote.weight(.semibold))
+                            .foregroundStyle(.white.opacity(0.75))
+                            .padding(.top, 4)
+                    }
 
                     // Entry point into real (named) registration on THIS specific planet —
                     // distinct from PublishedCellRow.handleTap()'s silent anonymous join,
@@ -95,7 +104,7 @@ struct NodePlanetDetailView: View {
                     } else {
                         LazyVStack(spacing: 10) {
                             ForEach(cells) { cell in
-                                PublishedCellRow(cell: cell, node: node)
+                                PublishedCellRow(cell: cell, node: node, nodeName: displayName)
                             }
                         }
                         .padding(.horizontal, 16)
@@ -161,7 +170,8 @@ struct NodePlanetDetailView: View {
             cells = try await NodeCellsBrowser.fetch(
                 nodeAddr: node.address,
                 expectedFingerprint: fingerprint.isEmpty ? nil : fingerprint,
-                identity: identity
+                identity: identity,
+                onInviteMode: { mode in Task { @MainActor in store.noteInviteMode(mode, nodeId: node.nodeId) } }
             )
         } catch {
             loadFailed = true
@@ -174,9 +184,11 @@ struct NodePlanetDetailView: View {
 private struct PublishedCellRow: View {
     let cell: PublishedCell
     let node: ExploreNode
+    let nodeName: String
     @EnvironmentObject var store: AppStore
     @State private var chatContact: Contact?
     @State private var showPage = false
+    @State private var showSignUp = false
 
     private var isBot: Bool { cell.kind == "bot" }
 
@@ -215,22 +227,165 @@ private struct PublishedCellRow: View {
         .navigationDestination(isPresented: $showPage) {
             MarkdownPageView(title: cell.name, markdown: cell.landingMd ?? "")
         }
+        .sheet(isPresented: $showSignUp) {
+            BotSignUpSheet(nodeAddr: node.address, nodeName: nodeName, botCellId: cell.cellId,
+                           onSignedUp: { chatContact = botContact }, onCancelled: forgetBot)
+        }
     }
 
     private func handleTap() {
         guard isBot else { showPage = true; return }
-        // No form, no interruption — silently register under a generated name if this is a
-        // browsing-only identity (see AppStore.registerAnonymously). The chat opens right away;
-        // ChatView already shows "Подключение…" and disables sending until the connection this
-        // kicks off actually completes (build 148), so there's nothing else to wait for here.
-        if !store.isRegistered {
-            store.registerAnonymously(nodeAddr: node.address)
-        }
-        guard let encPub = cell.encPubkey else { return }
+        guard let contact = botContact else { return }
         store.registerAIBot(cellId: cell.cellId, providers: cell.aiProviders)
-        let contact = Contact(cellId: cell.cellId, nodeAddr: node.address, encPub: encPub,
-                              alias: cell.name, nodeId: node.nodeId)
         store.addContact(contact)
+        // A browsing-only identity signs up on this node first, under a name the visitor
+        // types (see BotSignUpSheet). Once in, RootView switches to the main screen, and
+        // pendingChatCellId opens this bot's chat there.
+        if !store.isRegistered {
+            showSignUp = true
+            return
+        }
         chatContact = contact
+    }
+
+    private var botContact: Contact? {
+        guard let encPub = cell.encPubkey else { return nil }
+        return Contact(cellId: cell.cellId, nodeAddr: node.address, encPub: encPub,
+                       alias: cell.name, nodeId: node.nodeId)
+    }
+
+    private func forgetBot() {
+        store.removeContact(cellId: cell.cellId)
+    }
+}
+
+/// The name a visitor signs up with when they open a bot on a planet. Required: without it
+/// there is no registration. Stays up while the node answers: in → onSignedUp; the node
+/// admits only with the administrator's approval → asks before sending the request; only by
+/// invitation, name taken, or no answer → says so, and the identity goes back to browsing.
+private struct BotSignUpSheet: View {
+    let nodeAddr: String
+    let nodeName: String
+    let botCellId: String
+    let onSignedUp: () -> Void
+    let onCancelled: () -> Void
+    @EnvironmentObject var store: AppStore
+    @Environment(\.dismiss) private var dismiss
+
+    private enum Phase: Equatable { case form, connecting, confirmJoin, inviteOnly }
+    @State private var phase = Phase.form
+    @State private var name = ""
+    @State private var error: String?
+    @FocusState private var nameFocused: Bool
+
+    private var trimmed: String { name.trimmingCharacters(in: .whitespaces) }
+
+    var body: some View {
+        NavigationStack {
+            Form {
+                switch phase {
+                case .form, .connecting:
+                    Section {
+                        TextField("Имя или псевдоним", text: $name)
+                            .focused($nameFocused)
+                            .textInputAutocapitalization(.words)
+                            .submitLabel(.continue)
+                            .onSubmit(submit)
+                            .disabled(phase == .connecting)
+                    } header: {
+                        Text("Ваше имя")
+                    } footer: {
+                        VStack(alignment: .leading, spacing: 6) {
+                            Text("Чтобы написать боту, зарегистрируйтесь на узле «\(nodeName)». Введите имя или псевдоним — его увидят ваши собеседники. Без имени регистрация невозможна.")
+                            if let error { Text(error).foregroundStyle(.red) }
+                        }
+                    }
+                    Section {
+                        Button(action: submit) {
+                            HStack {
+                                Text("Продолжить")
+                                if phase == .connecting { Spacer(); ProgressView() }
+                            }
+                        }
+                        .disabled(trimmed.isEmpty || phase == .connecting)
+                    }
+                case .confirmJoin:
+                    Section {
+                        Text("Узел «\(nodeName)» принимает новых участников только с одобрения администратора. Отправить заявку на вступление?")
+                    }
+                    Section {
+                        Button("Отправить заявку") {
+                            store.confirmJoinRequest()
+                            dismiss()
+                        }
+                    }
+                case .inviteOnly:
+                    Section {
+                        Text("Узел «\(nodeName)» принимает новых участников только по приглашению.")
+                    }
+                }
+            }
+            .navigationTitle(Text(nodeName))
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button(phase == .inviteOnly ? "Close" : "Cancel", action: cancel)
+                }
+            }
+        }
+        .interactiveDismissDisabled(phase == .connecting || phase == .confirmJoin)
+        .onAppear { nameFocused = true }
+        .task(id: phase) {
+            guard phase == .connecting else { return }
+            await watchSignUp()
+        }
+    }
+
+    private func submit() {
+        guard !trimmed.isEmpty, phase == .form else { return }
+        error = nil
+        phase = .connecting
+        // Set now, not on success: the moment the sign-up holds, RootView swaps NodesView
+        // (and this sheet) for the main screen, whose chat list opens this.
+        store.pendingChatCellId = botCellId
+        store.registerAnonymously(nodeAddr: nodeAddr, displayName: trimmed)
+    }
+
+    private func cancel() {
+        if phase != .inviteOnly { store.abandonRegistration() }
+        store.pendingChatCellId = nil
+        onCancelled()
+        dismiss()
+    }
+
+    /// NevdClient reports "connected" right after sending cell_register, before a NACK can
+    /// arrive — so success is IdentityStore.hasEverConnected (set once "connected" has held
+    /// for 1.5 s, see AppStore's status sink), not the first "connected".
+    private func watchSignUp() async {
+        for _ in 0..<70 {
+            try? await Task.sleep(nanoseconds: 300_000_000)
+            if Task.isCancelled { return }
+            if store.awaitingJoinConfirm { phase = .confirmJoin; return }
+            let status = store.client?.status
+            if status == "name taken" {
+                store.abandonRegistration()
+                error = String(localized: "Name already taken, choose another")
+                phase = .form
+                return
+            }
+            if status == "invite invalid" || (status == "invite required" && store.pendingInviteMode != "admin") {
+                store.abandonRegistration()
+                phase = .inviteOnly
+                return
+            }
+            if store.connectionStatus == "connected" && IdentityStore.hasEverConnected {
+                onSignedUp()
+                dismiss()
+                return
+            }
+        }
+        store.abandonRegistration()
+        error = String(localized: "Не удалось связаться с узлом. Попробуйте позже.")
+        phase = .form
     }
 }

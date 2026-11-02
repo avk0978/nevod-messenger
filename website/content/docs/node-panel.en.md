@@ -26,7 +26,7 @@ Users see the name in the app. Other nodes of the network learn the new name aft
 
 ## 2. Decide whom to admit
 
-**Settings → Cell admission mode.** A new node works **by invitation** by default: you can register only with a code you issued. Usually that's exactly what you need.
+**Settings → Cell admission mode.** A new node works **by invitation** by default: you can register only with a code you issued. Usually that's exactly what you need. In the app's **Explore Network**, a node in invitation or approval mode is marked with a lock 🔒 — so people can see in advance that they can't just sign up.
 
 | Mode in the panel | Who can register | Who creates invite codes |
 |---|---|---|

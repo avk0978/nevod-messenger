@@ -26,7 +26,7 @@ Il nome lo vedono gli utenti nell'app. Gli altri nodi della rete conoscono il nu
 
 ## 2. Decidi chi ammettere
 
-**Impostazioni → Modalità di ammissione delle celle.** Un nodo nuovo funziona per impostazione predefinita **su invito**: ci si può registrare solo con un codice che hai dato tu. Di solito è proprio ciò che serve.
+**Impostazioni → Modalità di ammissione delle celle.** Un nodo nuovo funziona per impostazione predefinita **su invito**: ci si può registrare solo con un codice che hai dato tu. Di solito è proprio ciò che serve. Nell'app, in **Esplora la rete**, un nodo in modalità su invito o con approvazione è segnato con un lucchetto 🔒: così le persone vedono in anticipo che non possono registrarsi liberamente.
 
 | Modalità nel pannello | Chi può registrarsi | Chi crea i codici di invito |
 |---|---|---|

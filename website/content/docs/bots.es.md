@@ -8,7 +8,7 @@ Un bot es un miembro de la red como una persona, solo que responde un programa. 
 
 ## Dónde encontrar bots
 
-- **Nodos** → toca un nodo: su página muestra los bots y las páginas que el nodo ofrece a sus usuarios. Toca un bot para abrir un chat con él.
+- **Nodos** → toca un nodo: su página muestra los bots y las páginas que el nodo ofrece a sus usuarios. Toca un bot para abrir un chat con él. Si aún no estás registrado, la app te pide un nombre o apodo y te registra en ese nodo.
 - **Contactos → En este nodo**: los bots de tu nodo de origen.
 
 En Nevod Open funcionan ahora **AI Assistant**, un asistente para todo, y **Tolmach**, un traductor.

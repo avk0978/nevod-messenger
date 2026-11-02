@@ -47,7 +47,16 @@ final class NevLogger {
         // silently returns nil and this logger falls back to the extension's own private sandbox,
         // which no one ever reads. Confirmed via a real device log spanning a full day of keyboard
         // use: zero SLKey-tagged lines ever reached the shared file — this line tells us which.
-        syncWrite("─── session start [\(hms())] ─── groupContainer=\(groupContainer != nil ? "ok" : "NIL-fallback-to-private-sandbox")\n")
+        // App version/build, iOS and device model — without them a log can't be tied to a
+        // build (2026-11-02: couldn't tell which build a call log came from).
+        let info = Bundle.main.infoDictionary
+        let appVersion = "\(info?["CFBundleShortVersionString"] as? String ?? "?")(\(info?["CFBundleVersion"] as? String ?? "?"))"
+        var sys = utsname()
+        uname(&sys)
+        let model = withUnsafeBytes(of: &sys.machine) { raw in
+            String(decoding: raw.prefix(while: { $0 != 0 }), as: UTF8.self)
+        }
+        syncWrite("─── session start [\(hms())] ─── groupContainer=\(groupContainer != nil ? "ok" : "NIL-fallback-to-private-sandbox") app=\(appVersion) os=\(ProcessInfo.processInfo.operatingSystemVersionString) model=\(model)\n")
     }
 
     func log(_ msg: String, file: String = #fileID, line: Int = #line) {
@@ -58,10 +67,26 @@ final class NevLogger {
         queue.sync { self.syncWrite(entry) }
     }
 
-    func clear() {
+    /// Empties the log file and says whether it really is empty afterwards — the Diagnostics
+    /// screen reports the result (user request 2026-11-02: tapping «Очистить лог» showed
+    /// nothing at all). One line is written after it, so a log sent later shows when it was
+    /// cleared and on which build.
+    @discardableResult
+    func clear() -> Bool {
         queue.sync {
-            self.handle?.truncateFile(atOffset: 0)
-            self.handle?.seekToEndOfFile()
+            guard let handle = self.handle else { return false }
+            do {
+                try handle.truncate(atOffset: 0)
+                try handle.seekToEnd()
+            } catch {
+                self.osLogger.error("log clear FAILED err=\(String(describing: error), privacy: .public)")
+                return false
+            }
+            let size = (try? FileManager.default.attributesOfItem(atPath: self.fileURL.path)[.size] as? Int) ?? -1
+            let info = Bundle.main.infoDictionary
+            let app = "\(info?["CFBundleShortVersionString"] as? String ?? "?")(\(info?["CFBundleVersion"] as? String ?? "?"))"
+            self.syncWrite("─── log cleared by user [\(self.hms())] ─── app=\(app) sizeAfterClear=\(size)\n")
+            return size == 0
         }
     }
 

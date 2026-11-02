@@ -133,6 +133,21 @@ final class NevodAudioDevice: NSObject {
     }
 
     private let sessionActiveFlag = AtomicBool(false)
+    // Diagnostics (2026-11-02): last state updateEngine() reached, logged only when it changes
+    // so the log shows each transition once. Lock-guarded: debugState reads it from the main
+    // thread, and a queue.sync there could stall the UI behind an engine start.
+    private let lastEngineState = LockedString("off: not started")
+
+    /// One-line state for the call log.
+    var debugState: String {
+        "audioDev(sessionActive=\(sessionActiveFlag.current) interrupted=\(isInterrupted.current) engine=\(lastEngineState.current))"
+    }
+
+    private func logEngineState(_ state: String) {
+        guard state != lastEngineState.current else { return }
+        lastEngineState.current = state
+        nlog("audioDevice engine \(state)")
+    }
 
     override init() {
         super.init()
@@ -226,6 +241,10 @@ final class NevodAudioDevice: NSObject {
     /// us — e.g. a real device swap, not just a route notification firing).
     private func updateEngine() {
         guard let delegate, shouldPlay || shouldRecord, sessionActiveFlag.current, !isInterrupted.current else {
+            if self.delegate == nil { logEngineState("off: no WebRTC delegate") }
+            else if !(shouldPlay || shouldRecord) { logEngineState("off: nothing to play or record") }
+            else if !sessionActiveFlag.current { logEngineState("WAITING: session not activated by CallKit (play=\(shouldPlay) rec=\(shouldRecord))") }
+            else { logEngineState("WAITING: audio session interrupted") }
             shutdownEngine()
             return
         }
@@ -298,6 +317,7 @@ final class NevodAudioDevice: NSObject {
                 nlog("audioDevice engine start FAILED err=\(error)")
             }
         }
+        logEngineState("running=\(engine.isRunning) play=\(shouldPlay) rec=\(shouldRecord) vp=\(engine.outputNode.isVoiceProcessingEnabled) in=\(audioInputFormat.map { "\(Int($0.sampleRate))x\($0.channelCount)" } ?? "-") out=\(audioOutputFormat.map { "\(Int($0.sampleRate))x\($0.channelCount)" } ?? "-")")
     }
 
     private func attachRecordingIfNeeded(to engine: AVAudioEngine, delegate: RTCAudioDeviceDelegate) {
@@ -521,5 +541,16 @@ extension NevodAudioDevice: RTCAudioDevice {
             self?.updateEngine()
         }
         return true
+    }
+}
+
+/// Diagnostics only — see NevodAudioDevice.lastEngineState.
+private final class LockedString: @unchecked Sendable {
+    private let lock = NSLock()
+    private var value: String
+    init(_ initial: String) { value = initial }
+    var current: String {
+        get { lock.lock(); defer { lock.unlock() }; return value }
+        set { lock.lock(); defer { lock.unlock() }; value = newValue }
     }
 }

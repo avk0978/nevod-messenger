@@ -32,6 +32,7 @@ Yalnızca kimliği sıfırlayarak: **Profil → Kimliği sıfırla…**, ardınd
 | "Onay bekleniyor" | düğüm başvuruyla kabul ediyor — yöneticinin kararını bekleyin; bildirim gelecek. |
 | "Talep reddedildi" | düğüm yöneticisi başvurunuzu reddetti. Nevod Open gibi başka bir düğüm seçebilirsiniz. |
 | bir davet açtınız ve uygulama "Başka bir düğüme davet" diyor | zaten bir düğüme kayıtlısınız. Yukarıdaki "Başka bir düğüme nasıl geçerim?" sorusuna bakın. |
+| bir davet açtınız ve uygulama "Bu düğüme zaten kayıtlısınız" diyor | davet kendi düğümünüze — bir şey yapmanıza gerek yok. |
 
 ## Bağlantı
 

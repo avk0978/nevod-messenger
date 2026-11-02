@@ -26,7 +26,7 @@ Adı kullanıcılar uygulamada görür. Ağdaki diğer düğümler yeni adı dü
 
 ## 2. Kimi kabul edeceğinize karar verin
 
-**Ayarlar → Hücre kabul modu.** Yeni bir düğüm varsayılan olarak **davetle** çalışır: yalnızca sizin verdiğiniz bir kodla kaydolunabilir. Genellikle tam da gereken budur.
+**Ayarlar → Hücre kabul modu.** Yeni bir düğüm varsayılan olarak **davetle** çalışır: yalnızca sizin verdiğiniz bir kodla kaydolunabilir. Genellikle tam da gereken budur. Uygulamada, **Ağı keşfet** ekranında davet veya onay modundaki düğüm kilit 🔒 ile işaretlidir — böylece insanlar öylece kaydolamayacaklarını önceden görür.
 
 | Paneldeki mod | Kim kaydolabilir | Davet kodlarını kim oluşturur |
 |---|---|---|

@@ -135,7 +135,11 @@ def strip_prefixes(text: str) -> Tuple[Optional[bytes], str]:
 AI_KEY_PREFIX = "ai-key:"
 AI_CHECK_PREFIX = "ai-check:"
 # Silent control signals the app sends to every chat partner — no answer expected.
-_CONTROL_PREFIXES = ("delete:", "edit:", "identity_deleted:", "notify:")
+_CONTROL_PREFIXES = ("delete:", "edit:", "identity_deleted:", "notify:",
+                     # a file fragment (avatar, photo) — a bot takes text only; older apps
+                     # sent a file's last fragment as a plain message, and the bot answered
+                     # an avatar change with "no key" (2026-11-02)
+                     "chunk:")
 
 
 def parse_ai_line(text: str, prefix: str) -> Tuple[Optional[str], Optional[str], str]:

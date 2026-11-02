@@ -32,6 +32,7 @@ Uniquement en réinitialisant l'identité : **Profil → Réinitialiser l'identi
 | « En attente d'approbation » | le nœud admet sur demande : attendez la décision de l'administrateur ; vous recevrez une notification. |
 | « Demande refusée » | l'administrateur du nœud a refusé votre demande. Vous pouvez choisir un autre nœud, par exemple Nevod Open. |
 | vous avez ouvert une invitation et l'app affiche « Invitation vers un autre nœud » | vous êtes déjà inscrit sur un nœud. Voir « Comment changer de nœud ? » ci-dessus. |
+| vous avez ouvert une invitation et l'app affiche « Vous êtes déjà inscrit sur ce nœud » | l'invitation concerne votre propre nœud : rien à faire. |
 
 ## Connexion
 

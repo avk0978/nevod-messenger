@@ -699,7 +699,7 @@ ROOT = """<!doctype html>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Nevod</title>
-<meta name="description" content="Nevod — an end-to-end encrypted messenger on a distributed network of nodes.">
+<meta name="description" content="Nevod — a polycentric (decentralized), architecturally low-load end-to-end encrypted messenger of class LL-0.">
 <script>
   (function () {
     var have = %s, slug = %s, primaryOnly = %s;

@@ -32,6 +32,7 @@ Solo reimpostando l'identità: **Profilo → Reimposta identità…**, poi apri 
 | «In attesa di approvazione» | il nodo accetta su richiesta: attendi la decisione dell'amministratore; riceverai una notifica. |
 | «Richiesta rifiutata» | l'amministratore del nodo ha rifiutato la richiesta. Puoi scegliere un altro nodo, per esempio Nevod Open. |
 | hai aperto un invito e l'app dice «Invito a un altro nodo» | sei già registrato su un nodo. Vedi «Come passo a un altro nodo?» qui sopra. |
+| hai aperto un invito e l'app dice «Sei già registrato su questo nodo» | l'invito è per il tuo stesso nodo: non serve fare nulla. |
 
 ## Connessione
 

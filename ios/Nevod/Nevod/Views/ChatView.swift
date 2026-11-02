@@ -680,9 +680,17 @@ struct ChatView: View {
                     AVEncoderBitRateKey: 32000,
                 ]
                 do {
-                    try AVAudioSession.sharedInstance()
-                        .setCategory(.playAndRecord, mode: .default, options: .defaultToSpeaker)
-                    try AVAudioSession.sharedInstance().setActive(true)
+                    // During a call the session is the call's (CallKit activated it): record
+                    // through it as is — switching its category broke the call's audio
+                    // (audit 2026-11-02, А2). Outside a call: take it, give it back after.
+                    if NevdClient.callInProgress {
+                        nlog("voiceRecord during a call — session left to the call: \(AudioDiag.snapshot())")
+                    } else {
+                        nlog("voiceRecord activating session (playAndRecord) before: \(AudioDiag.snapshot())")
+                        try AVAudioSession.sharedInstance()
+                            .setCategory(.playAndRecord, mode: .default, options: .defaultToSpeaker)
+                        try AVAudioSession.sharedInstance().setActive(true)
+                    }
                     self.recorder = try AVAudioRecorder(url: url, settings: settings)
                     self.recorder?.record()
                     self.recordingURL = url
@@ -709,7 +717,22 @@ struct ChatView: View {
             }
         }
         try? FileManager.default.removeItem(at: url)
-        try? AVAudioSession.sharedInstance().setActive(false)
+        releaseRecordingSession("sent")
+    }
+
+    /// Gives the session back after a voice recording — unless a call is going on (then the
+    /// recording used the call's session and CallKit owns it).
+    private func releaseRecordingSession(_ what: String) {
+        guard !NevdClient.callInProgress else {
+            nlog("voiceRecord \(what) during a call — session left to the call")
+            return
+        }
+        do {
+            try AVAudioSession.sharedInstance().setActive(false, options: .notifyOthersOnDeactivation)
+            nlog("voiceRecord \(what), session released")
+        } catch {
+            nlog("voiceRecord \(what), session release FAILED err=\(error)")
+        }
     }
 
     private func cancelRecording() {
@@ -718,7 +741,7 @@ struct ChatView: View {
         isRecording = false
         if let url = recordingURL { try? FileManager.default.removeItem(at: url) }
         recordingURL = nil
-        try? AVAudioSession.sharedInstance().setActive(false)
+        releaseRecordingSession("cancelled")
     }
 
     /// Picked video → file on disk (never Data in RAM) → re-encoded to 720p MP4 → streamed

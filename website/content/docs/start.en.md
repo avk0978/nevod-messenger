@@ -17,9 +17,11 @@ You can write to people on any node of the network, not only your own.
 
 1. Open Nevod. The app asks for permission to send notifications — allow it, otherwise you won't know about messages and calls while Nevod is closed.
 2. Read the key points of the Terms of Use, turn on **I accept the Terms of Use** and tap **Continue**.
-3. **Explore Network** opens — a list of open nodes. You can look around here: nodes, their bots and pages are available without registering. Until you're registered on a node, the list shows only the Nevod project's nodes; the network's other open nodes appear after you register — the app gets their list from your node.
+3. **Explore Network** opens — a list of open nodes. On first launch the app shows a short guide: what a node is, how to sign up and how to exchange cards; you can open it again with the **?** button at the top left. You can look around here: nodes and their pages are available without registering. Closed nodes are marked with a lock 🔒 — you join them by invitation or with the administrator's approval. Until you're registered on a node, the list shows only the Nevod project's nodes; the network's other open nodes appear after you register — the app gets their list from your node.
 4. Tap **Start messaging** (top right).
 5. Enter **Your display name** — this is how others will see you. Tap **Get started**.
+
+If you tap a bot on a node's page before registering, the app asks for a **name or nickname** and registers you on that node — you can't register without a name. If the node is closed, the app first asks whether to send a request to the administrator.
 
 Done: you are registered on the **Nevod Open** node. In a few seconds you will get a welcome message from **administrator**, the node's administration account. There is a blue ✓ badge next to its name.
 
@@ -39,7 +41,7 @@ If "Open in Nevod" didn't work: in the app tap **Start messaging**, enter your n
 
 An invite code works once and for a limited time. If the app says "Invalid or expired code — get a new one", ask for a new invitation.
 
-If Nevod on this phone is already registered on another node, the invitation won't move you by itself: one identity has one home node. What to do — see [Contacts](../contacts/), "People on other nodes".
+If Nevod on this phone is already registered on another node, the invitation won't move you by itself: one identity has one home node. What to do — see [Contacts](../contacts/), "People on other nodes". If the invitation is to your own node, the app says "You're already registered on this node" — nothing to do.
 
 Some nodes admit people by request: the app then shows **Waiting for approval** — the node's administrator will review your request, and you will get a notification.
 
@@ -50,7 +52,7 @@ Some nodes admit people by request: the app then shows **Waiting for approval** 
 | **Chats** | Your conversations. |
 | **Calls** | Call history. |
 | **Contacts** | The people you talk to; this is also where **Add Contact** is. |
-| **Nodes** | Explore Network: nodes, their bots and pages. |
+| **Nodes** | Explore Network: nodes, their bots and pages; closed nodes are marked with a lock. |
 | **Profile** | Your name and avatar, your card for exchanging contacts, invitations, security. |
 
 ## Your first message

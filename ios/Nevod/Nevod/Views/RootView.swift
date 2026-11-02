@@ -84,6 +84,13 @@ struct RootView: View {
         } message: {
             Text("This invitation is for signing up on \(store.inviteLinkForOtherNode ?? "") as a new user. You are already registered on a node. To switch, reset your identity in Profile (this deletes your chats on this device), then open the link again.")
         }
+        .alert(Text("Вы уже зарегистрированы на этом узле"), isPresented: Binding(
+            get: { store.inviteLinkForOwnNode != nil },
+            set: { if !$0 { store.inviteLinkForOwnNode = nil } })) {
+            Button("OK", role: .cancel) {}
+        } message: {
+            Text("Это приглашение на узел \(store.inviteLinkForOwnNode ?? ""), а вы уже его участник. Ничего делать не нужно.")
+        }
         .alert(Text("Message history"), isPresented: $storeRecoveryNotice) {
             Button("OK", role: .cancel) {}
         } message: {

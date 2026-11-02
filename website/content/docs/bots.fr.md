@@ -8,7 +8,7 @@ Un bot est un membre du réseau comme une personne, sauf que c'est un programme 
 
 ## Où trouver des bots
 
-- **Nœuds** → touchez un nœud : sa page montre les bots et les pages que le nœud propose à ses utilisateurs. Touchez un bot pour ouvrir une discussion avec lui.
+- **Nœuds** → touchez un nœud : sa page montre les bots et les pages que le nœud propose à ses utilisateurs. Touchez un bot pour ouvrir une discussion avec lui. Si vous n'êtes pas encore inscrit, l'app demande un nom ou un pseudo et vous inscrit sur ce nœud.
 - **Contacts → Sur ce nœud** : les bots de votre nœud d'attache.
 
 Sur Nevod Open fonctionnent actuellement **AI Assistant**, un assistant polyvalent, et **Tolmach**, un traducteur.

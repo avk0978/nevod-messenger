@@ -43,7 +43,7 @@ Vous pouvez verrouiller une discussion par mot de passe : même quelqu'un qui ti
    - **Mot de passe de contrainte** : pour le cas où l'on vous force à ouvrir la discussion. Si vous le saisissez à la place du vrai, la conversation de cette discussion est **supprimée en silence** de votre téléphone, et l'écran affiche le classique « Mot de passe incorrect » : vu de l'extérieur, cela ressemble à une faute de frappe.
 3. Les mots de passe doivent être différents. Pour les changer, au même endroit : **Changer les mots de passe**.
 
-> Le mot de passe de la discussion n'est conservé que sur ce téléphone, et pas le mot de passe lui-même mais son empreinte (hash). **Un mot de passe oublié ne peut pas être récupéré**, ni par vous ni par les développeurs, et la discussion ne pourra plus être ouverte. Choisissez un mot de passe que vous n'oublierez pas. Le mot de passe de contrainte ne supprime la conversation que chez vous : votre interlocuteur la conserve.
+> Le mot de passe de la discussion n'est conservé que sur ce téléphone, et pas le mot de passe lui-même mais son empreinte (hash). **Un mot de passe oublié ne peut pas être récupéré**, ni par vous ni par les développeurs. Si vous l'avez oublié, touchez **Mot de passe oublié ?** sur l'écran de connexion : la conversation de cette discussion est supprimée du téléphone, la protection par mot de passe est retirée et la discussion s'ouvre à nouveau, vide. Choisissez un mot de passe que vous n'oublierez pas. Le mot de passe de contrainte ne supprime la conversation que chez vous : votre interlocuteur la conserve.
 
 ## Protection contre les inconnus
 

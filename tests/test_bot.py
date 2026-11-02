@@ -172,6 +172,13 @@ class TestByokBot:
             await asyncio.sleep(0.5)
             assert h.sent == []
 
+    async def test_file_fragment_gets_no_answer(self, tmp_path):
+        # An avatar's last fragment, sent by older apps as a plain message (2026-11-02).
+        async with _Harness(tmp_path, 8) as h:
+            await h.say("chunk:t1:1/1/98304\nAAAA")
+            await asyncio.sleep(0.5)
+            assert h.sent == []
+
     async def test_key_check_answers_silently(self, tmp_path, monkeypatch):
         async with _Harness(tmp_path, 20, providers=("anthropic", "gemini")) as h:
             async def fake_check_key(http, provider, key, preferred=None):

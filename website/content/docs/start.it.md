@@ -17,9 +17,11 @@ Puoi scrivere a persone di qualsiasi nodo della rete, non solo del tuo.
 
 1. Apri Nevod. L'app chiede il permesso per le notifiche: concedilo, altrimenti non saprai di messaggi e chiamate mentre Nevod è chiuso.
 2. Leggi i punti principali delle Condizioni d'uso, attiva **Accetto le Condizioni d'uso** e tocca **Continua**.
-3. Si apre **Esplora la rete**, un elenco di nodi aperti. Puoi dare un'occhiata: i nodi, i loro bot e le loro pagine sono accessibili anche senza registrazione. Finché non sei registrato su nessun nodo, l'elenco mostra solo i nodi del progetto Nevod; gli altri nodi aperti della rete compaiono dopo la registrazione, perché l'app riceve il loro elenco dal tuo nodo.
+3. Si apre **Esplora la rete**, un elenco di nodi aperti. Al primo avvio l'app mostra una breve guida: cos'è un nodo, come registrarsi e come scambiarsi le schede; puoi riaprirla con il pulsante **?** in alto a sinistra. Puoi dare un'occhiata: i nodi e le loro pagine sono accessibili anche senza registrazione. I nodi chiusi sono segnati con un lucchetto 🔒: vi si entra su invito o con l'approvazione dell'amministratore. Finché non sei registrato su nessun nodo, l'elenco mostra solo i nodi del progetto Nevod; gli altri nodi aperti della rete compaiono dopo la registrazione, perché l'app riceve il loro elenco dal tuo nodo.
 4. Tocca **Inizia a scrivere** (in alto a destra).
 5. Inserisci **Il tuo nome visualizzato**: è così che ti vedranno gli altri. Tocca **Inizia**.
+
+Se prima di registrarti tocchi un bot nella pagina di un nodo, l'app ti chiede un **nome o un soprannome** e ti registra su quel nodo: senza nome non è possibile registrarsi. Se il nodo è chiuso, l'app chiede prima se inviare una richiesta all'amministratore.
 
 Fatto: sei registrato sul nodo **Nevod Open**. In pochi secondi arriverà un messaggio di benvenuto da **administrator**, l'account dell'amministrazione del nodo. Accanto al suo nome c'è un badge blu ✓.
 
@@ -39,7 +41,7 @@ Se «Apri in Nevod» non ha funzionato: nell'app tocca **Inizia a scrivere**, in
 
 Un codice di invito vale una sola volta e per un tempo limitato. Se l'app dice «Codice non valido o scaduto — richiedine uno nuovo», chiedi un nuovo invito.
 
-Se Nevod su questo telefono è già registrato su un altro nodo, l'invito non ti sposta da solo: un'identità ha un solo nodo di casa. Cosa fare: vedi [Contatti](../contacts/), «Persone di altri nodi».
+Se Nevod su questo telefono è già registrato su un altro nodo, l'invito non ti sposta da solo: un'identità ha un solo nodo di casa. Cosa fare: vedi [Contatti](../contacts/), «Persone di altri nodi». Se l'invito è per il tuo stesso nodo, l'app dice «Sei già registrato su questo nodo»: non serve fare nulla.
 
 Alcuni nodi accettano su richiesta: allora l'app mostra **In attesa di approvazione**; l'amministratore del nodo esaminerà la richiesta e riceverai una notifica.
 
@@ -50,7 +52,7 @@ Alcuni nodi accettano su richiesta: allora l'app mostra **In attesa di approvazi
 | **Chat** | Le tue conversazioni. |
 | **Chiamate** | Cronologia delle chiamate. |
 | **Contatti** | Le persone con cui scrivi; qui c'è anche **Aggiungi contatto**. |
-| **Nodi** | Esplora la rete: nodi, i loro bot e le loro pagine. |
+| **Nodi** | Esplora la rete: nodi, i loro bot e le loro pagine; i nodi chiusi sono segnati con un lucchetto. |
 | **Profilo** | Il tuo nome e avatar, la tua scheda per scambiare i contatti, inviti, sicurezza. |
 
 ## Il tuo primo messaggio

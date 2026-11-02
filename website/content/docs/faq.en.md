@@ -32,6 +32,7 @@ Only through an identity reset: **Profile → Reset identity…**, then open the
 | "Waiting for approval" | the node admits people by request — wait for the administrator's decision; you'll get a notification. |
 | "Request denied" | the node's administrator declined your request. You can choose another node, such as Nevod Open. |
 | you opened an invitation and the app says "Invitation to another node" | you are already registered on a node. See "How do I move to another node?" above. |
+| you opened an invitation and the app says "You're already registered on this node" | the invitation is to your own node — nothing to do. |
 
 ## Connection
 

@@ -32,6 +32,7 @@ Nur über das Zurücksetzen der Identität: **Profil → Identität zurücksetze
 | „Warten auf Freigabe“ | der Node nimmt auf Antrag auf — warte auf die Entscheidung des Administrators; du bekommst eine Mitteilung. |
 | „Anfrage abgelehnt“ | der Administrator des Nodes hat deinen Antrag abgelehnt. Du kannst einen anderen Node wählen, etwa Nevod Open. |
 | du hast eine Einladung geöffnet, und die App zeigt „Einladung zu einem anderen Knoten“ | du bist schon auf einem Node registriert. Siehe „Wie wechsle ich auf einen anderen Node?“ oben. |
+| du hast eine Einladung geöffnet, und die App zeigt „Du bist auf diesem Node bereits registriert“ | die Einladung ist für deinen eigenen Node — es ist nichts zu tun. |
 
 ## Verbindung
 

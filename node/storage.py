@@ -263,6 +263,10 @@ class NodeEntry:
     # node's coturn, so it's a real bandwidth cost — chosen at random from all
     # capable nodes rather than always the same one, to spread the load.
     turn_relay: bool              = False
+    # How the node admits new cells, as the node itself reports it: "open" / "admin" /
+    # "delegated"; "" = unknown (a node from before this field). Shown in the app as a
+    # lock on closed nodes.
+    invite_mode: str              = ""
     last_seen: int                = 0
     missed_pings: int             = 0
     status: str                   = "online"
@@ -282,6 +286,7 @@ class NodeEntry:
             "name":                 self.name,
             "push_relay_platforms": self.push_relay_platforms,
             "turn_relay":           self.turn_relay,
+            "invite_mode":          self.invite_mode,
             "last_seen":            self.last_seen,
             "status":               self.status,
         }
@@ -413,6 +418,7 @@ class Storage:
             "ALTER TABLE node_table ADD COLUMN name TEXT NOT NULL DEFAULT ''",
             "ALTER TABLE node_table ADD COLUMN push_relay_platforms TEXT NOT NULL DEFAULT ''",
             "ALTER TABLE node_table ADD COLUMN turn_relay INTEGER NOT NULL DEFAULT 0",
+            "ALTER TABLE node_table ADD COLUMN invite_mode TEXT NOT NULL DEFAULT ''",
             "ALTER TABLE cells ADD COLUMN display_name TEXT NOT NULL DEFAULT ''",
             "ALTER TABLE join_requests ADD COLUMN display_name TEXT NOT NULL DEFAULT ''",
             "ALTER TABLE message_buffer ADD COLUMN seq INTEGER NOT NULL DEFAULT 0",
@@ -437,8 +443,9 @@ class Storage:
             """
             INSERT INTO node_table
                 (node_id, address, type, access, cert, tls_fingerprint, parent_node,
-                 name, push_relay_platforms, turn_relay, last_seen, missed_pings, status, added_at)
-            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+                 name, push_relay_platforms, turn_relay, invite_mode, last_seen, missed_pings,
+                 status, added_at)
+            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
             ON CONFLICT(node_id) DO UPDATE SET
                 address               = excluded.address,
                 last_seen             = excluded.last_seen,
@@ -448,12 +455,13 @@ class Storage:
                 tls_fingerprint       = excluded.tls_fingerprint,
                 name                  = CASE WHEN excluded.name != '' THEN excluded.name ELSE node_table.name END,
                 push_relay_platforms  = excluded.push_relay_platforms,
-                turn_relay            = excluded.turn_relay
+                turn_relay            = excluded.turn_relay,
+                invite_mode           = CASE WHEN excluded.invite_mode != '' THEN excluded.invite_mode ELSE node_table.invite_mode END
             """,
             (
                 entry.node_id, entry.address, entry.type, entry.access,
                 entry.cert, entry.tls_fingerprint, entry.parent_node,
-                entry.name, entry.push_relay_platforms, int(entry.turn_relay),
+                entry.name, entry.push_relay_platforms, int(entry.turn_relay), entry.invite_mode,
                 entry.last_seen, entry.missed_pings, entry.status, now,
             ),
         )
@@ -471,6 +479,12 @@ class Storage:
             "UPDATE node_table SET access=?, type=? WHERE node_id=?",
             (access, node_type, node_id),
         )
+        await self._db.commit()
+
+    async def set_node_invite_mode(self, node_id: str, invite_mode: str):
+        """Our own row, after the panel changes invite_mode live (gossip sends our row)."""
+        await self._db.execute(
+            "UPDATE node_table SET invite_mode=? WHERE node_id=?", (invite_mode, node_id))
         await self._db.commit()
 
     async def get_node(self, node_id: str) -> Optional[NodeEntry]:
@@ -959,6 +973,14 @@ class Storage:
         await self._db.commit()
         return cur.rowcount > 0
 
+    async def join_request_status(self, cell_id: str) -> Optional[str]:
+        """"pending" / "approved" / "denied", or None if this cell never asked."""
+        async with self._db.execute(
+            "SELECT status FROM join_requests WHERE cell_id=?", (cell_id,)
+        ) as cur:
+            row = await cur.fetchone()
+        return row[0] if row else None
+
     async def list_join_requests(self, status: str = "pending") -> List[JoinRequest]:
         async with self._db.execute(
             "SELECT cell_id, signing_pubkey, enc_pubkey, note, display_name, created_at, "
@@ -1275,6 +1297,7 @@ def _row_to_node(row) -> NodeEntry:
         name=row["name"] or "",
         push_relay_platforms=row["push_relay_platforms"] or "",
         turn_relay=bool(row["turn_relay"]),
+        invite_mode=row["invite_mode"] or "",
         last_seen=row["last_seen"],
         missed_pings=row["missed_pings"],
         status=row["status"],

@@ -178,6 +178,9 @@ final class CallManager: NSObject, ObservableObject {
     private var ringbackPlayer: AVAudioPlayer?
     private var pendingCandidates: [RTCIceCandidate] = []
     private let audioReadyForCall = AtomicBool(false)
+    // didActivate arrived for the current call — see armActivationWatchdog.
+    private let sessionActivatedForCall = AtomicBool(false)
+    private var activationWatchdog: Task<Void, Never>?
     // Re-asserting .speaker only for the first ~2.5s of a call (the burst below) leaves
     // nothing to catch iOS silently rerouting audio away from Speaker LATER in a call —
     // confirmed to happen well past that window (reported by user 2026-08-02: the speaker
@@ -242,6 +245,23 @@ final class CallManager: NSObject, ObservableObject {
         provider = CXProvider(configuration: cfg)
         super.init()
         provider.setDelegate(self, queue: .main)
+        CallDiagnosticsWatcher.shared.start()
+    }
+
+    /// Everything CallKit is told about a call, in one place (audit 2026-11-02, А8): no hold,
+    /// no grouping, no DTMF — a cellular call arriving during a Nevod call is offered as
+    /// "End & Accept" / "Decline" only, so CallKit never has to take the audio away from a
+    /// call that is still going on and give it back later.
+    nonisolated private static func callUpdate(name: String) -> CXCallUpdate {
+        let update = CXCallUpdate()
+        update.remoteHandle = CXHandle(type: .generic, value: name)
+        update.localizedCallerName = name
+        update.hasVideo = false
+        update.supportsHolding = false
+        update.supportsGrouping = false
+        update.supportsUngrouping = false
+        update.supportsDTMF = false
+        return update
     }
 
     // MARK: - Outgoing call
@@ -290,9 +310,12 @@ final class CallManager: NSObject, ObservableObject {
         nlog("call startCall to=\(cellId.prefix(8)) hasTurn=\(turnInfo != nil)")
 
         Self.audioDevice.configureSession()   // before the call exists — see configureSession
+        nlog("call CallKit calls before start: \(callKitCallsDescription()) \(AudioDiag.snapshot()) \(Self.audioDevice.debugState)")
         let handle = CXHandle(type: .generic, value: contactName)
         let action = CXStartCallAction(call: callUUID, handle: handle)
-        callController.request(CXTransaction(action: action)) { _ in }
+        callController.request(CXTransaction(action: action)) { err in
+            if let err { nlog("call CXStartCallAction FAILED err=\(err)") }
+        }
 
         // TURN credentials are fetched asynchronously right after the socket (re)connects —
         // if we just reopened the app (e.g. it was backgrounded and just woke up), there's a
@@ -301,14 +324,19 @@ final class CallManager: NSObject, ObservableObject {
         // outright. Confirmed via device logs 2026-08-02: two calls placed in exactly this
         // window both hit ICE state=failed. A short bounded wait covers the common case; if
         // it truly never arrives, dial anyway (LAN-only fallback, per setupPC's own comment).
+        // Bound to this call's UUID: hang up and call again within these 3 s and the old
+        // task used to see the NEW call in .outgoing and dial it a second time (audit
+        // 2026-11-02, А5).
+        let uuid = callUUID
         Task { @MainActor [weak self] in
             guard let self else { return }
             var waited = 0
             while self.turnInfo == nil && waited < 3000 {
                 try? await Task.sleep(for: .milliseconds(200))
                 waited += 200
-                guard case .outgoing = self.state else { return }
+                guard case .outgoing = self.state, self.callUUID == uuid else { return }
             }
+            guard case .outgoing = self.state, self.callUUID == uuid else { return }
             self.dial(cellId: cellId)
         }
     }
@@ -369,9 +397,11 @@ final class CallManager: NSObject, ObservableObject {
     /// repeated offer for a call it already has.
     private func watchForStaleConnection(cellId: String) {
         guard !staleConnectionRetried else { return }
+        let uuid = callUUID   // a later call must not be "retried" by this one's timer (А5)
         Task { @MainActor [weak self] in
             try? await Task.sleep(for: .seconds(12))
-            guard let self, case .outgoing = self.state, !self.staleConnectionRetried else { return }
+            guard let self, case .outgoing = self.state, self.callUUID == uuid,
+                  !self.staleConnectionRetried else { return }
             self.staleConnectionRetried = true
             nlog("call watchForStaleConnection — no ring after 12s, reconnecting and resending the same offer")
             self.store?.forceReconnect()
@@ -381,7 +411,7 @@ final class CallManager: NSObject, ObservableObject {
                 try? await Task.sleep(for: .milliseconds(200))
                 waited += 200
             }
-            guard case .outgoing = self.state, let offer = self.sentOffer else { return }
+            guard case .outgoing = self.state, self.callUUID == uuid, let offer = self.sentOffer else { return }
             try? await self.store?.sendCallOffer(offer, to: cellId)
             for ice in self.sentIce {
                 try? await self.store?.sendSignal(ice, to: cellId)
@@ -414,6 +444,17 @@ final class CallManager: NSObject, ObservableObject {
                 }
             }
             return   // and its ice/video_on: never added to anyone's call
+        }
+
+        // Everything but an offer belongs to a call already going on, and only that call's
+        // peer may drive it (audit 2026-11-02, А4/А6): an answer/ice/hangup/reject/busy/
+        // video_on from anyone else, or arriving with no call at all (a late ICE candidate
+        // of a finished call used to wait in pendingCandidates and join the next call), is
+        // dropped. A stale signal from the same peer's previous call still gets through —
+        // that needs a call id in the signals (WORK_PLAN 2, stage 3).
+        if type != "offer", state.isIdle || state.cellId?.lowercased() != cellId.lowercased() {
+            nlog("call handleSignal DROPPED type=\(type) from=\(cellId.prefix(8)) — not the peer of the current call (state=\(state))")
+            return
         }
 
         switch type {
@@ -509,10 +550,7 @@ final class CallManager: NSObject, ObservableObject {
     func reportIncomingCallFromPush(callerId: String, callerName: String) {
         nlog("call reportIncomingCallFromPush callerId=\(String(callerId.prefix(8))) callerName=\(callerName) state=\(state)")
         let name = resolvedCallerName(cellId: callerId, fallback: callerName)
-        let update = CXCallUpdate()
-        update.remoteHandle = CXHandle(type: .generic, value: name)
-        update.localizedCallerName = name
-        update.hasVideo = false
+        let update = Self.callUpdate(name: name)
 
         if !state.isIdle && state.cellId == callerId {
             // Redelivered/duplicate VoIP push for the call ALREADY ringing/connecting/active
@@ -585,6 +623,7 @@ final class CallManager: NSObject, ObservableObject {
         isFrontCamera = true
         state = .incoming(callerName: name, cellId: callerId)
         Self.audioDevice.configureSession()   // before reporting — see configureSession
+        nlog("call push: CallKit calls before report: \(callKitCallsDescription()) \(AudioDiag.snapshot()) \(Self.audioDevice.debugState)")
         provider.reportNewIncomingCall(with: uuid, update: update) { err in
             nlog("call reportNewIncomingCall err=\(String(describing: err)) uuid=\(uuid)")
         }
@@ -642,12 +681,12 @@ final class CallManager: NSObject, ObservableObject {
             callStartedAt = Date()
             callIsOutgoingFlag = false
             callWasAnswered = false
-            let update = CXCallUpdate()
-            update.remoteHandle = CXHandle(type: .generic, value: name)
-            update.localizedCallerName = name
-            update.hasVideo = false
+            let update = Self.callUpdate(name: name)
             Self.audioDevice.configureSession()   // before reporting — see configureSession
-            provider.reportNewIncomingCall(with: callUUID, update: update) { _ in }
+            nlog("call CallKit calls before report: \(callKitCallsDescription()) \(AudioDiag.snapshot()) \(Self.audioDevice.debugState)")
+            provider.reportNewIncomingCall(with: callUUID, update: update) { err in
+                if let err { nlog("call reportNewIncomingCall(in-app offer) FAILED err=\(err)") }
+            }
         }
         hangupSent = false
         pendingSDP = sdp
@@ -674,8 +713,38 @@ final class CallManager: NSObject, ObservableObject {
     // Called from CXAnswerCallAction delegate AND from in-app accept button
     // In-app: triggers CXAnswerCallAction → delegate → performAccept
     func accept() {
+        nlog("call accept (in-app button) uuid=\(callUUID.uuidString.prefix(8)) state=\(state)")
         let action = CXAnswerCallAction(call: callUUID)
-        callController.request(CXTransaction(action: action)) { _ in }
+        callController.request(CXTransaction(action: action)) { err in
+            if let err { nlog("call CXAnswerCallAction FAILED err=\(err)") }
+        }
+    }
+
+    /// CallKit's calls as it sees them — a call it still thinks is going on (never ended on
+    /// its side) would explain a new call that never gets didActivate.
+    private func callKitCallsDescription() -> String {
+        let calls = callController.callObserver.calls
+        if calls.isEmpty { return "none" }
+        return calls.map { c in
+            "\(c.uuid.uuidString.prefix(8))\(c.uuid == callUUID ? "(current)" : "") out=\(c.isOutgoing) connected=\(c.hasConnected) ended=\(c.hasEnded)"
+        }.joined(separator: "; ")
+    }
+
+    /// Diagnostics only (2026-11-02, cause not found yet — nothing is worked around here).
+    /// Build 252: after the first call in a process CallKit never sent didActivate again —
+    /// ICE connected, 0 packets sent, nothing heard. If didActivate hasn't come 2 s after
+    /// CallKit started or answered the call, log it with the calls CallKit thinks are going
+    /// on and whether the app's audio session looks held by someone else.
+    private func armActivationWatchdog() {
+        activationWatchdog?.cancel()
+        let uuid = callUUID
+        activationWatchdog = Task { @MainActor [weak self] in
+            try? await Task.sleep(for: .seconds(2))
+            guard let self, !Task.isCancelled, self.callUUID == uuid, !self.state.isIdle,
+                  !self.sessionActivatedForCall.current else { return }
+            let session = AVAudioSession.sharedInstance()
+            nlog("call didActivate MISSING 2s after CallKit start/answer; category=\(session.category.rawValue) mode=\(session.mode.rawValue) otherAudioPlaying=\(session.isOtherAudioPlaying) \(self.routeDescription()) \(Self.audioDevice.debugState) CallKit calls: \(self.callKitCallsDescription())")
+        }
     }
 
     // Actual WebRTC setup (called from CXProviderDelegate)
@@ -826,24 +895,48 @@ final class CallManager: NSObject, ObservableObject {
     }
 
     func reject() {
+        nlog("call reject (local) state=\(state)")
         guard case .incoming(_, let cellId) = state else { return }
         Task { try? await store?.sendSignal("vcall:reject", to: cellId) }
         hangupSent = true
-        callController.request(CXTransaction(action: CXEndCallAction(call: callUUID))) { _ in }
+        callController.request(CXTransaction(action: CXEndCallAction(call: callUUID))) { err in
+            if let err { nlog("call CXEndCallAction(reject) FAILED err=\(err)") }
+        }
     }
 
     func hangup() {
+        nlog("call hangup (local) state=\(state) uuid=\(callUUID.uuidString.prefix(8))")
         if let cellId = state.cellId {
             Task { try? await store?.sendSignal("vcall:hangup", to: cellId) }
         }
         hangupSent = true
-        callController.request(CXTransaction(action: CXEndCallAction(call: callUUID))) { _ in }
+        callController.request(CXTransaction(action: CXEndCallAction(call: callUUID))) { err in
+            if let err { nlog("call CXEndCallAction(hangup) FAILED err=\(err)") }
+        }
         reset()
     }
 
+    /// The in-app mute button asks CallKit, and the mic changes only in CallKit's
+    /// CXSetMutedCallAction handler (Apple's Speakerbox pattern) — so this button and the
+    /// system call screen's (lock screen, headset, CarPlay) always show the same thing
+    /// (audit 2026-11-02, А7). If CallKit refuses, mute locally so the button still works.
     func toggleMute() {
-        isMuted.toggle()
-        localAudio?.isEnabled = !isMuted
+        let muted = !isMuted
+        let uuid = callUUID
+        callController.request(CXTransaction(action: CXSetMutedCallAction(call: uuid, muted: muted))) { [weak self] err in
+            guard let err else { return }
+            nlog("call CXSetMutedCallAction FAILED err=\(err) — muting locally")
+            Task { @MainActor in
+                guard let self, self.callUUID == uuid, !self.state.isIdle else { return }
+                self.applyMute(muted)
+            }
+        }
+    }
+
+    fileprivate func applyMute(_ muted: Bool) {
+        nlog("call mute=\(muted) uuid=\(callUUID.uuidString.prefix(8))")
+        isMuted = muted
+        localAudio?.isEnabled = !muted
     }
 
     // Bumped on every toggleSpeaker() call — lets the deferred check below tell "the user
@@ -974,6 +1067,9 @@ final class CallManager: NSObject, ObservableObject {
         audioReadyForCall.current = true
         observeRouteChangesIfNeeded()
         state = .connecting(contactName: name, cellId: cellId)
+        // The callee answered — CallKit's outgoing call is now "connecting" (audit
+        // 2026-11-02, А9); "connected" follows when ICE connects.
+        provider.reportOutgoingCall(with: callUUID, startedConnectingAt: Date())
         pc?.setRemoteDescription(sdp) { error in
             if let error { nlog("call setRemoteDescription(answer) FAILED err=\(error)") }
             Task { @MainActor [weak self] in
@@ -1044,6 +1140,8 @@ final class CallManager: NSObject, ObservableObject {
             mandatoryConstraints: nil, optionalConstraints: nil
         ))
         localAudio = Self.factory.audioTrack(with: src, trackId: "audio0")
+        // Mute tapped while still dialing (before this track existed) must hold.
+        localAudio?.isEnabled = !isMuted
         pc?.add(localAudio!, streamIds: ["stream0"])
 
         // Video transceiver added here, upfront, in the very first offer/answer — WITHOUT a
@@ -1251,15 +1349,23 @@ final class CallManager: NSObject, ObservableObject {
         localVideoTrack?.isEnabled = !isCameraOff
     }
 
-    private enum EndReason { case localEnded, remoteEnded, unanswered, busy }
+    private enum EndReason { case remoteEnded, unanswered, busy, failed }
 
     private func endCall(_ reason: EndReason) {
+        nlog("call endCall reason=\(reason) state=\(state) uuid=\(callUUID.uuidString.prefix(8))")
+        // No call going on — nothing to tell CallKit about (it used to get an "ended" for
+        // the previous call's UUID; audit 2026-11-02, А11).
+        guard !state.isIdle else {
+            nlog("call endCall — no call in progress, nothing to end")
+            return
+        }
+        // CallKit's own reasons (audit 2026-11-02, А12): "busy" is .failed — the call
+        // could not be made — not .answeredElsewhere ("answered on another device").
         let ckReason: CXCallEndedReason
         switch reason {
-        case .localEnded:  ckReason = .failed
         case .remoteEnded: ckReason = .remoteEnded
         case .unanswered:  ckReason = .unanswered
-        case .busy:        ckReason = .answeredElsewhere
+        case .busy, .failed: ckReason = .failed
         }
         // .unanswered fires from our own local timers (we gave up waiting for an answer,
         // or — on the callee side — for the offer/for the user to pick up) — the peer has
@@ -1347,6 +1453,9 @@ final class CallManager: NSObject, ObservableObject {
         acceptPending = false
         pendingPushCallerId = nil
         audioReadyForCall.current = false
+        activationWatchdog?.cancel()
+        activationWatchdog = nil
+        sessionActivatedForCall.current = false
         stopRingback()
         stopQualityMonitor()
         store?.tempEncPubs.removeAll()
@@ -1363,7 +1472,7 @@ final class CallManager: NSObject, ObservableObject {
         // phys_footprint metric (see Logger.swift's memMB()), whether footprint actually settles
         // back down a few seconds after hangup, or stays inflated — nlog's own call-site logging
         // already captures "right now"; this fills in "a bit later."
-        nlog("call cleanupResources +0s checkpoint")
+        nlog("call cleanupResources +0s checkpoint \(AudioDiag.snapshot())")
         Task {
             try? await Task.sleep(for: .seconds(2))
             nlog("call cleanupResources +2s checkpoint")
@@ -1471,7 +1580,7 @@ final class CallManager: NSObject, ObservableObject {
         if isVideoCall {
             videoDetail = " video(recvBytes=\(vBytesReceived) framesDecoded=\(vFramesDecoded) framesReceived=\(vFramesReceived) recvRes=\(vFrameW)x\(vFrameH) sentBytes=\(vBytesSent) framesSent=\(vFramesSent) sentRes=\(vFrameWSent)x\(vFrameHSent) localTrackId=\(localVideoTrack?.trackId ?? "nil") remoteTrackId=\(remoteVideoTrack?.trackId ?? "nil"))"
         }
-        nlog("call stats kbps=\(Int(kbps)) sentKbps=\(Int(sentKbps)) sentPackets=\(sentPackets) loss=\(String(format: "%.1f", lossRate*100))% audioLevel=\(audioLevel) tracks=\(tracksReceivers)\(trackDetail) playing=\(Self.audioDevice.isPlaying) recording=\(Self.audioDevice.isRecording) localAudioEnabled=\(localAudio?.isEnabled ?? false) \(routeDescription()) outputVolume=\(AVAudioSession.sharedInstance().outputVolume)\(videoDetail)")
+        nlog("call stats kbps=\(Int(kbps)) sentKbps=\(Int(sentKbps)) sentPackets=\(sentPackets) loss=\(String(format: "%.1f", lossRate*100))% audioLevel=\(audioLevel) tracks=\(tracksReceivers)\(trackDetail) playing=\(Self.audioDevice.isPlaying) recording=\(Self.audioDevice.isRecording) localAudioEnabled=\(localAudio?.isEnabled ?? false) \(routeDescription()) outputVolume=\(AVAudioSession.sharedInstance().outputVolume) \(Self.audioDevice.debugState)\(videoDetail)")
         if kbps < 5 || lossRate > 0.15 {
             quality = .poor
         } else if kbps < 20 || lossRate > 0.05 {
@@ -1504,13 +1613,45 @@ final class CallManager: NSObject, ObservableObject {
 extension CallManager: CXProviderDelegate {
 
     nonisolated func providerDidReset(_ provider: CXProvider) {
+        nlog("call CallKit providerDidReset")
         Task { @MainActor in self.reset() }
     }
 
+    nonisolated func providerDidBegin(_ provider: CXProvider) {
+        nlog("call CallKit providerDidBegin")
+    }
+
+    nonisolated func provider(_ provider: CXProvider, timedOutPerforming action: CXAction) {
+        nlog("call CallKit TIMED OUT performing \(type(of: action)) uuid=\(action.uuid.uuidString.prefix(8))")
+    }
+
     nonisolated func provider(_ provider: CXProvider, perform action: CXStartCallAction) {
+        nlog("call CallKit perform Start uuid=\(action.callUUID.uuidString.prefix(8)) \(AudioDiag.snapshot())")
         // Same place Apple's Speakerbox configures; a no-op if startCall() already did.
         Self.audioDevice.configureSession()
         action.fulfill()
+        // An outgoing call's capabilities (no hold etc.) — incoming calls carry them in
+        // reportNewIncomingCall's update.
+        provider.reportCall(with: action.callUUID, updated: Self.callUpdate(name: action.handle.value))
+        Task { @MainActor in self.armActivationWatchdog() }
+    }
+
+    nonisolated func provider(_ provider: CXProvider, perform action: CXSetMutedCallAction) {
+        nlog("call CallKit perform SetMuted muted=\(action.isMuted) uuid=\(action.callUUID.uuidString.prefix(8))")
+        let uuid = action.callUUID
+        let muted = action.isMuted
+        action.fulfill()
+        Task { @MainActor in
+            guard uuid == self.callUUID, !self.state.isIdle else { return }
+            self.applyMute(muted)
+        }
+    }
+
+    /// Holding isn't offered (callUpdate: supportsHolding = false); if CallKit still asks,
+    /// say no rather than leave the action hanging (audit 2026-11-02, А8).
+    nonisolated func provider(_ provider: CXProvider, perform action: CXSetHeldCallAction) {
+        nlog("call CallKit perform SetHeld onHold=\(action.isOnHold) uuid=\(action.callUUID.uuidString.prefix(8)) — holding not supported, failing")
+        action.fail()
     }
 
     // Answering a CallKit call (even via the full-screen "slide to answer" gesture on a
@@ -1526,13 +1667,18 @@ extension CallManager: CXProviderDelegate {
     // device/scenario — no third-party VoIP app can force itself to the foreground from a
     // cold, lock-screen-answered call; the user has to open it manually, same as any other.
     nonisolated func provider(_ provider: CXProvider, perform action: CXAnswerCallAction) {
+        nlog("call CallKit perform Answer uuid=\(action.callUUID.uuidString.prefix(8)) \(AudioDiag.snapshot())")
         // Same place Apple's Speakerbox configures; a no-op if the report already did.
         Self.audioDevice.configureSession()
         action.fulfill()
-        Task { @MainActor in self.performAccept() }
+        Task { @MainActor in
+            self.performAccept()
+            self.armActivationWatchdog()
+        }
     }
 
     nonisolated func provider(_ provider: CXProvider, perform action: CXEndCallAction) {
+        nlog("call CallKit perform End uuid=\(action.callUUID.uuidString.prefix(8))")
         action.fulfill()
         Task { @MainActor in
             // This fires for EVERY CXCall this provider manages, including the
@@ -1547,6 +1693,14 @@ extension CallManager: CXProviderDelegate {
             // socket needing a reconnect-and-resend retry mid-dial) caused the
             // callee's real, still-ringing call to receive a spurious vcall:reject.
             guard action.callUUID == self.callUUID else { return }
+            // hangup() already sent the hangup and reset everything (state idle, hangupSent
+            // false again) before CallKit got here — sending a second hangup from here is
+            // what reached the peer late and could end their next call to us (audit
+            // 2026-11-02, А3).
+            guard !self.state.isIdle else {
+                nlog("call CallKit End for a call already reset locally — nothing more to send")
+                return
+            }
             if !self.hangupSent {
                 let cellId = self.state.cellId
                 if case .incoming(_, let id) = self.state {
@@ -1560,16 +1714,18 @@ extension CallManager: CXProviderDelegate {
     }
 
     nonisolated func provider(_ provider: CXProvider, didActivate audioSession: AVAudioSession) {
-        nlog("call didActivate audioSession ready=\(audioReadyForCall.current)")
+        nlog("call didActivate audioSession ready=\(audioReadyForCall.current) \(AudioDiag.snapshot())")
+        sessionActivatedForCall.current = true
         // The ONLY place call audio starts (Apple's CallKit contract — see
         // NevodAudioDevice.configureSession). No self-activation, no retry loop, no reportCall
-        // nudges any more; if this never fires, the call has no audio and the log will show it.
+        // nudges any more; if this never fires, the call has no audio and the log will show it
+        // (armActivationWatchdog).
         Self.audioDevice.handleSessionActivated()
         Task { @MainActor in self.observeRouteChangesIfNeeded() }
     }
 
     nonisolated func provider(_ provider: CXProvider, didDeactivate audioSession: AVAudioSession) {
-        nlog("call didDeactivate audioSession")
+        nlog("call didDeactivate audioSession \(AudioDiag.snapshot())")
         // CallKit deactivated the session at the OS level — just update NevodAudioDevice's own
         // bookkeeping and let it tear its engine down; it's safe to call from any thread.
         Self.audioDevice.handleSessionDeactivated()
@@ -1628,7 +1784,11 @@ extension CallManager: RTCPeerConnectionDelegate {
                     self.callWasAnswered = true
                     self.startDurationTimer()
                     self.startQualityMonitor()
-                    self.provider.reportOutgoingCall(with: self.callUUID, connectedAt: Date())
+                    // Only an outgoing call is reported this way — for an incoming one
+                    // CXAnswerCallAction already told CallKit (audit 2026-11-02, А9).
+                    if self.callIsOutgoingFlag {
+                        self.provider.reportOutgoingCall(with: self.callUUID, connectedAt: Date())
+                    }
                     // ICE actually connecting proves this cellId's device is reachable right
                     // now — mitigates the "stuck offline forever" delivery-status bug, see
                     // AppStore.markReachableByCall's doc comment. Fires for both call
@@ -1645,7 +1805,7 @@ extension CallManager: RTCPeerConnectionDelegate {
                 if iceState == .failed, let cellId = self.state.cellId {
                     Task { try? await self.store?.sendSignal("vcall:hangup", to: cellId) }
                 }
-                self.endCall(.remoteEnded)
+                self.endCall(iceState == .failed ? .failed : .remoteEnded)
             default:
                 break
             }
@@ -1677,5 +1837,68 @@ extension CallManager: RTCPeerConnectionDelegate {
 private extension Contact {
     var displayName: String {
         alias.isEmpty ? cellId : alias
+    }
+}
+
+// MARK: - Call audio diagnostics (2026-11-02)
+
+/// Logging only — no behavior. Investigation of build 252: after the first call in a process
+/// CallKit never sent didActivate again (no sound). These lines show the app's audio session
+/// as it was at each step of a call, and everything that touched it between calls.
+enum AudioDiag {
+    static func snapshot() -> String {
+        let s = AVAudioSession.sharedInstance()
+        let ins = s.currentRoute.inputs.map { $0.portType.rawValue }.joined(separator: ",")
+        let outs = s.currentRoute.outputs.map { $0.portType.rawValue }.joined(separator: ",")
+        return "session(cat=\(s.category.rawValue) mode=\(s.mode.rawValue) opts=\(s.categoryOptions.rawValue) otherAudio=\(s.isOtherAudioPlaying) silenceHint=\(s.secondaryAudioShouldBeSilencedHint) sr=\(Int(s.sampleRate)) in=[\(ins)] out=[\(outs)])"
+    }
+}
+
+/// App-wide, from launch: audio-session notifications (NevodAudioDevice only listens while a
+/// call's audio device exists) and every change CallKit reports about this app's calls — a
+/// call CallKit still thinks is going on, or the session taken by someone else between calls,
+/// would show here.
+final class CallDiagnosticsWatcher: NSObject, CXCallObserverDelegate {
+    static let shared = CallDiagnosticsWatcher()
+    private let observer = CXCallObserver()
+    private var tokens: [NSObjectProtocol] = []
+
+    func start() {
+        guard tokens.isEmpty else { return }
+        observer.setDelegate(self, queue: nil)
+        let center = NotificationCenter.default
+        let session = AVAudioSession.sharedInstance()
+        tokens.append(center.addObserver(forName: AVAudioSession.interruptionNotification, object: session, queue: nil) { note in
+            let info = note.userInfo ?? [:]
+            let type = (info[AVAudioSessionInterruptionTypeKey] as? NSNumber)?.uintValue ?? 99
+            let reason = (info[AVAudioSessionInterruptionReasonKey] as? NSNumber)?.uintValue ?? 99
+            let options = (info[AVAudioSessionInterruptionOptionKey] as? NSNumber)?.uintValue ?? 0
+            nlog("diag interruption type=\(type == 1 ? "began" : type == 0 ? "ended" : "\(type)") reason=\(reason) options=\(options) \(AudioDiag.snapshot())")
+        })
+        tokens.append(center.addObserver(forName: AVAudioSession.routeChangeNotification, object: session, queue: nil) { note in
+            let reason = (note.userInfo?[AVAudioSessionRouteChangeReasonKey] as? NSNumber)?.uintValue ?? 99
+            nlog("diag routeChange reason=\(reason) \(AudioDiag.snapshot())")
+        })
+        tokens.append(center.addObserver(forName: AVAudioSession.mediaServicesWereLostNotification, object: session, queue: nil) { _ in
+            nlog("diag mediaServicesWereLost")
+        })
+        tokens.append(center.addObserver(forName: AVAudioSession.mediaServicesWereResetNotification, object: session, queue: nil) { _ in
+            nlog("diag mediaServicesWereReset \(AudioDiag.snapshot())")
+        })
+        tokens.append(center.addObserver(forName: AVAudioSession.silenceSecondaryAudioHintNotification, object: session, queue: nil) { note in
+            let type = (note.userInfo?[AVAudioSessionSilenceSecondaryAudioHintTypeKey] as? NSNumber)?.uintValue ?? 99
+            nlog("diag silenceSecondaryAudioHint type=\(type)")
+        })
+        nlog("diag watcher started \(AudioDiag.snapshot()) CallKit calls=\(Self.describe(observer.calls))")
+    }
+
+    func callObserver(_ callObserver: CXCallObserver, callChanged call: CXCall) {
+        nlog("diag CallKit callChanged \(call.uuid.uuidString.prefix(8)) out=\(call.isOutgoing) onHold=\(call.isOnHold) connected=\(call.hasConnected) ended=\(call.hasEnded); all=\(Self.describe(callObserver.calls))")
+    }
+
+    static func describe(_ calls: [CXCall]) -> String {
+        calls.isEmpty ? "none" : calls.map {
+            "\($0.uuid.uuidString.prefix(8)) out=\($0.isOutgoing) connected=\($0.hasConnected) ended=\($0.hasEnded)"
+        }.joined(separator: "; ")
     }
 }

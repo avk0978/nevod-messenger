@@ -26,7 +26,7 @@ Los usuarios ven el nombre en la app. Los demás nodos de la red conocen el nomb
 
 ## 2. Decide a quién admitir
 
-**Ajustes → Modo de admisión de celdas.** Un nodo nuevo funciona por defecto **por invitación**: solo puede registrarse quien tenga un código que tú hayas dado. Normalmente es justo lo que se necesita.
+**Ajustes → Modo de admisión de celdas.** Un nodo nuevo funciona por defecto **por invitación**: solo puede registrarse quien tenga un código que tú hayas dado. Normalmente es justo lo que se necesita. En la app, en **Explorar la red**, un nodo en modo de invitación o de aprobación lleva un candado 🔒: así la gente ve de antemano que no puede registrarse sin más.
 
 | Modo en el panel | Quién puede registrarse | Quién crea los códigos de invitación |
 |---|---|---|

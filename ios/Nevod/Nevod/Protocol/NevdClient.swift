@@ -81,6 +81,11 @@ final class NevdClient: NSObject, ObservableObject {
     // transitions ~2s apart in the client log show the delivering socket got torn down by a
     // sibling reconnect attempt before the message was ever processed.
     private var isConnectingPass = false
+    // The socket tryConnect is still opening — `webSocket` is only set once it's open, so
+    // disconnect() couldn't reach it: a client replaced mid-attempt (startClient) finished
+    // connecting and registering anyway, and the node saw two sockets from one cell at once
+    // (node1 log 2026-11-01, while a join request was waiting).
+    private var connectingSocket: NWWebSocketTask?
 
     init(identity: NevdIdentity) {
         self.identity = identity
@@ -110,6 +115,7 @@ final class NevdClient: NSObject, ObservableObject {
         reconnectTask?.cancel(); reconnectTask = nil
         stopPathMonitor()
         webSocket?.cancel()
+        connectingSocket?.cancel(); connectingSocket = nil
         webSocket = nil; activeAddr = ""; setStatus("disconnected")
     }
 
@@ -187,7 +193,14 @@ final class NevdClient: NSObject, ObservableObject {
             }
             defer { watchdog.cancel() }
 
+            connectingSocket = ws
+            defer { if connectingSocket === ws { connectingSocket = nil } }
             try await ws.connect(host: host, port: port, path: path)
+            guard reconnect else {
+                nlog("doConnect addr=\(addr) disconnected while connecting — dropping this socket")
+                ws.cancel()
+                return false
+            }
             webSocket = ws
 
             setStatus("authenticating…")
@@ -683,6 +696,9 @@ final class NevdClient: NSObject, ObservableObject {
         /// node learned it from the network. Lets NodeCellsBrowser pin a node that isn't in
         /// the curator's nodes.json; empty from a node too old to send it.
         var tlsFingerprint: String = ""
+        /// How the node admits new members, as it reports itself: "open", "admin",
+        /// "delegated"; empty from a node too old to send it. Closed ones get a lock.
+        var inviteMode: String = ""
     }
 
     func getPublicNodes() async throws -> [PublicNode] {
@@ -712,7 +728,8 @@ final class NevdClient: NSObject, ObservableObject {
             guard let nid = n["node_id"].string else { return nil }
             return PublicNode(nodeId: nid, name: n["name"].string ?? "",
                               address: n["address"].string ?? "",
-                              tlsFingerprint: n["tls_fingerprint"].string ?? "")
+                              tlsFingerprint: n["tls_fingerprint"].string ?? "",
+                              inviteMode: n["invite_mode"].string ?? "")
         }
         pendingNodeList?.resume(returning: nodes)
         pendingNodeList = nil

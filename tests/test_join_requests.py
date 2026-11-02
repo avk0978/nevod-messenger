@@ -392,6 +392,42 @@ class TestJoinRequestResolvedSignal:
             await client.disconnect()
             await node.stop()
 
+    async def test_request_after_deny_is_told_denied(self, tmp_path):
+        """The app re-sends its request on every connect. One who was offline when the
+        admin denied it must hear "denied" then, not a plain ok that keeps it waiting
+        forever (2026-10-31, Dev Planet)."""
+        node = await make_admin_node(tmp_path, 42)
+        await node.start()
+        acks: list = []
+        real_send_via = node.transport.send_via
+
+        async def spy(conn, pkt):
+            if pkt.type == T.JOIN_REQUEST_ACK:
+                acks.append(decode_payload(pkt.payload))
+            return await real_send_via(conn, pkt)
+        node.transport.send_via = spy
+        try:
+            client = await connect_pending(node)
+            try:
+                req = make_join_request(client.cell_id, node.identity.node_id)
+                sign_packet(req, client.identity.signing)
+                await client._ws.send(pack(req))
+                await asyncio.sleep(0.15)
+                assert await node.deny_join_request(client.cell_id)
+
+                req = make_join_request(client.cell_id, node.identity.node_id)
+                sign_packet(req, client.identity.signing)
+                await client._ws.send(pack(req))
+                await asyncio.sleep(0.15)
+
+                assert acks[0] == {"ok": True}
+                assert acks[-1] == {"ok": False, "reason": "denied"}
+                assert not await node.storage.is_cell_allowed(client.cell_id)
+            finally:
+                await client.disconnect()
+        finally:
+            await node.stop()
+
     async def test_approve_no_error_when_applicant_already_disconnected(self, tmp_path):
         """Best-effort only — must not raise or change behavior just because send_to()
         finds nobody connected (the realistic common case for a days-old request)."""

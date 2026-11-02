@@ -43,7 +43,7 @@ Puoi bloccare una singola chat con una password: così, anche se qualcuno ha in 
    - **Password di emergenza**: per quando ti costringono ad aprire la chat. Se la inserisci al posto di quella vera, la conversazione di questa chat viene **cancellata in silenzio** dal tuo telefono e sullo schermo compare il solito «Password errata»: per chi guarda, sembra un errore di battitura.
 3. Le password devono essere diverse. Per cambiarle, nello stesso punto: **Cambia password**.
 
-> La password della chat è salvata solo su questo telefono, e non la password stessa ma il suo hash. **Una password dimenticata non si può recuperare**, né da te né dagli sviluppatori, e la chat non si potrà più aprire. Scegli una password che non dimenticherai. La password di emergenza cancella la conversazione solo da te: l'altra persona la conserva.
+> La password della chat è salvata solo su questo telefono, e non la password stessa ma il suo hash. **Una password dimenticata non si può recuperare**, né da te né dagli sviluppatori. Se l'hai dimenticata, tocca **Password dimenticata?** nella schermata di accesso: la conversazione di questa chat viene cancellata dal telefono, la protezione con password viene tolta e la chat si riapre, ormai vuota. Scegli una password che non dimenticherai. La password di emergenza cancella la conversazione solo da te: l'altra persona la conserva.
 
 ## Protezione dagli sconosciuti
 

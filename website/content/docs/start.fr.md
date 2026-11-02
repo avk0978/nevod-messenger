@@ -17,9 +17,11 @@ Vous pouvez écrire aux personnes de n'importe quel nœud du réseau, pas seulem
 
 1. Ouvrez Nevod. L'app demande l'autorisation d'envoyer des notifications : acceptez, sinon vous ne saurez rien des messages et des appels tant que Nevod est fermé.
 2. Lisez l'essentiel des Conditions d'utilisation, activez **J'accepte les Conditions d'utilisation** et touchez **Continuer**.
-3. **Explorer le réseau** s'ouvre : une liste de nœuds ouverts. Vous pouvez y jeter un œil : les nœuds, leurs bots et leurs pages sont accessibles sans inscription. Tant que vous n'êtes inscrit sur aucun nœud, la liste ne montre que les nœuds du projet Nevod ; les autres nœuds ouverts du réseau apparaissent après l'inscription, car l'app reçoit leur liste de votre nœud.
+3. **Explorer le réseau** s'ouvre : une liste de nœuds ouverts. Au premier lancement, l'app affiche un court guide : ce qu'est un nœud, comment s'inscrire et comment échanger des cartes ; le bouton **?** en haut à gauche le rouvre. Vous pouvez y jeter un œil : les nœuds et leurs pages sont accessibles sans inscription. Les nœuds fermés sont marqués d'un cadenas 🔒 : on y entre sur invitation ou avec l'accord de l'administrateur. Tant que vous n'êtes inscrit sur aucun nœud, la liste ne montre que les nœuds du projet Nevod ; les autres nœuds ouverts du réseau apparaissent après l'inscription, car l'app reçoit leur liste de votre nœud.
 4. Touchez **Commencer à discuter** (en haut à droite).
 5. Saisissez **Votre nom affiché** : c'est ainsi que les autres vous verront. Touchez **Commencer**.
+
+Si, avant de vous inscrire, vous touchez un bot sur la page d'un nœud, l'app demande un **nom ou un pseudo** et vous inscrit sur ce nœud : sans nom, l'inscription est impossible. Si le nœud est fermé, l'app demande d'abord s'il faut envoyer une demande à l'administrateur.
 
 C'est fait : vous êtes inscrit sur le nœud **Nevod Open**. Dans quelques secondes, vous recevrez un message de bienvenue de **administrator**, le compte de l'administration du nœud. Un badge bleu ✓ figure à côté de son nom.
 
@@ -39,7 +41,7 @@ Si « Ouvrir dans Nevod » n'a pas fonctionné : dans l'app, touchez **Commencer
 
 Un code d'invitation ne sert qu'une fois et pour une durée limitée. Si l'app indique « Code invalide ou expiré — demandez-en un nouveau », demandez une nouvelle invitation.
 
-Si Nevod est déjà inscrit sur un autre nœud sur ce téléphone, l'invitation ne vous y transfère pas d'elle-même : une identité a un seul nœud d'attache. Que faire : voir [Contacts](../contacts/), « Personnes d'autres nœuds ».
+Si Nevod est déjà inscrit sur un autre nœud sur ce téléphone, l'invitation ne vous y transfère pas d'elle-même : une identité a un seul nœud d'attache. Que faire : voir [Contacts](../contacts/), « Personnes d'autres nœuds ». Si l'invitation concerne votre propre nœud, l'app affiche « Vous êtes déjà inscrit sur ce nœud » : rien à faire.
 
 Certains nœuds admettent sur demande : l'app affiche alors **En attente d'approbation** ; l'administrateur du nœud examinera votre demande et vous recevrez une notification.
 
@@ -50,7 +52,7 @@ Certains nœuds admettent sur demande : l'app affiche alors **En attente d'appro
 | **Discussions** | Vos conversations. |
 | **Appels** | L'historique des appels. |
 | **Contacts** | Vos interlocuteurs ; c'est aussi là que se trouve **Ajouter un contact**. |
-| **Nœuds** | Explorer le réseau : les nœuds, leurs bots et leurs pages. |
+| **Nœuds** | Explorer le réseau : les nœuds, leurs bots et leurs pages ; les nœuds fermés sont marqués d'un cadenas. |
 | **Profil** | Votre nom et votre avatar, votre carte pour échanger vos coordonnées, les invitations, la sécurité. |
 
 ## Votre premier message

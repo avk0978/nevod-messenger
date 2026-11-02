@@ -70,7 +70,7 @@ struct SetupView: View {
                 .multilineTextAlignment(.center).foregroundStyle(.secondary)
                 .padding(.horizontal, 32)
             Button("Close") {
-                store.joinRequestDenied = false
+                store.abandonRegistration()
                 dismiss()
             }
             .buttonStyle(.borderedProminent)

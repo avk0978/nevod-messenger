@@ -162,6 +162,13 @@ struct ProfileView: View {
                     Button("Церковнославянская клавиатура") { showChurchKeyboardInfo = true }
                 }
                 Section {
+                    Toggle("Показывать «Сообщение удалено»", isOn: $store.showDeletedPlaceholder)
+                } header: {
+                    Text("Chats")
+                } footer: {
+                    Text("Если выключить, сообщение, удалённое у всех, исчезает из чата без следа.")
+                }
+                Section {
                     // Protection from strangers (WORK_PLAN 2.10): both off by default — the
                     // user decides; see AppStore.isKnownSender for who counts as a stranger.
                     Toggle("Звонки только от контактов", isOn: $store.callsOnlyFromContacts)

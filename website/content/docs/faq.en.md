@@ -72,4 +72,6 @@ Check that the key was copied in full and hasn't been revoked on the provider's 
 
 **Profile → Diagnostics** — describe what happened and roughly when (for example, "2 of 3 photos didn't arrive, around 9 pm") and tap **Send to developers**. The app's technical log goes along with your description: it is stored only on your phone and contains no message text. The log is sent by email to support@nevod.network, or, if no email account is set up on the phone, to your node's administrator in Nevod; the answer comes in the chat with them.
 
+Before reproducing a problem, you can clear the log: **Profile → Diagnostics → Clear log** — then it contains only what matters.
+
 To report a person or a message — see [Security](../security/), "Blocking and reporting".

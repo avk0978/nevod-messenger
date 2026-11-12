@@ -72,4 +72,6 @@ Comprueba que la clave se copió entera y no se ha revocado en el sitio del prov
 
 **Perfil → Diagnóstico**: describe qué pasó y más o menos cuándo (por ejemplo, «no llegaron 2 de 3 fotos, hacia las 21:00») y toca **Enviar a los desarrolladores**. Junto con tu descripción se envía el registro técnico de la app: se guarda solo en el teléfono y no contiene texto de mensajes. El registro se envía por correo a support@nevod.network o, si el teléfono no tiene una cuenta de correo configurada, al administrador de tu nodo en Nevod; la respuesta llega al chat con él.
 
+Antes de reproducir un problema, puedes borrar el registro: **Perfil → Diagnóstico → Borrar registro**; así solo contendrá lo necesario.
+
 Para denunciar a una persona o un mensaje, consulta [Seguridad](../security/), «Bloquear y denunciar».

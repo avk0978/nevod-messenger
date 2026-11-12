@@ -49,7 +49,7 @@ Manche Nodes nehmen auf Antrag auf: Dann zeigt die App **Warten auf Freigabe** �
 
 | Tab | Was hier ist |
 |---|---|
-| **Chats** | Deine Unterhaltungen. |
+| **Chats** | Deine Unterhaltungen; die mit den neuesten Nachrichten stehen oben. |
 | **Anrufe** | Anrufverlauf. |
 | **Kontakte** | Deine Gesprächspartner; hier ist auch **Kontakt hinzufügen**. |
 | **Nodes** | Netzwerk erkunden: Nodes, ihre Bots und Seiten; geschlossene Nodes sind mit einem Schloss markiert. |

@@ -11,6 +11,25 @@ struct ChatsListView: View {
     // successfully elsewhere in this app for the identical destination (see
     // NodePlanetDetailView.swift's `chatContact`) — no NavigationPath involved there either.
     @State private var selectedContact: Contact? = nil
+    /// Newest shown message per chat — the list's order (user request 2026-11-07: by the
+    /// last message, newest on top). Before it was the order contacts were added in.
+    @State private var lastAt: [String: Date] = [:]
+
+    private var sortedChats: [Contact] {
+        let list = chats
+        let index = Dictionary(list.enumerated().map { ($0.element.cellId, $0.offset) }, uniquingKeysWith: { a, _ in a })
+        return list.sorted { a, b in
+            let da = lastAt[a.cellId] ?? .distantPast, db = lastAt[b.cellId] ?? .distantPast
+            if da != db { return da > db }
+            return index[a.cellId, default: 0] < index[b.cellId, default: 0]   // stable on ties
+        }
+    }
+
+    private func refreshOrder() {
+        var dates: [String: Date] = [:]
+        for id in store.chatIds { dates[id] = store.lastVisibleMessageDate(for: id) }
+        lastAt = dates
+    }
 
     private var chats: [Contact] {
         let result = store.contacts.filter { store.chatIds.contains($0.cellId) }
@@ -24,7 +43,7 @@ struct ChatsListView: View {
     var body: some View {
         NavigationStack {
             List {
-                ForEach(chats) { contact in
+                ForEach(sortedChats) { contact in
                     Button {
                         selectedContact = contact
                     } label: {
@@ -67,7 +86,9 @@ struct ChatsListView: View {
         // .onAppear covers a cold launch via notification tap (this view doesn't exist yet
         // when AppDelegate sets pendingChatCellId); .onChange covers a tap while the app (and
         // this view) is already alive. Both funnel through the same helper.
-        .onAppear { openPendingChatIfNeeded() }
+        .onAppear { refreshOrder(); openPendingChatIfNeeded() }
+        .onChange(of: store.messageSeq) { _, _ in refreshOrder() }
+        .onChange(of: store.chatIds) { _, _ in refreshOrder() }
         .onChange(of: store.pendingChatCellId) { _, _ in openPendingChatIfNeeded() }
     }
 
@@ -158,7 +179,7 @@ struct ChatRowView: View {
     }
 
     private func refresh() {
-        let all = store.messages(for: contact.cellId)
+        let all = store.visibleMessages(for: contact.cellId)
         lastMsg = all.last
         unreadCount = all.filter { !$0.fromMe && !$0.readAckSent }.count
     }

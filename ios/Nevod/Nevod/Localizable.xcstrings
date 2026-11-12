@@ -7803,6 +7803,58 @@
         }
       }
     },
+    "Если выключить, сообщение, удалённое у всех, исчезает из чата без следа." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wenn ausgeschaltet, verschwindet eine für alle gelöschte Nachricht spurlos aus dem Chat."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "When off, a message deleted for everyone disappears from the chat without a trace."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Si lo desactivas, un mensaje eliminado para todos desaparece del chat sin dejar rastro."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Si désactivé, un message supprimé pour tous disparaît de la discussion sans laisser de trace."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Se disattivato, un messaggio eliminato per tutti scompare dalla chat senza lasciare traccia."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Если выключить, сообщение, удалённое у всех, исчезает из чата без следа."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kapalıysa, herkesten silinen bir mesaj sohbetten iz bırakmadan kaybolur."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Якщо вимкнути, повідомлення, видалене для всіх, зникає з чату без сліду."
+          }
+        }
+      }
+    },
     "Жалоба отправлена. Ответ придёт в чат с administrator." : {
       "localizations" : {
         "de" : {
@@ -8995,6 +9047,58 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Конфіденційність"
+          }
+        }
+      }
+    },
+    "Копировать" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kopieren"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copy"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copiar"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copier"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copia"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Копировать"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kopyala"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Копіювати"
           }
         }
       }
@@ -11387,6 +11491,58 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Відхилено: не з контактів"
+          }
+        }
+      }
+    },
+    "Показывать «Сообщение удалено»" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "„Nachricht gelöscht“ anzeigen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Show “Message deleted”"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostrar «Mensaje eliminado»"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Afficher « Message supprimé »"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostra «Messaggio eliminato»"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Показывать «Сообщение удалено»"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "\"Mesaj silindi\" göster"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Показувати «Повідомлення видалено»"
           }
         }
       }

@@ -63,6 +63,8 @@ struct MessageActionOverlay: View {
     // boundary, both AppStore methods are safe to call regardless, they'd just no-op on a
     // fetch miss — this just keeps the menu from offering an action that wouldn't apply).
     private var canEdit: Bool { message.fromMe && message.type == .text }
+    // Copy — text messages only, own or someone else's (user request 2026-11-07).
+    private var canCopy: Bool { message.type == .text && !message.text.isEmpty }
     private var canDeleteEverywhere: Bool { message.fromMe }
     // Only someone else's message can be reported (App Store Guideline 1.2).
     private var canReport: Bool { !message.fromMe }
@@ -84,6 +86,7 @@ struct MessageActionOverlay: View {
     private static let extraRowHeight: CGFloat = 44
     private var estimatedPopupHeight: CGFloat {
         var extraRows = 0
+        if canCopy { extraRows += 1 }
         if canEdit { extraRows += 1 }
         if canDeleteEverywhere { extraRows += 1 }
         if canReport { extraRows += 1 }
@@ -157,6 +160,13 @@ struct MessageActionOverlay: View {
                 actionRow(String(localized: "Ответить"), systemImage: "arrowshape.turn.up.left", action: {
                     onReply(); onDismiss()
                 })
+                if canCopy {
+                    Divider().padding(.leading, 44)
+                    actionRow(String(localized: "Копировать"), systemImage: "doc.on.doc", action: {
+                        UIPasteboard.general.string = message.text   // exactly as written
+                        onDismiss()
+                    })
+                }
                 Divider().padding(.leading, 44)
                 actionRow(String(localized: "Поделиться"), systemImage: "square.and.arrow.up", action: {
                     onShare(); onDismiss()

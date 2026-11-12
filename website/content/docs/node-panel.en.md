@@ -11,7 +11,7 @@ The panel's language is switched in its header. A detailed description of every 
 | **Overview** | The cells (users) registered on the node. |
 | **Settings** | The node's name, admission mode, visibility. |
 | **Join requests** | Users' requests, if the node works in approval mode. |
-| **Inbox** | Users' messages to the node's administrator — reports, questions. You can reply right from here. |
+| **Inbox** | Users' messages to the node's administrator — reports, questions. You can reply right from here, or write to a member first: **write** next to them on **Overview**. |
 | **Invitations** | Invite codes for users. |
 | **Nodes** | Joining the Nevod network and the other nodes your node knows. |
 | **Publishing**, **AI bots** | The bots and channels the node shows its users. |

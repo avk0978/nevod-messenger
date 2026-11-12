@@ -31,6 +31,8 @@ An incoming call appears on the regular iPhone call screen — just like a phone
 
 The top of the screen shows how the connection is going — **Calling…**, **Connecting…** — and, once the conversation has started, the call quality: **Good**, **Fair** or **Poor**.
 
+You can also mute the microphone on the iPhone call screen (for example, when the phone is locked) — that button and the one in Nevod work together. If an ordinary phone call comes in during a Nevod call, the iPhone offers to end the Nevod call and answer, or to decline the incoming call: a Nevod call can't be put on hold.
+
 A video call starts as a regular one: call, and when the other person answers, tap **Video**.
 
 **During a call, file transfer is paused** so the call isn't disturbed, and it resumes after the call.

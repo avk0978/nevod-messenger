@@ -97,14 +97,19 @@ struct ChatSettings: Codable {
     // never lets a late/reordered ack regress it (e.g. a stray "offline" notice arriving
     // after "delivered" must not undo it).
     enum MessageStatus: String {
-        case sent, offline, delivered, read, failed
+        // accepted: our own node holds it (its "accepted" ack, node.py _ack_accepted) — until
+        // then a message still at .sent may have been lost in this phone's own TCP buffer and
+        // is sent again after a reconnect (AppStore.resendUnconfirmed). Shown like .sent.
+        // Stored as a string, so no schema change; an older build reads it back as .sent.
+        case sent, accepted, offline, delivered, read, failed
 
         var rank: Int {
             switch self {
             case .sent: return 0
-            case .offline: return 1
-            case .delivered: return 2
-            case .read: return 3
+            case .accepted: return 1
+            case .offline: return 2
+            case .delivered: return 3
+            case .read: return 4
             case .failed: return 0
             }
         }

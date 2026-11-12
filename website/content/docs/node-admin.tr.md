@@ -16,9 +16,12 @@ Düğüme kayıtlı tüm hücrelerin (kullanıcılar ve botlar) listesi.
 |---|---|
 | Ad | Bu hücre için kendi notunuz — yalnızca siz, panelde görürsünüz. Yazın ve ✓ ya da Enter'a basın. Kullanıcının kendi seçtiği adı değiştirmez. |
 | `cell_id` | Hücrenin kimliği. Tamamı ipucu balonunda. |
+| Dil | Kullanıcının telefon dili — ona bu dilde yazın. "Magyar → English": Nevod’da bu dil yok, kişi uygulamayı İngilizce görür — İngilizce yazın. "—": 1.3’ten eski uygulama. |
 | Durum | Çevrimiçi veya çevrimdışı — uygulamanın şu anda bağlı olup olmadığı. |
-| Arabellek | Kullanıcının çevrimiçi olmasını bekleyen mesaj sayısı (72 saate kadar saklanır). |
+| Arabellek | Kullanıcının çevrimiçi olmasını bekleyenler (72 saate kadar saklanır): **msg** — mesajlar ve dosya parçaları, **hizmet** — "teslim edildi/okundu" işaretleri, tepkiler ve sinyaller. Hizmet öğeleri kişi uygulamayı açtığında ulaşır. |
 | Kayıt | Hücrenin ne zaman kaydolduğu. |
+
+Tablonun altında — **Üyelerin dilleri**: her dili kaç kişinin kullandığı, Nevod’da henüz olmayan diller dahil. Hangi dillere en çok ihtiyaç olduğunu gösterir.
 
 Düğmeler:
 

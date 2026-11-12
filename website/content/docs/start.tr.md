@@ -49,7 +49,7 @@ Bazı düğümler başvuruyla kabul eder: o zaman uygulama **Onay bekleniyor** g
 
 | Sekme | Burada ne var |
 |---|---|
-| **Sohbetler** | Yazışmalarınız. |
+| **Sohbetler** | Yazışmalarınız; en yeni mesajların olduğu sohbetler üsttedir. |
 | **Aramalar** | Arama geçmişi. |
 | **Kişiler** | Yazıştığınız kişiler; **Kişi ekle** de buradadır. |
 | **Düğümler** | Ağı keşfet: düğümler, botları ve sayfaları; kapalı düğümler kilitle işaretlidir. |

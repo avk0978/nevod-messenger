@@ -72,4 +72,6 @@ Prüfe, ob der Schlüssel vollständig kopiert und auf der Website des Anbieters
 
 **Profil → Diagnose** — beschreibe, was passiert ist und ungefähr wann (zum Beispiel „2 von 3 Fotos sind nicht angekommen, gegen 21 Uhr“), und tippe auf **An die Entwickler senden**. Mit deiner Beschreibung geht das technische Protokoll der App mit: Es liegt nur auf deinem Telefon und enthält keine Nachrichtentexte. Das Protokoll geht per E-Mail an support@nevod.network oder, wenn auf dem Telefon kein E-Mail-Konto eingerichtet ist, an den Administrator deines Nodes in Nevod; die Antwort kommt im Chat mit ihm.
 
+Bevor du ein Problem nachstellst, kannst du das Log leeren: **Profil → Diagnose → Log löschen** — dann steht darin nur das Nötige.
+
 Eine Person oder eine Nachricht melden — siehe [Sicherheit](../security/), „Blockieren und melden“.

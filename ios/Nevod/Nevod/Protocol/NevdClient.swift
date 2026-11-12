@@ -378,10 +378,21 @@ final class NevdClient: NSObject, ObservableObject {
 
     // MARK: - Register
 
+    /// The phone's real language as an ISO 639 code ("ru", "pl", "hu", …), sent with
+    /// cell_register (user decision 2026-11-07; privacy policy §3 says so): the node's
+    /// administrator writes to the person in it — in English if Nevod doesn't have it (the
+    /// app is shown in English then) — and it shows which languages to add to the app first.
+    /// Only the language, no region or country. A node older than 1.3 ignores the field.
+    static var interfaceLanguage: String {
+        let id = Locale.preferredLanguages.first ?? "en"
+        return (Locale(identifier: id).language.languageCode?.identifier ?? "en").lowercased()
+    }
+
     private func registerCell(ws: NWWebSocketTask) async throws {
         var payload: [String: Any?] = [
             "cell_id": identity.cellId, "signing_pubkey": identity.signingPub,
             "enc_pubkey": identity.encPub, "is_home": true, "display_name": displayName,
+            "lang": Self.interfaceLanguage,
         ]
         if let code = inviteCode { payload["invite_code"] = code }
         var pkt = makePacket(type: "cell_register", payload: encodePayload(payload),
@@ -403,6 +414,7 @@ final class NevdClient: NSObject, ObservableObject {
             let payload: [String: Any?] = [
                 "cell_id": identity.cellId, "signing_pubkey": identity.signingPub,
                 "enc_pubkey": identity.encPub, "is_home": true, "display_name": name,
+                "lang": Self.interfaceLanguage,
             ]
             var pkt = makePacket(type: "cell_register", payload: encodePayload(payload),
                                   from: identity.cellId, to: nodeId)
@@ -421,6 +433,7 @@ final class NevdClient: NSObject, ObservableObject {
                 "cell_id": identity.cellId, "signing_pubkey": identity.signingPub,
                 "enc_pubkey": identity.encPub, "is_home": true,
                 "display_name": displayName, "invite_code": currentCode,
+                "lang": Self.interfaceLanguage,
             ]
             var pkt = makePacket(type: "cell_register", payload: encodePayload(payload),
                                   from: identity.cellId, to: nodeId)
@@ -587,6 +600,9 @@ final class NevdClient: NSObject, ObservableObject {
     /// logging each as "NO MATCHING MESSAGE". The recipient only echoes the id back, so this
     /// works whatever version it runs.
     static let untrackedIdPrefix = "u-"
+    /// A file chunk's fixed id "u-r-<transferId>-<index>": still untracked for everyone else,
+    /// but the node acks it "accepted" so a re-send can skip what it holds (resume).
+    static let resumableChunkPrefix = "u-r-"
 
     /// fileData: a chunk of a file (header and last one included) — waits its turn, see
     /// callInProgress.
@@ -991,23 +1007,36 @@ final class NevdClient: NSObject, ObservableObject {
         onJoinRequestResolved?(approved)
     }
 
-    private func sendAck(msgId: String, status: String, toAddr: String) {
+    /// onResult (optional) reports whether the write went out: false when there is no socket or
+    /// the send threw (socket died a moment ago, e.g. right after returning from background).
+    private func sendAck(msgId: String, status: String, toAddr: String,
+                         onResult: (@MainActor (Bool) -> Void)? = nil) {
         guard let ws = webSocket else {
             nlog("sendAck SKIP no websocket msgId=\(msgId.prefix(8)) status=\(status)")
+            if let onResult { Task { @MainActor in onResult(false) } }
             return
         }
         nlog("sendAck msgId=\(msgId.prefix(8)) status=\(status) toAddr=\(toAddr)")
         var ack = makePacket(type: "ack", payload: encodePayload(["message_id": msgId, "status": status]),
                               from: "\(identity.cellId)@\(nodeId)", to: toAddr)
         try? signPacket(&ack, seed: identity.signingPriv)
-        Task { try? await wsSend(ws: ws, pkt: ack) }
+        Task {
+            do {
+                try await wsSend(ws: ws, pkt: ack)
+                if let onResult { await MainActor.run { onResult(true) } }
+            } catch {
+                nlog("sendAck FAILED msgId=\(msgId.prefix(8)) status=\(status) err=\(error)")
+                if let onResult { await MainActor.run { onResult(false) } }
+            }
+        }
     }
 
     /// Sent when the user actually views a chat containing this incoming message.
     /// toNodeId: the SENDER's node — defaults to our own only as a same-node fallback,
     /// the caller should pass the sender's actual node when known (cross-node chat).
-    func sendReadReceipt(msgId: String, toCellId: String, toNodeId: String? = nil) {
-        sendAck(msgId: msgId, status: "read", toAddr: "\(toCellId)@\(toNodeId ?? nodeId)")
+    func sendReadReceipt(msgId: String, toCellId: String, toNodeId: String? = nil,
+                         onResult: (@MainActor (Bool) -> Void)? = nil) {
+        sendAck(msgId: msgId, status: "read", toAddr: "\(toCellId)@\(toNodeId ?? nodeId)", onResult: onResult)
     }
 
     private func handleAck(_ pkt: NevdPacket) {
@@ -1017,7 +1046,10 @@ final class NevdClient: NSObject, ObservableObject {
             nlog("NevdClient handleAck decode FAILED")
             return
         }
-        nlog("NevdClient handleAck msgId=\(msgId.prefix(8)) status=\(status)")
+        // One per chunk would flood the log (~280 for a 27 MB video).
+        if !msgId.hasPrefix(Self.resumableChunkPrefix) {
+            nlog("NevdClient handleAck msgId=\(msgId.prefix(8)) status=\(status)")
+        }
         onAck?(msgId, status)
     }
 

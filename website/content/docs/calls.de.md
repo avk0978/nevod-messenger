@@ -31,6 +31,8 @@ Ein eingehender Anruf erscheint auf dem normalen Anrufbildschirm des iPhone — 
 
 Oben auf dem Bildschirm siehst du, wie die Verbindung läuft — **Anruf läuft…**, **Verbinden…** — und, sobald das Gespräch begonnen hat, die Verbindungsqualität: **Gut**, **Mittel** oder **Schlecht**.
 
+Das Mikrofon kannst du auch auf dem Anrufbildschirm des iPhone stummschalten (zum Beispiel bei gesperrtem Telefon) — diese Taste und die in Nevod arbeiten zusammen. Kommt während eines Nevod-Anrufs ein normaler Telefonanruf, bietet das iPhone an, den Nevod-Anruf zu beenden und anzunehmen oder den eingehenden Anruf abzulehnen: Halten ist für Nevod-Anrufe nicht möglich.
+
 Ein Videoanruf beginnt wie ein normaler: Ruf an, und wenn der andere annimmt, tippe auf **Video**.
 
 **Während eines Anrufs wird die Dateiübertragung pausiert**, damit der Anruf ungestört läuft, und danach fortgesetzt.

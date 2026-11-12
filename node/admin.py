@@ -246,6 +246,29 @@ function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').repl
 function ts(sec){return new Date(sec*1000).toLocaleString(document.documentElement.lang)}
 function setLang(l){document.cookie='nevod_admin_lang='+l+';path=/nevod-admin;max-age=31536000;samesite=lax';location.reload()}
 function shortId(id){return esc(id.slice(0,16))+'…'}
+// The phone's language as sent with cell_register (app 1.3+), in its own name. For a
+// language Nevod doesn't have the person reads the app in English, so: "Magyar → English"
+// = write in English. '—' = unknown (app before 1.3).
+// uk/ru as \\u escapes: the page's translation pass would otherwise treat them as Russian text.
+const LANG_NAMES = {en:'English', uk:'\\u0423\\u043a\\u0440\\u0430\\u0457\\u043d\\u0441\\u044c\\u043a\\u0430', ru:'\\u0420\\u0443\\u0441\\u0441\\u043a\\u0438\\u0439', de:'Deutsch', tr:'Türkçe', es:'Español', it:'Italiano', fr:'Français'};
+function langOwnName(code){
+  if(LANG_NAMES[code]) return LANG_NAMES[code];
+  try { const n = new Intl.DisplayNames([code], {type:'language'}).of(code);
+        if(n && n !== code) return n.charAt(0).toUpperCase() + n.slice(1); } catch(e) {}
+  return code;
+}
+// Buffer column: real mail apart from service packets (pending delivered/read marks,
+// reactions, signals) — those wait for the person to open the app, no push for them.
+function bufText(c){
+  const parts = [];
+  if(c.buffered_msgs > 0) parts.push(c.buffered_msgs + ' msg');
+  if(c.buffered_service > 0) parts.push(c.buffered_service + ' служебные');
+  return parts.length ? parts.join(' + ') : '—';
+}
+function langName(code){
+  if(!code) return '—';
+  return LANG_NAMES[code] ? LANG_NAMES[code] : esc(langOwnName(code)) + ' → English';
+}
 
 // ── tiny QR encoder (data-URL via canvas) ────────────────────────────
 let _qrlib = null;
@@ -374,9 +397,10 @@ _BODY_OVERVIEW = """
     </span>
   </h2>
   <table>
-    <thead><tr><th>Имя</th><th>cell_id</th><th>Статус</th><th>Буфер</th><th>Регистрация</th><th></th></tr></thead>
+    <thead><tr><th>Имя</th><th>cell_id</th><th>Язык</th><th>Статус</th><th>Буфер</th><th>Регистрация</th><th></th></tr></thead>
     <tbody id="cells-body"></tbody>
   </table>
+  <div id="lang-stat" style="padding:10px 16px;color:#8b949e;font-size:12px;line-height:1.6"></div>
   <div id="cells-err" class="err"></div>
 </section>
 """
@@ -394,6 +418,17 @@ async function loadCells(){
   const online = cells.filter(c=>c.online).length;
   document.getElementById('cell-stat').textContent =
     online + ' онлайн / ' + cells.length + ' всего';
+  // Languages of the members, most common first — also those Nevod doesn't have yet,
+  // to see which to add first (user request 2026-11-07).
+  const byLang = {};
+  for(const c of cells){ const k = c.lang || ''; byLang[k] = (byLang[k] || 0) + 1; }
+  const langRows = Object.entries(byLang).filter(([k]) => k).sort((a, b) => b[1] - a[1])
+    .map(([k, n]) => (LANG_NAMES[k] ? LANG_NAMES[k] : esc(langOwnName(k)) + ' (' + esc(k) + ')') + ': ' + n);
+  if(byLang['']) langRows.push('— : ' + byLang['']);
+  document.getElementById('lang-stat').innerHTML = langRows.length
+    ? '<b style="color:#c9d1d9">Языки участников:</b> ' + langRows.join(' · ')
+      + '<br>«→ English» — языка нет в Nevod, человек видит приложение по-английски: пишите ему по-английски. «—» — приложение до 1.3, язык неизвестен.'
+    : '';
   const tbody = document.getElementById('cells-body');
   tbody.innerHTML = '';
   for(const c of cells){
@@ -403,10 +438,12 @@ async function loadCells(){
       <td><input class="alias-inp" value="${esc(c.alias)}" data-id="${esc(c.cell_id)}"
           onkeydown="if(event.key==='Enter')saveAlias(this)"></td>
       <td class="cell-id" title="${esc(c.cell_id)}">${shortId(c.cell_id)}</td>
+      <td>${langName(c.lang)}</td>
       <td><span class="dot"></span>${c.online ? 'онлайн' : 'офлайн'}</td>
-      <td class="buf">${c.buffered > 0 ? c.buffered + ' msg' : '—'}</td>
+      <td class="buf">${bufText(c)}</td>
       <td>${ts(c.registered_at)}</td>
-      <td><button class="btn-save" onclick="saveAlias(this.closest('tr').querySelector('.alias-inp'))">✓</button>
+      <td><button style="background:#1a2a3a;color:#58a6ff" onclick="location.href='/nevod-admin/appeals?cell=' + encodeURIComponent('${esc(c.cell_id)}')">написать</button>
+          <button class="btn-save" onclick="saveAlias(this.closest('tr').querySelector('.alias-inp'))">✓</button>
           <button class="btn-del" onclick="delCell('${esc(c.cell_id)}',this.closest('tr'))">✕</button></td>`;
     tbody.appendChild(tr);
   }
@@ -724,6 +761,7 @@ _BODY_APPEALS = """
     Жалобы и вопросы, которые пользователи отправили аккаунту <b style="color:#c9d1d9">administrator</b> этой ноды
     из приложения. Ответ уходит пользователю в Nevod, зашифрованным, от имени administrator.
     По e-mail мы не отвечаем никогда.
+    <br>Написать участнику первым: страница «Обзор», таблица «Ячейки», кнопка «написать».
   </div>
   <table>
     <thead><tr><th>Отправитель</th><th>Последнее сообщение</th><th>Когда</th><th></th></tr></thead>
@@ -737,9 +775,9 @@ _BODY_APPEALS = """
   </h2>
   <div id="thread-msgs" style="padding:12px 16px;display:flex;flex-direction:column;gap:10px;max-height:480px;overflow-y:auto"></div>
   <div style="padding:12px 16px;border-top:1px solid #21262d;display:flex;gap:8px;align-items:flex-end">
-    <textarea id="reply-text" rows="3" placeholder="Ответ от administrator…"
+    <textarea id="reply-text" rows="3" placeholder="Сообщение от administrator…"
       style="flex:1;background:#0d1117;border:1px solid #30363d;color:#c9d1d9;border-radius:6px;padding:8px;font-family:monospace;font-size:13px;resize:vertical"></textarea>
-    <button class="btn-save" style="padding:8px 16px" onclick="sendReply()">Ответить</button>
+    <button class="btn-save" style="padding:8px 16px" onclick="sendReply()">Отправить</button>
   </div>
   <div id="reply-err" class="err"></div>
 </section>
@@ -771,8 +809,8 @@ async function loadThreads(){
     const preview = esc(t.last_text.length > 90 ? t.last_text.slice(0, 90) + '…' : t.last_text);
     const tr = document.createElement('tr');
     tr.style.cursor = 'pointer';
-    tr.onclick = () => openThread(t.cell_id, t.display_name);
-    tr.innerHTML = `<td>${name}${badge}<div class="cell-id">${shortId(t.cell_id)}</div></td>
+    tr.onclick = () => openThread(t.cell_id, t.display_name, t.lang);
+    tr.innerHTML = `<td>${name}${badge}<div class="cell-id">${shortId(t.cell_id)} · ${langName(t.lang)}</div></td>
       <td>${who}${preview}</td><td>${ts(t.last_at)}</td>
       <td><button style="background:#1a2a3a;color:#58a6ff">открыть</button></td>`;
     tbody.appendChild(tr);
@@ -781,9 +819,9 @@ async function loadThreads(){
   if(currentCell) loadThread();
 }
 
-function openThread(cell_id, name){
+function openThread(cell_id, name, lang){
   currentCell = cell_id;
-  document.getElementById('thread-title').textContent = name || 'без имени';
+  document.getElementById('thread-title').textContent = (name || 'без имени') + (lang ? ' · ' + langName(lang) : '');
   document.getElementById('thread-id').textContent = cell_id;
   document.getElementById('thread-box').style.display = '';
   loadThread().then(()=>{ document.getElementById('thread-box').scrollIntoView({behavior:'smooth'}); });
@@ -794,7 +832,8 @@ async function loadThread(){
   const r = await fetch('/nevod-admin/api/appeals/' + encodeURIComponent(currentCell));
   const data = await r.json();
   const box = document.getElementById('thread-msgs');
-  box.innerHTML = '';
+  box.innerHTML = data.messages.length ? ''
+    : '<div class="cell-id">переписки ещё нет — напишите первым</div>';
   for(const m of data.messages){
     const out = m.direction === 'out';
     const div = document.createElement('div');
@@ -834,8 +873,19 @@ async function loadAdminInfo(){
     `--cell-id ${esc(d.cell_id)} --enc-pub ${esc(d.enc_pub)} --node-id ${esc(d.node_id)} --privkey-file &lt;ключ куратора&gt;</span>`;
 }
 
+// The write button in Overview → Cells opens /appeals?cell=ID: the administrator writes first,
+// to a member who never wrote (2026-11-12, new members on Open who didn't know what to do).
+async function openFromUrl(){
+  const id = new URLSearchParams(location.search).get('cell');
+  if(!id) return;
+  const r = await fetch('/nevod-admin/api/cells');
+  const cell = ((await r.json()).cells || []).find(c => c.cell_id === id);
+  openThread(id, cell ? cell.alias : '', cell ? cell.lang : '');
+}
+
 loadHeader();
 loadThreads();
+openFromUrl();
 loadAdminInfo();
 setInterval(loadThreads, 8000);
 """
@@ -1838,7 +1888,7 @@ class AdminServer:
     async def _handle_cells(self, _req):
         storage = self._node.storage
         cells = await storage.list_cells()
-        buf_counts = await storage.buffer_count()
+        buf_counts = await storage.buffer_counts()
         connected_ids = {c.peer_node_id for c in await self._node.transport.connections.all()}
 
         return web.json_response({
@@ -1855,8 +1905,11 @@ class AdminServer:
                 {
                     "cell_id":       c.cell_id,
                     "alias":         c.display_name,
+                    "lang":          c.lang,
                     "online":        c.cell_id in connected_ids,
-                    "buffered":      buf_counts.get(c.cell_id, 0),
+                    "buffered":      sum(buf_counts.get(c.cell_id, (0, 0))),
+                    "buffered_msgs":    buf_counts.get(c.cell_id, (0, 0))[0],
+                    "buffered_service": buf_counts.get(c.cell_id, (0, 0))[1],
                     "registered_at": c.registered_at,
                     "is_home":       c.is_home,
                 }

@@ -37,7 +37,9 @@ Was vor dem Senden passiert:
 
 Ein einzelner Anhang darf höchstens **50 MB** groß sein. Eine größere Datei sendet die App nicht und sagt dir das. Ein Video, das als „Datei“ gesendet wird, wird nicht komprimiert — wähle für lange Clips „Foto oder Video“.
 
-Eine große Datei wird in Teilen gesendet, und du siehst den Fortschritt unter der Nachricht. Bricht die Verbindung ab, geht das Senden nach dem Wiederverbinden von selbst weiter. **Während eines Anrufs wird die Dateiübertragung pausiert**, damit der Anruf ungestört läuft, und danach fortgesetzt.
+Eine große Datei wird in Teilen gesendet, und du siehst den Fortschritt unter der Nachricht. Bricht die Verbindung ab oder wird die App geschlossen, geht das Senden nach dem Wiederverbinden von selbst weiter — dort, wo es stehen geblieben ist, nicht von vorn. **Während eines Anrufs wird die Dateiübertragung pausiert**, damit der Anruf ungestört läuft, und danach fortgesetzt.
+
+Nachrichten in einem Chat kommen in der Reihenfolge an, in der du sie gesendet hast: Eine Bildunterschrift oder ein Sprachkommentar nach einem Foto oder Video kommt danach an.
 
 > Während eine große Datei gesendet wird, schließ Nevod nicht und lass das Telefon nicht lange gesperrt: iOS stoppt eine App im Hintergrund nach einer Weile, und das Senden geht erst weiter, wenn du Nevod wieder öffnest.
 
@@ -58,6 +60,7 @@ Halte eine Nachricht gedrückt — ein Menü erscheint:
 | Aktion | Was sie tut |
 |---|---|
 | **Antworten** | Antwort mit Zitat dieser Nachricht |
+| **Kopieren** | den Nachrichtentext kopieren — bei Textnachrichten |
 | **Teilen** | Text kopieren, Foto oder Datei speichern, über eine andere App weiterleiten |
 | **Bearbeiten** | den Text deiner Nachricht korrigieren — beim Gesprächspartner ändert er sich auch |
 | **Für mich löschen** | die Nachricht nur auf deinem Telefon löschen |
@@ -67,6 +70,8 @@ Halte eine Nachricht gedrückt — ein Menü erscheint:
 „Bearbeiten“ gibt es nur für eigene Textnachrichten, „Für alle löschen“ nur für eigene Nachrichten, „Melden“ nur für fremde.
 
 > „Für alle löschen“ löscht die Nachricht in der App des Gesprächspartners. Hat er sie aber schon gelesen, das Foto gespeichert oder einen Screenshot gemacht, macht das Löschen das nicht rückgängig.
+
+Damit an Stelle von für alle gelöschten Nachrichten nicht „Nachricht gelöscht“ steht, schalte **Profil → Chats → „Nachricht gelöscht“ anzeigen** aus.
 
 ## Mitteilungen über Nachrichten
 

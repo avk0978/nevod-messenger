@@ -16,9 +16,12 @@ Eine Liste aller Zellen (Nutzer und Bots), die auf dem Node registriert sind.
 |---|---|
 | Name | Deine eigene Bezeichnung für diese Zelle — nur du siehst sie, im Panel. Eintippen und ✓ oder Enter drücken. Den vom Nutzer gewählten Namen ändert sie nicht. |
 | `cell_id` | Die Kennung der Zelle. Vollständig im Tooltip. |
+| Sprache | Die Telefonsprache des Nutzers — schreib ihm darin. „Magyar → English“: Nevod hat diese Sprache nicht, die Person sieht die App auf Englisch — schreib auf Englisch. „—“: App älter als 1.3. |
 | Status | Online oder offline — ob die App gerade verbunden ist. |
-| Puffer | Wie viele Nachrichten darauf warten, dass der Nutzer online kommt (bis zu 72 Stunden aufbewahrt). |
+| Puffer | Was darauf wartet, dass der Nutzer online kommt (bis zu 72 Stunden aufbewahrt): **msg** — Nachrichten und Dateiteile, **Dienst** — „zugestellt/gelesen“-Markierungen, Reaktionen und Signale. Dienstpakete kommen an, wenn die Person die App öffnet. |
 | Registrierung | Wann sich die Zelle registriert hat. |
+
+Unter der Tabelle — **Sprachen der Mitglieder**: wie viele Personen welche Sprache nutzen, auch Sprachen, die Nevod noch nicht hat. Daran sieht man, welche Sprachen am meisten gebraucht werden.
 
 Tasten:
 

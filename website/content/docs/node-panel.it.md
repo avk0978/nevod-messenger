@@ -11,7 +11,7 @@ La lingua del pannello si cambia nella sua intestazione. La descrizione dettagli
 | **Panoramica** | Le celle (utenti) registrate sul nodo. |
 | **Impostazioni** | Nome del nodo, modalità di ammissione, visibilità. |
 | **Richieste di accesso** | Le richieste degli utenti, se il nodo funziona in modalità di approvazione. |
-| **Messaggi** | I messaggi degli utenti all'amministratore del nodo: segnalazioni, domande. Puoi rispondere direttamente da qui. |
+| **Messaggi** | I messaggi degli utenti all'amministratore del nodo: segnalazioni, domande. Puoi rispondere direttamente da qui o scrivere per primo a un membro: pulsante **scrivi** accanto a lui in **Panoramica**. |
 | **Inviti** | Codici di invito per gli utenti. |
 | **Nodi** | Il collegamento alla rete Nevod e gli altri nodi che il tuo nodo conosce. |
 | **Pubblicazione**, **Bot IA** | I bot e i canali che il nodo mostra ai suoi utenti. |

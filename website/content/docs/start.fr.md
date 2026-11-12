@@ -49,7 +49,7 @@ Certains nœuds admettent sur demande : l'app affiche alors **En attente d'appro
 
 | Onglet | Ce qu'il contient |
 |---|---|
-| **Discussions** | Vos conversations. |
+| **Discussions** | Vos conversations ; celles qui ont les messages les plus récents sont en haut. |
 | **Appels** | L'historique des appels. |
 | **Contacts** | Vos interlocuteurs ; c'est aussi là que se trouve **Ajouter un contact**. |
 | **Nœuds** | Explorer le réseau : les nœuds, leurs bots et leurs pages ; les nœuds fermés sont marqués d'un cadenas. |

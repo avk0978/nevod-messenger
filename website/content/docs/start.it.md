@@ -49,7 +49,7 @@ Alcuni nodi accettano su richiesta: allora l'app mostra **In attesa di approvazi
 
 | Scheda | Cosa c'è |
 |---|---|
-| **Chat** | Le tue conversazioni. |
+| **Chat** | Le tue conversazioni; in alto quelle con i messaggi più recenti. |
 | **Chiamate** | Cronologia delle chiamate. |
 | **Contatti** | Le persone con cui scrivi; qui c'è anche **Aggiungi contatto**. |
 | **Nodi** | Esplora la rete: nodi, i loro bot e le loro pagine; i nodi chiusi sono segnati con un lucchetto. |

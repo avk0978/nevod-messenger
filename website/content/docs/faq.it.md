@@ -72,4 +72,6 @@ Controlla che la chiave sia stata copiata per intero e non sia stata revocata su
 
 **Profilo → Diagnostica**: descrivi cosa è successo e più o meno quando (per esempio, «non sono arrivate 2 foto su 3, verso le 21») e tocca **Invia agli sviluppatori**. Insieme alla descrizione parte il registro tecnico dell'app: è salvato solo sul telefono e non contiene il testo dei messaggi. Il registro va via email a support@nevod.network oppure, se sul telefono non è configurato un account email, all'amministratore del tuo nodo in Nevod; la risposta arriva nella chat con lui.
 
+Prima di riprodurre un problema puoi cancellare il log: **Profilo → Diagnostica → Cancella log**, così conterrà solo ciò che serve.
+
 Per segnalare una persona o un messaggio: vedi [Sicurezza](../security/), «Bloccare e segnalare».

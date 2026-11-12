@@ -37,7 +37,9 @@ What happens before sending:
 
 The largest single attachment is **50 MB**. The app won't send a larger file and will tell you so. A video sent as a "File" is not compressed — for long clips choose "Photo or video".
 
-A large file is sent in parts, and you can see the progress under the message. If the connection drops, sending resumes by itself after reconnecting. **During a call, file transfer is paused** so the call isn't disturbed, and it resumes after the call.
+A large file is sent in parts, and you can see the progress under the message. If the connection drops or the app is closed, sending resumes by itself after reconnecting — from where it stopped, not from the beginning. **During a call, file transfer is paused** so the call isn't disturbed, and it resumes after the call.
+
+Messages in a chat arrive in the order you sent them: a caption or voice comment sent after a photo or video arrives after it.
 
 > While a large file is being sent, don't close Nevod or leave the phone locked for long: iOS stops an app in the background after a while, and sending will continue only when you open Nevod again.
 
@@ -58,6 +60,7 @@ Touch and hold a message — a menu appears:
 | Action | What it does |
 |---|---|
 | **Reply** | reply quoting this message |
+| **Copy** | copy the message text — for text messages |
 | **Share** | copy the text, save a photo or file, forward it through another app |
 | **Edit** | correct the text of your message — it changes for the other person too |
 | **Delete for me** | delete the message only on your phone |
@@ -67,6 +70,8 @@ Touch and hold a message — a menu appears:
 "Edit" is available only for your own text messages, "Delete for everyone" only for your own messages, "Report" only for other people's.
 
 > "Delete for everyone" deletes the message in the other person's app. But if they have already read it, saved the photo or taken a screenshot, deleting won't undo that.
+
+To stop seeing “Message deleted” in place of messages deleted for everyone, turn off **Profile → Chats → Show “Message deleted”**.
 
 ## Message notifications
 

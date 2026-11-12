@@ -31,6 +31,8 @@ Un appel entrant s'affiche sur l'écran d'appel habituel de l'iPhone, comme un a
 
 En haut de l'écran, vous voyez où en est la connexion — **Appel en cours…**, **Connexion…** — puis, une fois la conversation commencée, la qualité de la liaison : **Bonne**, **Moyenne** ou **Mauvaise**.
 
+Vous pouvez aussi couper le micro depuis l'écran d'appel de l'iPhone (par exemple quand le téléphone est verrouillé) : ce bouton et celui de Nevod fonctionnent ensemble. Si un appel téléphonique ordinaire arrive pendant un appel Nevod, l'iPhone propose de raccrocher l'appel Nevod et de répondre, ou de refuser l'appel entrant : un appel Nevod ne peut pas être mis en attente.
+
 Un appel vidéo commence comme un appel normal : appelez, et quand votre interlocuteur répond, touchez **Vidéo**.
 
 **Pendant un appel, le transfert de fichiers est suspendu** pour ne pas gêner l'appel, puis il reprend.

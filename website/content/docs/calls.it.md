@@ -31,6 +31,8 @@ Una chiamata in arrivo compare sulla normale schermata di chiamata dell'iPhone, 
 
 In alto sullo schermo si vede come va il collegamento — **Chiamata in corso…**, **Connessione…** — e, quando la conversazione è iniziata, la qualità della linea: **Buona**, **Discreta** o **Scarsa**.
 
+Puoi disattivare il microfono anche dalla schermata di chiamata dell'iPhone (per esempio a telefono bloccato): quel pulsante e quello di Nevod funzionano insieme. Se durante una chiamata Nevod arriva una normale telefonata, l'iPhone propone di terminare la chiamata Nevod e rispondere, oppure di rifiutare quella in arrivo: una chiamata Nevod non può essere messa in attesa.
+
 Una videochiamata comincia come una chiamata normale: chiama e, quando l'altra persona risponde, tocca **Video**.
 
 **Durante una chiamata il trasferimento dei file è in pausa**, perché la chiamata non ne risenta, e riprende dopo.

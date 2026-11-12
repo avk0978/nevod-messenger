@@ -72,4 +72,6 @@ Vérifiez que la clé a été copiée en entier et n'a pas été révoquée sur 
 
 **Profil → Diagnostic** : décrivez ce qui s'est passé et à peu près quand (par exemple, « 2 photos sur 3 ne sont pas arrivées, vers 21 h ») et touchez **Envoyer aux développeurs**. Le journal technique de l'app part avec votre description : il n'est conservé que sur le téléphone et ne contient pas le texte des messages. Le journal est envoyé par e-mail à support@nevod.network ou, si aucun compte e-mail n'est configuré sur le téléphone, à l'administrateur de votre nœud dans Nevod ; la réponse arrive dans la discussion avec lui.
 
+Avant de reproduire un problème, vous pouvez effacer le journal : **Profil → Diagnostic → Effacer le journal** ; il ne contiendra alors que l'essentiel.
+
 Pour signaler une personne ou un message : voir [Sécurité](../security/), « Bloquer et signaler ».

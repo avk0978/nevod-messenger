@@ -16,9 +16,12 @@ La liste de toutes les cellules (utilisateurs et bots) inscrites sur le nœud.
 |---|---|
 | Nom | Votre propre étiquette pour cette cellule : vous seul la voyez, dans le panneau. Saisissez-la et appuyez sur ✓ ou Entrée. Elle ne change pas le nom choisi par l'utilisateur. |
 | `cell_id` | L'identifiant de la cellule. La version complète apparaît dans l'infobulle. |
+| Langue | La langue du téléphone de l'utilisateur : écrivez-lui dans celle-ci. « Magyar → English » : Nevod n'a pas cette langue, la personne voit l'app en anglais ; écrivez en anglais. « — » : app antérieure à 1.3. |
 | Statut | En ligne ou hors ligne : si l'app est connectée en ce moment. |
-| Tampon | Combien de messages attendent que l'utilisateur se connecte (conservés jusqu'à 72 heures). |
+| Tampon | Ce qui attend que l'utilisateur se connecte (conservé jusqu'à 72 heures) : **msg**, messages et parties de fichiers ; **de service**, marques « distribué/lu », réactions et signaux. Les éléments de service arrivent quand la personne ouvre l'app. |
 | Inscription | Quand la cellule s'est inscrite. |
+
+Sous le tableau, **Langues des membres** : combien de personnes utilisent chaque langue, y compris celles que Nevod n'a pas encore. Cela montre quelles langues sont les plus demandées.
 
 Boutons :
 

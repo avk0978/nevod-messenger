@@ -31,6 +31,8 @@ Gelen arama iPhone'un normal arama ekranında görünür — telefon kilitli ve 
 
 Ekranın üstünde bağlantının durumu görünür — **Aranıyor…**, **Bağlanıyor…** — ve konuşma başlayınca bağlantı kalitesi: **İyi**, **Orta** veya **Zayıf**.
 
+Mikrofonu iPhone'un arama ekranından da kapatabilirsiniz (örneğin telefon kilitliyken) — bu düğme ile Nevod'daki düğme birlikte çalışır. Nevod araması sırasında normal bir telefon araması gelirse iPhone, Nevod aramasını bitirip yanıtlamayı ya da gelen aramayı reddetmeyi önerir: Nevod araması beklemeye alınamaz.
+
 Görüntülü arama normal bir arama gibi başlar: arayın, karşınızdaki yanıtlayınca **Video**'ya dokunun.
 
 **Arama sırasında dosya aktarımı duraklatılır**, böylece arama aksamaz; aramadan sonra devam eder.

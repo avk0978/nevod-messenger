@@ -15,6 +15,7 @@ Tables:
 import secrets
 import time
 import aiosqlite
+import msgpack
 from dataclasses import dataclass, field
 from typing import Optional, List
 
@@ -58,7 +59,8 @@ CREATE TABLE IF NOT EXISTS cells (
     enc_pubkey      BLOB NOT NULL,
     registered_at   INTEGER NOT NULL,
     is_home         INTEGER NOT NULL DEFAULT 1,
-    display_name    TEXT NOT NULL DEFAULT ''
+    display_name    TEXT NOT NULL DEFAULT '',
+    lang            TEXT NOT NULL DEFAULT ''
 );
 
 -- Admin-curated SUBSET of `cells` this node's operator has explicitly chosen to
@@ -105,7 +107,8 @@ CREATE TABLE IF NOT EXISTS message_buffer (
     payload     BLOB NOT NULL,
     created_at  INTEGER NOT NULL,
     expires_at  INTEGER NOT NULL,
-    seq         INTEGER NOT NULL DEFAULT 0
+    seq         INTEGER NOT NULL DEFAULT 0,
+    kind        TEXT NOT NULL DEFAULT ''
 );
 
 CREATE INDEX IF NOT EXISTS idx_buf_to_cell  ON message_buffer(to_cell);
@@ -241,6 +244,20 @@ CREATE TABLE IF NOT EXISTS blocked_nodes (
 """
 
 
+# Packet types a person sees as mail (a message, a part of a file). Anything else waiting
+# in the buffer is service: acks (delivered/read), reactions, msg_silent signals, calls.
+_MAIL_TYPES = ("msg", "msg_chunk")
+
+
+def buffer_kind(payload: bytes) -> str:
+    """'msg' or 'service' for a buffered packet (see _MAIL_TYPES); unreadable → 'msg'."""
+    try:
+        ptype = msgpack.unpackb(payload, raw=False).get("type")
+    except Exception:
+        return "msg"
+    return "msg" if ptype in _MAIL_TYPES else "service"
+
+
 @dataclass
 class NodeEntry:
     node_id: str
@@ -361,6 +378,10 @@ class CellEntry:
     registered_at: int
     is_home: bool = True
     display_name: str = ""
+    # The app's interface language (one of node.CELL_LANGS), sent with cell_register since
+    # app 1.3 — so the administrator can write to the person in their language. '' = unknown
+    # (older app).
+    lang: str = ""
 
 
 @dataclass
@@ -423,11 +444,21 @@ class Storage:
             "ALTER TABLE join_requests ADD COLUMN display_name TEXT NOT NULL DEFAULT ''",
             "ALTER TABLE message_buffer ADD COLUMN seq INTEGER NOT NULL DEFAULT 0",
             "ALTER TABLE published_cells ADD COLUMN ai_providers TEXT NOT NULL DEFAULT ''",
+            "ALTER TABLE cells ADD COLUMN lang TEXT NOT NULL DEFAULT ''",
+            "ALTER TABLE message_buffer ADD COLUMN kind TEXT NOT NULL DEFAULT ''",
         ]:
             try:
                 await self._db.execute(migration)
             except Exception:
                 pass  # Column already exists
+        # Rows buffered before the kind column existed: classify them once.
+        async with self._db.execute(
+            "SELECT message_id, payload FROM message_buffer WHERE kind = ''"
+        ) as cur:
+            old = await cur.fetchall()
+        for row in old:
+            await self._db.execute("UPDATE message_buffer SET kind=? WHERE message_id=?",
+                                   (buffer_kind(bytes(row["payload"])), row["message_id"]))
         await self._db.commit()
 
     async def close(self):
@@ -588,7 +619,7 @@ class Storage:
 
     async def register_cell(self, cell_id: str, signing_pubkey: bytes,
                              enc_pubkey: bytes, is_home: bool = True,
-                             display_name: str = "") -> bool:
+                             display_name: str = "", lang: str = "") -> bool:
         """Returns True if this cell_id had no prior row (a genuinely new member,
         not just a reconnect/re-register of someone already known here) — callers
         use this to decide whether to announce a new member to already-connected
@@ -600,16 +631,19 @@ class Storage:
             is_new = await cur.fetchone() is None
         await self._db.execute(
             """
-            INSERT INTO cells (cell_id, signing_pubkey, enc_pubkey, registered_at, is_home, display_name)
-            VALUES (?,?,?,?,?,?)
+            INSERT INTO cells (cell_id, signing_pubkey, enc_pubkey, registered_at, is_home, display_name, lang)
+            VALUES (?,?,?,?,?,?,?)
             ON CONFLICT(cell_id) DO UPDATE SET
                 signing_pubkey = excluded.signing_pubkey,
                 enc_pubkey     = excluded.enc_pubkey,
                 display_name   = CASE WHEN excluded.display_name != ''
                                       THEN excluded.display_name
-                                      ELSE cells.display_name END
+                                      ELSE cells.display_name END,
+                lang           = CASE WHEN excluded.lang != ''
+                                      THEN excluded.lang
+                                      ELSE cells.lang END
             """,
-            (cell_id, signing_pubkey, enc_pubkey, now, int(is_home), display_name.strip()[:64]),
+            (cell_id, signing_pubkey, enc_pubkey, now, int(is_home), display_name.strip()[:64], lang),
         )
         await self._db.commit()
         return is_new
@@ -634,6 +668,7 @@ class Storage:
                 registered_at=row["registered_at"],
                 is_home=bool(row["is_home"]),
                 display_name=row["display_name"] or "",
+                lang=row["lang"] or "",
             )
 
     async def get_cell_by_name(self, name: str) -> Optional[str]:
@@ -659,6 +694,7 @@ class Storage:
                 registered_at=r["registered_at"],
                 is_home=bool(r["is_home"]),
                 display_name=r["display_name"] or "",
+                lang=r["lang"] or "",
             )
             for r in rows
         ]
@@ -797,10 +833,11 @@ class Storage:
         await self._db.execute(
             """
             INSERT OR IGNORE INTO message_buffer
-                (message_id, to_cell, to_node, payload, created_at, expires_at, seq)
-            VALUES (?,?,?,?,?,?,?)
+                (message_id, to_cell, to_node, payload, created_at, expires_at, seq, kind)
+            VALUES (?,?,?,?,?,?,?,?)
             """,
-            (message_id, to_cell, to_node, payload, now, now + TTL_MESSAGE_SECS, seq),
+            (message_id, to_cell, to_node, payload, now, now + TTL_MESSAGE_SECS, seq,
+             buffer_kind(payload)),
         )
         await self._db.commit()
 
@@ -844,13 +881,21 @@ class Storage:
 
     async def buffer_count(self) -> dict[str, int]:
         """Return buffered message count per cell_id (non-expired only)."""
+        return {cell: msgs + service for cell, (msgs, service) in (await self.buffer_counts()).items()}
+
+    async def buffer_counts(self) -> dict[str, tuple[int, int]]:
+        """Per cell_id (non-expired only): (messages and file parts, service packets — acks,
+        reactions, invisible signals, call signals). The admin panel shows them apart, so a
+        cell with only pending "delivered/read" marks doesn't look like unread mail."""
         now = int(time.time())
         async with self._db.execute(
-            "SELECT to_cell, COUNT(*) as cnt FROM message_buffer WHERE expires_at > ? GROUP BY to_cell",
+            "SELECT to_cell, SUM(CASE WHEN kind='service' THEN 0 ELSE 1 END) AS msgs, "
+            "SUM(CASE WHEN kind='service' THEN 1 ELSE 0 END) AS service "
+            "FROM message_buffer WHERE expires_at > ? GROUP BY to_cell",
             (now,),
         ) as cur:
             rows = await cur.fetchall()
-        return {r["to_cell"]: r["cnt"] for r in rows}
+        return {r["to_cell"]: (r["msgs"] or 0, r["service"] or 0) for r in rows}
 
     async def delete_buffered(self, message_id: str):
         await self._db.execute(
@@ -1059,12 +1104,14 @@ class Storage:
             "     ORDER BY b.id DESC LIMIT 1), "
             "  (SELECT text FROM appeals c WHERE c.cell_id=a.cell_id ORDER BY c.id DESC LIMIT 1), "
             "  (SELECT direction FROM appeals d WHERE d.cell_id=a.cell_id ORDER BY d.id DESC LIMIT 1), "
-            "  MAX(a.created_at), SUM(CASE WHEN a.seen=0 THEN 1 ELSE 0 END) "
+            "  MAX(a.created_at), SUM(CASE WHEN a.seen=0 THEN 1 ELSE 0 END), "
+            "  (SELECT lang FROM cells e WHERE e.cell_id=a.cell_id) "
             "FROM appeals a GROUP BY a.cell_id ORDER BY MAX(a.id) DESC"
         ) as cur:
             rows = await cur.fetchall()
         return [{"cell_id": r[0], "display_name": r[1] or "", "last_text": r[2] or "",
-                 "last_direction": r[3] or "", "last_at": r[4] or 0, "unread": r[5] or 0}
+                 "last_direction": r[3] or "", "last_at": r[4] or 0, "unread": r[5] or 0,
+                 "lang": r[6] or ""}
                 for r in rows]
 
     async def mark_appeals_seen(self, cell_id: str):

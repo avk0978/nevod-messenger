@@ -305,7 +305,7 @@ SUPPORT = """
 PRIVACY = """
 <main class="legal"><div class="wrap">
 <h1>Privacy Policy</h1>
-<p>Version of 17 October 2026. Nevod is developed by Kolpakov Andrey. Questions about data: <a href="mailto:privacy@nevod.network">privacy@nevod.network</a>.</p>
+<p>Version of 7 November 2026. Nevod is developed by Kolpakov Andrey. Questions about data: <a href="mailto:privacy@nevod.network">privacy@nevod.network</a>.</p>
 <h2>1. The essentials</h2>
 <p>Nevod is built on the principle of Zero Knowledge Infrastructure. The content of your messages, photos, videos, voice messages, files and calls is end-to-end encrypted, and keys never leave your device. Neither the network nodes nor the developer can read the content. The one exception is what you write to AI bots yourself, see section 5.</p>
 <h2>2. What's stored on your device</h2>
@@ -314,7 +314,7 @@ PRIVACY = """
 <h2>3. What a node processes</h2>
 <ul>
 <li>Your identity's identifier (cell ID) and your public keys.</li>
-<li>The display name you chose.</li>
+<li>The display name you chose and your phone’s language (only the language, not the country) — so the node operator can answer you in your language, and to see which languages to add to the app.</li>
 <li>Device tokens for push notifications and calls.</li>
 <li>Encrypted messages until they're delivered: undelivered messages are deleted after 72 hours.</li>
 <li>Your notification settings and your list of blocked users.</li>

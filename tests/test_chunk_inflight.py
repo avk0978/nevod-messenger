@@ -286,3 +286,62 @@ class TestChunkWindow:
             assert node.router._chunk_queue.get("c" * 64) is None
         finally:
             await node.stop()
+
+
+class TestSenderOrder:
+    async def test_final_msg_waits_behind_same_senders_chunks_only(self, tmp_path):
+        """A file's final chunk (plain MSG) and a caption sent after it don't overtake that
+        sender's queued chunks; another sender's message and a call signal still go at once."""
+        node = await make_node(tmp_path, 41)
+        try:
+            written = []
+
+            async def send_to(cell_id, pkt):
+                written.append(pkt.id)
+                return True
+
+            async def get(cell_id):
+                return object()
+            node.transport.send_to = send_to
+            node.transport.connections.get = get
+            rcpt = "c" * 64
+            to = rcpt + "@" + node.identity.node_id
+            chunks = [Packet(type=T.MSG_CHUNK, payload=b"x", from_addr="a@b", to_addr=to)
+                      for _ in range(5)]
+            for p in chunks:
+                assert await node.router._deliver_local(p)
+            final = Packet(type=T.MSG, payload=b"f", from_addr="a@b", to_addr=to)
+            caption = Packet(type=T.MSG_SILENT, payload=b"s", from_addr="a@b", to_addr=to)
+            other = Packet(type=T.MSG, payload=b"o", from_addr="z@b", to_addr=to)
+            signal = Packet(type=T.VCALL_SIGNAL, payload=b"h", from_addr="a@b", to_addr=to)
+            for p in (final, caption, other, signal):
+                assert await node.router._deliver_local(p)
+            await asyncio.sleep(0.2)
+            assert final.id not in written and caption.id not in written
+            assert other.id in written and signal.id in written
+            assert final.id in node.router._inflight[rcpt]   # buffered on a drop like the rest
+
+            for p in chunks:   # receiver acks everything as it arrives
+                node.router.on_ack_received(rcpt, p.id)
+                await asyncio.sleep(0.1)
+            await asyncio.sleep(0.2)
+            order = [i for i in written if i in {p.id for p in chunks} | {final.id, caption.id}]
+            assert order == [p.id for p in chunks] + [final.id, caption.id]
+        finally:
+            await node.stop()
+
+    async def test_msg_without_queued_chunks_goes_straight(self, tmp_path):
+        node = await make_node(tmp_path, 42)
+        try:
+            written = []
+
+            async def send_to(cell_id, pkt):
+                written.append(pkt.id)
+                return True
+            node.transport.send_to = send_to
+            to = "c" * 64 + "@" + node.identity.node_id
+            msg = Packet(type=T.MSG, payload=b"t", from_addr="a@b", to_addr=to)
+            assert await node.router._deliver_local(msg)
+            assert written == [msg.id]
+        finally:
+            await node.stop()

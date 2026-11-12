@@ -11,7 +11,7 @@ Die Sprache des Panels wird in seiner Kopfzeile umgeschaltet. Eine ausführliche
 | **Übersicht** | Die auf dem Node registrierten Zellen (Nutzer). |
 | **Einstellungen** | Name des Nodes, Zulassungsmodus, Sichtbarkeit. |
 | **Beitrittsanfragen** | Anfragen von Nutzern, wenn der Node im Freigabemodus läuft. |
-| **Posteingang** | Nachrichten von Nutzern an den Administrator des Nodes — Meldungen, Fragen. Du kannst direkt von hier antworten. |
+| **Posteingang** | Nachrichten von Nutzern an den Administrator des Nodes — Meldungen, Fragen. Du kannst direkt von hier antworten oder einem Mitglied zuerst schreiben: **schreiben** neben ihm in der **Übersicht**. |
 | **Einladungen** | Einladungscodes für Nutzer. |
 | **Nodes** | Anschluss an das Nevod-Netz und die anderen Nodes, die dein Node kennt. |
 | **Veröffentlichung**, **KI-Bots** | Die Bots und Kanäle, die der Node seinen Nutzern zeigt. |

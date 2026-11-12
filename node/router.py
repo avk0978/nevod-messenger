@@ -308,7 +308,15 @@ class Router:
     async def _deliver_local(self, pkt: Packet, seq: int = 0) -> bool:
         """Deliver to a cell connected on this node. Returns True if delivered."""
         cell_id, _ = parse_addr(pkt.to_addr)
-        if cell_id and pkt.type == T.MSG_CHUNK and await self.node.transport.connections.get(cell_id):
+        if (cell_id and (pkt.type == T.MSG_CHUNK or self._behind_own_chunks(cell_id, pkt))
+                and await self.node.transport.connections.get(cell_id)):
+            # A message or silent signal from someone whose file chunks are still queued for
+            # this recipient goes in line behind them: things from one sender arrive in the
+            # order they were sent (photo, then its caption or a voice comment). In particular
+            # a file's final chunk travels as plain MSG — sent straight away it overtook the
+            # queued chunks and the receiver acked "delivered" with 6 of 283 in hand, the file
+            # assembled 6 minutes later (device logs 2026-11-06). Only call signals and acks
+            # never wait here.
             # Tracked as in flight right away, so a drop before it's even written buffers it
             # like the rest (on_connection_lost); _chunk_sender writes it when the window allows.
             self._inflight.setdefault(cell_id, {})[pkt.id] = (pkt, seq)
@@ -334,6 +342,16 @@ class Router:
             return True
         log.debug("router: cell %s not connected, no handler", pkt.to_addr[:16])
         return False
+
+    def _behind_own_chunks(self, cell_id: str, pkt: Packet) -> bool:
+        """True for a MSG/MSG_SILENT whose sender still has packets queued for cell_id."""
+        if pkt.type not in (T.MSG, T.MSG_SILENT):
+            return False
+        queue = self._chunk_queue.get(cell_id)
+        if not queue:
+            return False
+        sender = pkt.from_addr.split("@", 1)[0]
+        return any(q.from_addr.split("@", 1)[0] == sender for q in queue)
 
     async def _chunk_sender(self, cell_id: str):
         """Writes cell_id's queued chunks, keeping at most CHUNK_WINDOW of them unacked.

@@ -37,7 +37,9 @@ Ce qui se passe avant l'envoi :
 
 La taille maximale d'une pièce jointe est de **50 Mo**. L'app n'envoie pas un fichier plus gros et vous le signale. Une vidéo envoyée comme « Fichier » n'est pas compressée : pour les longues vidéos, choisissez « Photo ou vidéo ».
 
-Un gros fichier est envoyé par morceaux, et vous voyez la progression sous le message. Si la connexion est coupée, l'envoi reprend tout seul après la reconnexion. **Pendant un appel, le transfert de fichiers est suspendu** pour ne pas gêner l'appel, puis il reprend.
+Un gros fichier est envoyé par morceaux, et vous voyez la progression sous le message. Si la connexion est coupée ou si l'app se ferme, l'envoi reprend tout seul après la reconnexion, là où il s'était arrêté et non depuis le début. **Pendant un appel, le transfert de fichiers est suspendu** pour ne pas gêner l'appel, puis il reprend.
+
+Les messages d'une discussion arrivent dans l'ordre où vous les avez envoyés : une légende ou un commentaire vocal envoyé après une photo ou une vidéo arrive après elle.
 
 > Pendant l'envoi d'un gros fichier, ne fermez pas Nevod et ne laissez pas le téléphone verrouillé longtemps : iOS arrête au bout d'un moment une app en arrière-plan, et l'envoi ne reprendra que lorsque vous rouvrirez Nevod.
 
@@ -58,6 +60,7 @@ Maintenez le doigt sur un message : un menu apparaît.
 | Action | Ce qu'elle fait |
 |---|---|
 | **Répondre** | répondre en citant ce message |
+| **Copier** | copier le texte du message — pour les messages texte |
 | **Partager** | copier le texte, enregistrer la photo ou le fichier, le transférer via une autre app |
 | **Modifier** | corriger le texte de votre message ; il change aussi chez votre interlocuteur |
 | **Supprimer pour moi** | supprimer le message seulement sur votre téléphone |
@@ -67,6 +70,8 @@ Maintenez le doigt sur un message : un menu apparaît.
 « Modifier » n'existe que pour vos propres messages texte, « Supprimer pour tous » que pour vos propres messages, « Signaler » que pour ceux des autres.
 
 > « Supprimer pour tous » efface le message dans l'app de votre interlocuteur. Mais s'il l'a déjà lu, a enregistré la photo ou fait une capture d'écran, la suppression n'y change rien.
+
+Pour ne plus voir « Message supprimé » à la place des messages supprimés pour tous, désactivez **Profil → Discussions → Afficher « Message supprimé »**.
 
 ## Notifications de messages
 

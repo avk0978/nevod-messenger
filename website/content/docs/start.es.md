@@ -49,7 +49,7 @@ Algunos nodos admiten por solicitud: entonces la app muestra **Esperando aprobac
 
 | Pestaña | Qué hay |
 |---|---|
-| **Chats** | Tus conversaciones. |
+| **Chats** | Tus conversaciones; arriba, las que tienen los mensajes más recientes. |
 | **Llamadas** | Historial de llamadas. |
 | **Contactos** | Las personas con las que hablas; aquí también está **Añadir contacto**. |
 | **Nodos** | Explorar la red: nodos, sus bots y páginas; los nodos cerrados llevan un candado. |

@@ -351,8 +351,13 @@ struct ChatView: View {
                         Image(systemName: "plus.circle.fill").font(.title2)
                             .foregroundStyle(churchFontEnabled ? Color.accentColor : .secondary)
                     }
+                    // .current: hand over the original file. The default (.automatic) lets
+                    // Photos transcode HEVC to H.264 first — 49.5 s for a 4-minute clip before
+                    // our own encode even started (device log 2026-11-06). We re-encode videos
+                    // and turn photos into JPEG ourselves, and both read HEVC/HEIC fine.
                     .photosPicker(isPresented: $showPhotosPicker, selection: $photoItems,
-                                  matching: .any(of: [.images, .videos]))
+                                  matching: .any(of: [.images, .videos]),
+                                  preferredItemEncoding: .current)
                     TextField("Message", text: $inputText, axis: .vertical)
                         .textFieldStyle(.roundedBorder).lineLimit(1...5)
                         .font(churchFontEnabled ? .custom("Ponomar-Regular", size: 17) : .body)
@@ -614,7 +619,7 @@ struct ChatView: View {
     /// firstUnreadMsgId can read readAckSent — see that field's own doc comment.
     /// Must run BEFORE markChatRead(), which is what clears the state being snapshotted.
     private func loadChat() {
-        let real = store.messages(for: contact.cellId)
+        let real = store.visibleMessages(for: contact.cellId)
         firstUnreadMsgId = real.first(where: { !$0.fromMe && !$0.readAckSent })?.msgId
         unseenReactionMsgIds = Set(store.unseenReactionMsgIds(for: contact.cellId))
         // Before snapshotting cachedMessages — see this method's own doc comment for why
@@ -750,6 +755,13 @@ struct ChatView: View {
     private func sendPickedVideo(_ item: PhotosPickerItem) async {
         isPreparingVideo = true
         defer { isPreparingVideo = false }
+        // Picking + re-encoding takes tens of seconds for a long clip; a few more to finish if
+        // the user leaves the app meanwhile (an export cut off there used to end in a false
+        // "Максимальный размер" alert — device test 2026-11-04).
+        let bgTask = AppStore.BackgroundTaskBox()
+        bgTask.id = UIApplication.shared.beginBackgroundTask(withName: "nevod-video-prepare") { bgTask.end() }
+        defer { bgTask.end() }
+        let pickStart = Date()
         let picked: PickedMovie
         do {
             guard let p = try await item.loadTransferable(type: PickedMovie.self) else {
@@ -765,6 +777,8 @@ struct ChatView: View {
             return
         }
         defer { try? FileManager.default.removeItem(at: picked.url) }
+        let pickedSize = (try? picked.url.resourceValues(forKeys: [.fileSizeKey]))?.fileSize ?? 0
+        nlog("video picked ext=\(picked.url.pathExtension) size=\(pickedSize / 1024)KB in \(String(format: "%.1f", Date().timeIntervalSince(pickStart)))s")
         guard let out = await compressVideo(picked.url) else {
             errorMsg = String(localized: "Не удалось сжать видео")
             return
@@ -782,17 +796,41 @@ struct ChatView: View {
         catch { errorMsg = String(localized: "Сообщение не отправлено") }
     }
 
-    /// Tries 720p first; if that still doesn't fit the limit (a long clip), falls back to
-    /// MediumQuality (~360p, much lower bitrate) rather than refusing outright. Returns the
-    /// last successful attempt either way — the caller does the final size check. Each
-    /// attempt gets its own tmp subfolder so the file itself can carry a readable name.
+    /// One encode, not two: the export session's own size estimate picks the first preset
+    /// that fits — 720p, else MediumQuality (~360p, much lower bitrate). Before, 720p was
+    /// always encoded first and thrown away whenever it didn't fit (a 4-minute clip: 12 s for
+    /// 316 MB of 720p, then 12 s more for 27 MB — device logs 2026-11-05/06). If the estimate
+    /// was off and the result still doesn't fit, the next preset is tried as before; the
+    /// caller does the final size check. Nil if an export fails (e.g. cut off in the
+    /// background) — never an earlier, oversized attempt. Each attempt gets its own tmp
+    /// subfolder so the file itself can carry a readable name.
     private func compressVideo(_ src: URL) async -> URL? {
         let asset = AVURLAsset(url: src)
         let fmt = DateFormatter()
         fmt.dateFormat = "yyyy-MM-dd_HH-mm-ss"
         let name = "video_\(fmt.string(from: Date())).mp4"
+        let presets = [AVAssetExportPreset1280x720, AVAssetExportPresetMediumQuality]
+        let fitBytes = Int64(Double(maxFileSizeBytes) * 0.9)   // estimates run a little low
+        // The estimate needs an explicit time range (it can come back 0 without one).
+        let duration = (try? await asset.load(.duration)) ?? .invalid
+        var first = 0
+        while first < presets.count - 1, duration.isValid,
+              let probe = AVAssetExportSession(asset: asset, presetName: presets[first]) {
+            probe.outputFileType = .mp4
+            probe.timeRange = CMTimeRange(start: .zero, duration: duration)
+            // Completion-handler form: the async overload isn't in the Xcode Cloud SDK.
+            let est: Int64 = await withCheckedContinuation { cont in
+                probe.estimateOutputFileLength { length, error in
+                    cont.resume(returning: error == nil ? length : 0)
+                }
+            }
+            guard est > 0 else { break }
+            nlog("video estimate preset=\(presets[first]) est=\(est / 1024)KB")
+            if est <= fitBytes { break }
+            first += 1
+        }
         var result: URL? = nil
-        for preset in [AVAssetExportPreset1280x720, AVAssetExportPresetMediumQuality] {
+        for preset in presets[first...] {
             guard let session = AVAssetExportSession(asset: asset, presetName: preset) else { continue }
             let dir = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
             try? FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
@@ -800,16 +838,18 @@ struct ChatView: View {
             session.outputURL = out
             session.outputFileType = .mp4
             session.shouldOptimizeForNetworkUse = true
+            let started = Date()
             await session.export()
             guard session.status == .completed else {
                 nlog("video export failed preset=\(preset) err=\(session.error?.localizedDescription ?? "nil")")
                 try? FileManager.default.removeItem(at: dir)
-                continue
+                if let prev = result { try? FileManager.default.removeItem(at: prev.deletingLastPathComponent()) }
+                return nil
             }
             if let prev = result { try? FileManager.default.removeItem(at: prev.deletingLastPathComponent()) }
             result = out
             let size = (try? out.resourceValues(forKeys: [.fileSizeKey]))?.fileSize ?? 0
-            nlog("video export preset=\(preset) size=\(size / 1024)KB")
+            nlog("video export preset=\(preset) size=\(size / 1024)KB in \(String(format: "%.1f", Date().timeIntervalSince(started)))s")
             if size <= maxFileSizeBytes { break }
         }
         return result
@@ -1385,7 +1425,7 @@ struct MessageBubble: View {
 
     @ViewBuilder private var statusIcon: some View {
         switch message.status {
-        case .sent:
+        case .sent, .accepted:
             if let p = progress {
                 ProgressView(value: p).frame(width: 28).tint(.secondary)
             } else {

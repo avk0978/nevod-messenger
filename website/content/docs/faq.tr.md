@@ -72,4 +72,6 @@ Anahtarın eksiksiz kopyalandığını ve sağlayıcının sitesinde iptal edilm
 
 **Profil → Tanılama** — ne olduğunu ve yaklaşık ne zaman olduğunu yazın (örneğin, "3 fotoğraftan 2'si gelmedi, saat 21:00 civarı") ve **Geliştiricilere gönder**'e dokunun. Açıklamanızla birlikte uygulamanın teknik günlüğü de gider: yalnızca telefonda saklanır ve mesaj metni içermez. Günlük e-postayla support@nevod.network adresine gider; telefonda e-posta hesabı kurulu değilse Nevod'da düğümünüzün yöneticisine gider; yanıt onunla sohbete gelir.
 
+Bir sorunu yeniden oluşturmadan önce günlüğü temizleyebilirsiniz: **Profil → Tanılama → Günlüğü temizle** — böylece içinde yalnızca gerekli kayıtlar olur.
+
 Bir kişiyi veya mesajı şikâyet etmek için — bkz. [Güvenlik](../security/), "Engelleme ve şikâyet".

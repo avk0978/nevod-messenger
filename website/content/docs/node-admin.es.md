@@ -16,9 +16,12 @@ La lista de todas las celdas (usuarios y bots) registradas en el nodo.
 |---|---|
 | Nombre | Tu propia etiqueta para esta celda: solo la ves tú, en el panel. Escríbela y pulsa ✓ o Enter. No cambia el nombre que eligió el usuario. |
 | `cell_id` | El identificador de la celda. El completo, en la información emergente. |
+| Idioma | El idioma del teléfono del usuario: escríbele en él. «Magyar → English»: Nevod no tiene este idioma, la persona ve la app en inglés; escribe en inglés. «—»: app anterior a 1.3. |
 | Estado | En línea o desconectado: si la app está conectada ahora. |
-| Búfer | Cuántos mensajes esperan a que el usuario se conecte (se guardan hasta 72 horas). |
+| Búfer | Lo que espera a que el usuario se conecte (se guarda hasta 72 horas): **msg**, mensajes y partes de archivos; **de servicio**, marcas de «entregado/leído», reacciones y señales. Lo de servicio llega cuando la persona abre la app. |
 | Registro | Cuándo se registró la celda. |
+
+Debajo de la tabla, **Idiomas de los miembros**: cuántas personas usan cada idioma, incluidos los que Nevod aún no tiene. Muestra qué idiomas hacen más falta.
 
 Botones:
 

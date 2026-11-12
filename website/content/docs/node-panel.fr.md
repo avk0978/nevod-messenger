@@ -11,7 +11,7 @@ La langue du panneau se change dans son en-tête. La description détaillée de 
 | **Aperçu** | Les cellules (utilisateurs) inscrites sur le nœud. |
 | **Paramètres** | Nom du nœud, mode d'admission, visibilité. |
 | **Demandes d'adhésion** | Les demandes des utilisateurs, si le nœud fonctionne en mode approbation. |
-| **Messages** | Les messages des utilisateurs à l'administrateur du nœud : signalements, questions. Vous pouvez répondre directement d'ici. |
+| **Messages** | Les messages des utilisateurs à l'administrateur du nœud : signalements, questions. Vous pouvez répondre directement d'ici ou écrire en premier à un membre : bouton **écrire** à côté de lui dans **Aperçu**. |
 | **Invitations** | Les codes d'invitation pour les utilisateurs. |
 | **Nœuds** | La connexion au réseau Nevod et les autres nœuds que connaît votre nœud. |
 | **Publication**, **Bots IA** | Les bots et canaux que le nœud montre à ses utilisateurs. |

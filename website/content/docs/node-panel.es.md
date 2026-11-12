@@ -11,7 +11,7 @@ El idioma del panel se cambia en su cabecera. La descripción detallada de cada 
 | **Resumen** | Las celdas (usuarios) registradas en el nodo. |
 | **Ajustes** | Nombre del nodo, modo de admisión, visibilidad. |
 | **Solicitudes de acceso** | Las solicitudes de los usuarios, si el nodo funciona en modo de aprobación. |
-| **Buzón** | Mensajes de los usuarios al administrador del nodo: denuncias, preguntas. Puedes responder desde aquí. |
+| **Buzón** | Mensajes de los usuarios al administrador del nodo: denuncias, preguntas. Puedes responder desde aquí o escribir primero a un miembro: botón **escribir** junto a él en **Resumen**. |
 | **Invitaciones** | Códigos de invitación para usuarios. |
 | **Nodos** | Conexión a la red Nevod y los demás nodos que conoce tu nodo. |
 | **Publicación**, **Bots de IA** | Los bots y canales que el nodo muestra a sus usuarios. |

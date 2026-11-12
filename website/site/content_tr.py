@@ -305,7 +305,7 @@ SUPPORT = """
 PRIVACY = """
 <main class="legal"><div class="wrap">
 <h1>Gizlilik Politikası</h1>
-<p>17 Ekim 2026 tarihli sürüm. Nevod, Kolpakov Andrey tarafından geliştirilmektedir. Verilerle ilgili sorular: <a href="mailto:privacy@nevod.network">privacy@nevod.network</a>.</p>
+<p>7 Kasım 2026 tarihli sürüm. Nevod, Kolpakov Andrey tarafından geliştirilmektedir. Verilerle ilgili sorular: <a href="mailto:privacy@nevod.network">privacy@nevod.network</a>.</p>
 <h2>1. Temel noktalar</h2>
 <p>Nevod, Zero Knowledge Infrastructure ilkesine göre inşa edilmiştir. Mesajlarınızın, fotoğraflarınızın, videolarınızın, sesli mesajlarınızın, dosyalarınızın ve aramalarınızın içeriği uçtan uca şifrelidir ve anahtarlar cihazınızı asla terk etmez. Ne ağ düğümleri ne de geliştirici içeriği okuyabilir. Tek istisna, yapay zekâ botlarına kendi yazdıklarınızdır; bkz. bölüm 5.</p>
 <h2>2. Cihazınızda neler saklanır</h2>
@@ -314,7 +314,7 @@ PRIVACY = """
 <h2>3. Bir düğüm neleri işler</h2>
 <ul>
 <li>Kimliğinizin tanımlayıcısı (cell ID) ve genel anahtarlarınız.</li>
-<li>Seçtiğiniz görünen ad.</li>
+<li>Seçtiğiniz görünen ad ve telefonunuzun dili (yalnızca dil, ülke değil) — düğüm işletmecisinin size kendi dilinizde yanıt verebilmesi ve uygulamaya hangi dillerin ekleneceğinin görülebilmesi için.</li>
 <li>Anlık bildirimler ve aramalar için cihaz belirteçleri.</li>
 <li>Teslim edilene kadar şifreli mesajlar: teslim edilmeyen mesajlar 72 saat sonra silinir.</li>
 <li>Bildirim ayarlarınız ve engellenen kullanıcılar listeniz.</li>

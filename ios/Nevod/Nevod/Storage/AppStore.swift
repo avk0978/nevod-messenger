@@ -57,6 +57,16 @@ final class AppStore: ObservableObject {
     @Published var strangerMediaOnTap = false {
         didSet { LocalDefaults.shared.set(strangerMediaOnTap, forKey: strangerMediaOnTapKey) }
     }
+    /// Profile → Чаты → «Показывать «Сообщение удалено»» (user request 2026-11-07). On (the
+    /// default, as before): a message deleted for everyone leaves the placeholder. Off: it
+    /// disappears from the chat, the chat list preview and the chat order without a trace.
+    /// Only the display changes — the soft-deleted row stays in the database either way.
+    @Published var showDeletedPlaceholder = true {
+        didSet {
+            LocalDefaults.shared.set(showDeletedPlaceholder, forKey: showDeletedPlaceholderKey)
+            messageSeq += 1   // open chat and chat list redraw with / without the placeholders
+        }
+    }
     /// Stranger photos/videos the user chose to show (tapped "Показать") — those stay shown.
     @Published private(set) var revealedMediaMsgIds: Set<String> = []
     @Published var selectedTab: MainTab? = .chats
@@ -129,6 +139,7 @@ final class AppStore: ObservableObject {
     private let blockedKey = "nevod.blockedCellIds"
     private let callsOnlyFromContactsKey = "nevod.callsOnlyFromContacts"
     private let strangerMediaOnTapKey = "nevod.strangerMediaOnTap"
+    private let showDeletedPlaceholderKey = "nevod.showDeletedPlaceholder"
     private let revealedMediaKey = "nevod.revealedMediaMsgIds"
     // Contacts that already have our current avatar (cleared when we set a new one) — see
     // sendOwnAvatarWhereMissing.
@@ -409,6 +420,48 @@ final class AppStore: ObservableObject {
     /// transfer id, so the receiver only adds the chunks it's missing (device logs 2026-10-20:
     /// a video stopped when the sender left the app and stayed failed until "Повторить").
     private var interruptedMedia: [String: (contact: Contact, attempts: Int)] = [:]
+    /// See resendUnconfirmed: when this session last started sending each message, and how
+    /// many times one still unconfirmed by our node was sent again.
+    private var transmitStartedAt: [String: Date] = [:]
+    private var unconfirmedResends: [String: Int] = [:]
+
+    /// Resume: which chunks of an outgoing transfer our node has confirmed holding
+    /// ("accepted" for a chunk id "u-r-<transfer>-<index>", node.py _ack_accepted). A
+    /// re-send after a drop sends only the rest (sendChunkedStream). Kept on disk so it
+    /// survives the app being killed in the background; dropped once the message itself is
+    /// confirmed or deleted.
+    private lazy var acceptedChunks: [String: Set<Int>] = {
+        let raw = LocalDefaults.shared.dictionary(forKey: acceptedChunksKey) as? [String: [Int]] ?? [:]
+        return raw.mapValues(Set.init)
+    }()
+    private let acceptedChunksKey = "nevod.acceptedChunks.v1"
+    private var acceptedChunksSaveTask: Task<Void, Never>?
+
+    /// Saved at most once a second — a 27 MB video is ~280 acks.
+    private func saveAcceptedChunksSoon() {
+        guard acceptedChunksSaveTask == nil else { return }
+        acceptedChunksSaveTask = Task { [weak self] in
+            try? await Task.sleep(nanoseconds: 1_000_000_000)
+            guard let self else { return }
+            self.acceptedChunksSaveTask = nil
+            LocalDefaults.shared.set(self.acceptedChunks.mapValues { Array($0) }, forKey: self.acceptedChunksKey)
+        }
+    }
+
+    private func forgetAcceptedChunks(_ transferId: String) {
+        guard acceptedChunks.removeValue(forKey: transferId) != nil else { return }
+        saveAcceptedChunksSoon()
+    }
+
+    /// "u-r-<transferId>-<index>" → records chunk index as held by the node.
+    private func recordAcceptedChunk(_ chunkId: String) {
+        let rest = chunkId.dropFirst(NevdClient.resumableChunkPrefix.count)
+        guard let dash = rest.lastIndex(of: "-"), let index = Int(rest[rest.index(after: dash)...]) else { return }
+        let transferId = String(rest[..<dash])
+        acceptedChunks[transferId, default: []].insert(index)
+        saveAcceptedChunksSoon()
+    }
+    private var resendCheckTask: Task<Void, Never>?
 
     private let modelContainer: ModelContainer
     private let modelContext: ModelContext
@@ -430,6 +483,7 @@ final class AppStore: ObservableObject {
         blockedCellIds = Set(LocalDefaults.shared.stringArray(forKey: blockedKey) ?? [])
         callsOnlyFromContacts = LocalDefaults.shared.bool(forKey: callsOnlyFromContactsKey)
         strangerMediaOnTap = LocalDefaults.shared.bool(forKey: strangerMediaOnTapKey)
+        showDeletedPlaceholder = (LocalDefaults.shared.object(forKey: showDeletedPlaceholderKey) as? Bool) ?? true
         revealedMediaMsgIds = Set(LocalDefaults.shared.stringArray(forKey: revealedMediaKey) ?? [])
         loadCallLog()
         if let id = IdentityStore.load() {
@@ -962,6 +1016,7 @@ final class AppStore: ObservableObject {
                     self?.flushPendingCallSignals()
                     self?.flushPendingReactions()
                     self?.resumeInterruptedMedia()
+                    self?.scheduleResendUnconfirmed()
                     self?.flushPendingBlockSync()
                     self?.sendOwnAvatarWhereMissing()
                     Task { await self?.fetchOfficialAccounts() }
@@ -1084,7 +1139,32 @@ final class AppStore: ObservableObject {
     // Maps messages to lightweight Sendable structs WITHOUT touching mediaData.
     // Delegates to the existing, tested messages(for:) fetch.
     func messageViewData(for chatId: String) -> [MessageViewData] {
-        messages(for: chatId).map { $0.toViewData() }
+        visibleMessages(for: chatId).map { $0.toViewData() }
+    }
+
+    /// messages(for:) minus "deleted for everyone" placeholders when the user turned them off
+    /// (showDeletedPlaceholder) — what the chat and the chat list actually show.
+    func visibleMessages(for chatId: String) -> [Message] {
+        let all = messages(for: chatId)
+        return showDeletedPlaceholder ? all : all.filter { !$0.isRemoved }
+    }
+
+    /// Time of the newest message the chat shows — the chat list's order (newest first, user
+    /// request 2026-11-07). Fetches only the tail, not the whole chat; filtering isRemoved in
+    /// Swift, not in the #Predicate (combined Bool predicates silently matched nothing on this
+    /// SwiftData version — see markChatRead).
+    func lastVisibleMessageDate(for chatId: String) -> Date? {
+        let tail = 50
+        var descriptor = FetchDescriptor<Message>(
+            predicate: #Predicate { $0.chatId == chatId },
+            sortBy: [SortDescriptor(\.timestamp, order: .reverse)]
+        )
+        descriptor.fetchLimit = showDeletedPlaceholder ? 1 : tail
+        let recent = (try? modelContext.fetch(descriptor)) ?? []
+        if showDeletedPlaceholder { return recent.first?.timestamp }
+        if let msg = recent.first(where: { !$0.isRemoved }) { return msg.timestamp }
+        guard recent.count == tail else { return nil }
+        return messages(for: chatId).last(where: { !$0.isRemoved })?.timestamp
     }
 
     // Fallback loader for legacy messages that still have mediaData in SwiftData.
@@ -1615,6 +1695,40 @@ final class AppStore: ObservableObject {
     /// POSIXErrorCode(rawValue: 89): Operation canceled").
     @discardableResult
     private func transmit(msgId: String, to contact: Contact) async -> Bool {
+        queuedSends.insert(msgId)
+        defer { queuedSends.remove(msgId) }
+        return await inChatOrder(contact.cellId) { [weak self] in
+            await self?.transmitNow(msgId: msgId, to: contact) ?? false
+        }
+    }
+
+    /// msgIds waiting in (or running from) a chat's send line — resendUnconfirmed leaves them
+    /// alone: a caption queued behind a long video is still .sent with no answer, yet on its way.
+    private var queuedSends: Set<String> = []
+
+    /// Last queued send per chat — see inChatOrder.
+    private var sendTails: [String: (token: UUID, task: Task<Void, Never>)] = [:]
+
+    /// Runs one chat's sends strictly one after another, in the order they were started: a
+    /// caption or voice comment sent right after a video goes out after the video's last chunk,
+    /// not in between (device test 2026-11-06: the text written 1.5 s after the video reached
+    /// the node 3 s before the video's end, so the receiver saw the caption first). Only the
+    /// same chat waits; other chats and call signals don't (user decision 2026-11-06: only
+    /// calls jump ahead, everything else keeps the order it was sent in).
+    private func inChatOrder(_ chatId: String, _ body: @escaping @MainActor () async -> Bool) async -> Bool {
+        let prev = sendTails[chatId]?.task
+        let token = UUID()
+        let task = Task { @MainActor () -> Bool in
+            await prev?.value
+            return await body()
+        }
+        sendTails[chatId] = (token, Task { _ = await task.value })
+        let ok = await task.value
+        if sendTails[chatId]?.token == token { sendTails.removeValue(forKey: chatId) }
+        return ok
+    }
+
+    private func transmitNow(msgId: String, to contact: Contact) async -> Bool {
         let descriptor = FetchDescriptor<Message>(predicate: #Predicate { $0.msgId == msgId })
         guard let msg = (try? modelContext.fetch(descriptor))?.first else { return false }
         // Copied out before the first await — the row itself isn't touched across suspensions.
@@ -1625,6 +1739,7 @@ final class AppStore: ObservableObject {
             markFailed(msgId: msgId, chatId: contact.cellId)
             return false
         }
+        transmitStartedAt[msgId] = Date()
         do {
             if type == .text {
                 var wireText = churchFont ? "slavonic:\n\(text)" : text
@@ -1718,6 +1833,50 @@ final class AppStore: ObservableObject {
         }
     }
 
+    /// A few seconds after "connected": by then the node has flushed what it kept for us
+    /// while we were away, the "accepted" acks for our own messages included.
+    private func scheduleResendUnconfirmed() {
+        resendCheckTask?.cancel()
+        resendCheckTask = Task { [weak self] in
+            try? await Task.sleep(nanoseconds: 5_000_000_000)
+            guard !Task.isCancelled else { return }
+            self?.resendUnconfirmed()
+        }
+    }
+
+    /// Our own messages still at .sent — nothing at all from the node about them: no
+    /// "accepted" (node.py _ack_accepted), no "offline", no receipt — are sent again, same
+    /// msgId. "Sent" only meant the bytes reached this phone's TCP buffer: device test
+    /// 2026-11-04, iOS suspended the app 3 s after it went to the background, a video's last
+    /// two chunks died with the connection, and with no error to react to the message stayed
+    /// on "sent" forever. The receiver drops what it already has (a text by msgId, a file's
+    /// chunks by index). Skipped: anything this session started sending less than 30 s ago
+    /// (still going, or its ack is on the way), messages older than a day, and a message
+    /// already re-sent 3 times this session — a home node from before "accepted" never
+    /// sends it, and must not get the same message on every reconnect.
+    private func resendUnconfirmed() {
+        guard client?.isConnected == true else { return }
+        let sentRaw = Message.MessageStatus.sent.rawValue
+        let cutoff = Date().addingTimeInterval(-24 * 3600)
+        let descriptor = FetchDescriptor<Message>(predicate: #Predicate {
+            $0.fromMe && $0.statusRaw == sentRaw && $0.timestamp > cutoff && !$0.isRemoved
+        })
+        guard let msgs = try? modelContext.fetch(descriptor), !msgs.isEmpty else { return }
+        let now = Date()
+        for msg in msgs {
+            let msgId = msg.msgId
+            if let started = transmitStartedAt[msgId], now.timeIntervalSince(started) < 30 { continue }
+            if messageProgress[msgId] != nil || queuedSends.contains(msgId) { continue }
+            let resends = unconfirmedResends[msgId, default: 0]
+            guard resends < 3 else { continue }
+            guard let contact = resolveContact(cellId: msg.chatId) else { continue }
+            unconfirmedResends[msgId] = resends + 1
+            nlog("resend unconfirmed msgId=\(msgId.prefix(8)) type=\(msg.type.rawValue) "
+                 + "age=\(Int(now.timeIntervalSince(msg.timestamp)))s resend=\(resends + 1)")
+            Task { await transmit(msgId: msgId, to: contact) }
+        }
+    }
+
     private func flushPendingReactions() {
         guard !pendingReactions.isEmpty, let c = client, c.isConnected else { return }
         let queued = pendingReactions
@@ -1759,7 +1918,7 @@ final class AppStore: ObservableObject {
         receiveBackgroundTask.end()
     }
 
-    private final class BackgroundTaskBox {
+    final class BackgroundTaskBox {
         var id = UIBackgroundTaskIdentifier.invalid
         @MainActor func end() {
             guard id != .invalid else { return }
@@ -1932,15 +2091,26 @@ final class AppStore: ObservableObject {
         messageProgress[msgId] = 0.0
         defer { messageProgress.removeValue(forKey: msgId) }
 
+        // Resume: chunks our node already confirmed are skipped (fixed chunk ids, see
+        // acceptedChunks). The last one always goes — it's the message itself.
+        let held = acceptedChunks[transferId] ?? []
+        if !held.isEmpty {
+            let firstMissing = (0..<totalChunks).first { !held.contains($0) } ?? totalChunks
+            nlog("resume tid=\(transferId.prefix(8)) from chunk \(firstMissing) — \(held.count)/\(totalChunks) already at node")
+        }
+        func chunkId(_ i: Int) -> String { "\(NevdClient.resumableChunkPrefix)\(transferId)-\(i)" }
+
         // Chunk 0: metadata only, signals streaming format to receiver. headerTag is "stream"
         // for a normal chat media message, "avatar" for setOwnAvatar's broadcast — same framing
         // otherwise, see receiveChunk's header-chunk branch for the receiving side.
         let safeName = name.flatMap { $0.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) } ?? ""
         let headerBody = safeName.isEmpty ? "\(headerTag):\(mime)" : "\(headerTag):\(mime);name=\(safeName)"
-        try await c.send(toCellId: contact.cellId, toNodeId: contact.nodeId ?? c.nodeId,
-                         recipientEncPub: contact.encPub,
-                         text: "chunk:\(transferId):0/\(totalChunks)/\(rawChunkSize)\n\(headerBody)",
-                         type: "msg_chunk", fileData: true)
+        if !held.contains(0) {
+            try await c.send(toCellId: contact.cellId, toNodeId: contact.nodeId ?? c.nodeId,
+                             recipientEncPub: contact.encPub,
+                             text: "chunk:\(transferId):0/\(totalChunks)/\(rawChunkSize)\n\(headerBody)",
+                             id: chunkId(0), type: "msg_chunk", fileData: true)
+        }
 
         // Data chunks: read rawChunkSize bytes at a time off MainActor, encode, send. The file is
         // opened once for the whole transfer: media files are protected "complete unless
@@ -1950,6 +2120,10 @@ final class AppStore: ObservableObject {
         defer { reader.close() }
         var sentBytes = 0
         for i in 1...dataChunks {
+            if i < dataChunks, held.contains(i) {
+                sentBytes += rawChunkSize
+                continue
+            }
             let offset = UInt64(i - 1) * UInt64(rawChunkSize)
             let rcs = rawChunkSize
             let (raw, b64): (Data, String) = await Task.detached(priority: .userInitiated) {
@@ -1968,7 +2142,7 @@ final class AppStore: ObservableObject {
             try await c.send(toCellId: contact.cellId, toNodeId: contact.nodeId ?? c.nodeId,
                              recipientEncPub: contact.encPub,
                              text: "chunk:\(transferId):\(i)/\(totalChunks)/\(rawChunkSize)\n\(b64)",
-                             id: isLast ? msgId : nil,
+                             id: isLast ? msgId : chunkId(i),
                              type: pushable ? "msg" : "msg_chunk", fileData: true)
 
             sentBytes += raw.count
@@ -1988,6 +2162,7 @@ final class AppStore: ObservableObject {
         if let file = message.mediaFile {
             try? FileManager.default.removeItem(at: mediaDirectory.appendingPathComponent(file))
         }
+        forgetAcceptedChunks(message.msgId)
         modelContext.delete(message)
         try? modelContext.save()
         if !hasMessages(for: chatId) { chatIds.remove(chatId); saveChatIds() }
@@ -2001,6 +2176,7 @@ final class AppStore: ObservableObject {
             if let file = msg.mediaFile {
                 try? FileManager.default.removeItem(at: mediaDirectory.appendingPathComponent(file))
             }
+            forgetAcceptedChunks(msgId)
             modelContext.delete(msg)
             try? modelContext.save()
         }
@@ -2165,11 +2341,17 @@ final class AppStore: ObservableObject {
     // references. Only ever moves status forward (see MessageStatus.rank) — a reordered or
     // duplicate ack can't undo further progress the message has already made.
     private func handleAck(msgId: String, status: String) {
+        if status == "accepted", msgId.hasPrefix(NevdClient.resumableChunkPrefix) {
+            return recordAcceptedChunk(msgId)
+        }
         // Ack for a chunk/msg_silent packet — no message row behind it by design.
         if msgId.hasPrefix(NevdClient.untrackedIdPrefix) { return }
+        // The whole message is with the node (or further): its chunk list isn't needed any more.
+        if status != "failed" { forgetAcceptedChunks(msgId) }
         nlog("handleAck recv msgId=\(msgId.prefix(8)) status=\(status)")
         let newStatus: Message.MessageStatus
         switch status {
+        case "accepted":  newStatus = .accepted
         case "offline":   newStatus = .offline
         case "delivered": newStatus = .delivered
         case "read":      newStatus = .read
@@ -2332,7 +2514,15 @@ final class AppStore: ObservableObject {
         for msg in unread {
             msg.readAckSent = true
             nlog("markChatRead sending read-ack msgId=\(msg.msgId.prefix(8)) toNodeId=\(targetNodeId.prefix(16))")
-            c.sendReadReceipt(msgId: msg.msgId, toCellId: chatId, toNodeId: targetNodeId)
+            // The flag is set before the send so a second markChatRead right after doesn't
+            // double-send; it is cleared again if the write fails (socket died a moment ago),
+            // so the next markChatRead after reconnecting sends the receipt again.
+            c.sendReadReceipt(msgId: msg.msgId, toCellId: chatId, toNodeId: targetNodeId) { [weak self, weak msg] ok in
+                guard !ok, let self, let msg else { return }
+                msg.readAckSent = false
+                nlog("markChatRead read-ack FAILED, will retry msgId=\(msg.msgId.prefix(8))")
+                try? self.modelContext.save()
+            }
         }
         try? modelContext.save()
     }

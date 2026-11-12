@@ -11,7 +11,7 @@ Panelin dili üst kısmından değiştirilir. Her sayfanın ve ayarın ayrıntı
 | **Genel bakış** | Düğüme kayıtlı hücreler (kullanıcılar). |
 | **Ayarlar** | Düğüm adı, kabul modu, görünürlük. |
 | **Katılım istekleri** | Düğüm onay modunda çalışıyorsa kullanıcıların istekleri. |
-| **Gelen kutusu** | Kullanıcıların düğüm yöneticisine mesajları — şikâyetler, sorular. Doğrudan buradan yanıt verebilirsiniz. |
+| **Gelen kutusu** | Kullanıcıların düğüm yöneticisine mesajları — şikâyetler, sorular. Doğrudan buradan yanıt verebilir ya da bir üyeye ilk siz yazabilirsiniz: **Genel bakış**’ta yanındaki **yaz** düğmesi. |
 | **Davetler** | Kullanıcılar için davet kodları. |
 | **Düğümler** | Nevod ağına katılmak ve düğümünüzün bildiği diğer düğümler. |
 | **Yayınlama**, **Yapay zekâ botları** | Düğümün kullanıcılarına gösterdiği botlar ve kanallar. |

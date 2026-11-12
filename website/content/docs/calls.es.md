@@ -31,6 +31,8 @@ Una llamada entrante aparece en la pantalla de llamada normal del iPhone, igual 
 
 Arriba en la pantalla se ve cómo va la conexión —**Llamando…**, **Conectando…**— y, cuando empieza la conversación, la calidad: **Buena**, **Regular** o **Mala**.
 
+También puedes silenciar el micrófono en la pantalla de llamada del iPhone (por ejemplo, con el teléfono bloqueado): ese botón y el de Nevod funcionan juntos. Si durante una llamada de Nevod entra una llamada telefónica normal, el iPhone ofrece finalizar la llamada de Nevod y responder, o rechazar la entrante: una llamada de Nevod no se puede poner en espera.
+
 Una videollamada empieza como una llamada normal: llama y, cuando la otra persona conteste, toca **Vídeo**.
 
 **Durante una llamada, la transferencia de archivos se pausa** para que la llamada no se resienta, y se reanuda después.

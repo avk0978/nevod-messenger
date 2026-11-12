@@ -49,7 +49,7 @@ Some nodes admit people by request: the app then shows **Waiting for approval** 
 
 | Tab | What's there |
 |---|---|
-| **Chats** | Your conversations. |
+| **Chats** | Your conversations; those with the newest messages are on top. |
 | **Calls** | Call history. |
 | **Contacts** | The people you talk to; this is also where **Add Contact** is. |
 | **Nodes** | Explore Network: nodes, their bots and pages; closed nodes are marked with a lock. |

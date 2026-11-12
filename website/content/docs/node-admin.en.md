@@ -16,9 +16,12 @@ A list of all cells (users and bots) registered on the node.
 |---|---|
 | Name | Your own label for this cell — only you see it, in the panel. Type it and press ✓ or Enter. It doesn't change the name the user chose. |
 | `cell_id` | The cell's identifier. The full one is in the tooltip. |
+| Language | The user’s phone language — write to them in it. “Magyar → English”: Nevod doesn’t have this language, the person sees the app in English — write in English. “—”: app older than 1.3. |
 | Status | Online or offline — whether the app is connected right now. |
-| Buffer | How many messages are waiting for the user to come online (kept up to 72 hours). |
+| Buffer | What is waiting for the user to come online (kept up to 72 hours): **msg** — messages and file parts, **service** — “delivered/read” marks, reactions and signals. Service items arrive when the person opens the app. |
 | Registration | When the cell registered. |
+
+Below the table — **Members’ languages**: how many people use each language, including languages Nevod doesn’t have yet. It shows which languages are needed most.
 
 Buttons:
 

@@ -37,7 +37,9 @@ Göndermeden önce ne olur:
 
 Tek bir ekin en büyük boyutu **50 MB**'tır. Daha büyük bir dosyayı uygulama göndermez ve bunu size söyler. "Dosya" olarak gönderilen video sıkıştırılmaz — uzun klipler için "Fotoğraf veya video"yu seçin.
 
-Büyük bir dosya parçalar hâlinde gönderilir ve ilerlemeyi mesajın altında görürsünüz. Bağlantı koparsa gönderim yeniden bağlandıktan sonra kendiliğinden devam eder. **Arama sırasında dosya aktarımı duraklatılır**, böylece arama aksamaz; aramadan sonra devam eder.
+Büyük bir dosya parçalar hâlinde gönderilir ve ilerlemeyi mesajın altında görürsünüz. Bağlantı koparsa veya uygulama kapanırsa gönderim yeniden bağlandıktan sonra kendiliğinden devam eder — baştan değil, kaldığı yerden. **Arama sırasında dosya aktarımı duraklatılır**, böylece arama aksamaz; aramadan sonra devam eder.
+
+Sohbetteki mesajlar gönderdiğiniz sırayla ulaşır: bir fotoğraf veya videodan sonra gönderilen açıklama ya da sesli yorum ondan sonra gelir.
 
 > Büyük bir dosya gönderilirken Nevod'u kapatmayın ve telefonu uzun süre kilitli bırakmayın: iOS arka plandaki bir uygulamayı bir süre sonra durdurur ve gönderim ancak Nevod'u yeniden açtığınızda devam eder.
 
@@ -58,6 +60,7 @@ Bir mesaja dokunup basılı tutun — bir menü açılır:
 | Eylem | Ne yapar |
 |---|---|
 | **Yanıtla** | bu mesajı alıntılayarak yanıt |
+| **Kopyala** | mesaj metnini kopyalamak — metin mesajları için |
 | **Paylaş** | metni kopyalamak, fotoğraf veya dosyayı kaydetmek, başka bir uygulamayla iletmek |
 | **Düzenle** | mesajınızın metnini düzeltmek — karşı tarafta da değişir |
 | **Benden sil** | mesajı yalnızca sizin telefonunuzda silmek |
@@ -67,6 +70,8 @@ Bir mesaja dokunup basılı tutun — bir menü açılır:
 "Düzenle" yalnızca kendi metin mesajlarınızda, "Herkesten sil" yalnızca kendi mesajlarınızda, "Şikâyet et" yalnızca başkalarının mesajlarında vardır.
 
 > "Herkesten sil" mesajı karşı tarafın uygulamasında siler. Ama o kişi mesajı okumuş, fotoğrafı kaydetmiş veya ekran görüntüsü almışsa silme bunu geri almaz.
+
+Herkesten silinen mesajların yerinde "Mesaj silindi" yazısını görmek istemiyorsanız **Profil → Sohbetler → "Mesaj silindi" göster** seçeneğini kapatın.
 
 ## Mesaj bildirimleri
 

@@ -305,7 +305,7 @@ SUPPORT = """
 PRIVACY = """
 <main class="legal"><div class="wrap">
 <h1>Informativa sulla privacy</h1>
-<p>Versione del 17 ottobre 2026. Nevod è sviluppato da Kolpakov Andrey. Domande sui dati: <a href="mailto:privacy@nevod.network">privacy@nevod.network</a>.</p>
+<p>Versione del 7 novembre 2026. Nevod è sviluppato da Kolpakov Andrey. Domande sui dati: <a href="mailto:privacy@nevod.network">privacy@nevod.network</a>.</p>
 <h2>1. In sintesi</h2>
 <p>Nevod è costruito secondo il principio della Zero Knowledge Infrastructure. Il contenuto di messaggi, foto, video, messaggi vocali, file e chiamate è cifrato end-to-end e le chiavi non lasciano mai il tuo dispositivo. Né i nodi della rete né lo sviluppatore possono leggere il contenuto. L'unica eccezione è ciò che scrivi tu stesso ai bot IA: vedi la sezione 5.</p>
 <h2>2. Cosa è conservato sul tuo dispositivo</h2>
@@ -314,7 +314,7 @@ PRIVACY = """
 <h2>3. Cosa elabora un nodo</h2>
 <ul>
 <li>L'identificativo della tua identità (cell ID) e le tue chiavi pubbliche.</li>
-<li>Il nome visualizzato che scegli.</li>
+<li>Il nome visualizzato che scegli e la lingua del tuo telefono (solo la lingua, non il paese), perché l’operatore del nodo possa risponderti nella tua lingua e per sapere quali lingue aggiungere all’app.</li>
 <li>Token del dispositivo per notifiche push e chiamate.</li>
 <li>Messaggi cifrati fino alla consegna: i messaggi non consegnati vengono eliminati dopo 72 ore.</li>
 <li>Le tue impostazioni di notifica e l'elenco degli utenti bloccati.</li>

@@ -18,6 +18,7 @@ import hmac
 import logging
 import os
 import random
+import re
 import time
 import uuid
 from typing import Optional, Callable, Awaitable
@@ -41,6 +42,23 @@ from . import blocklist as _blocklist
 from .relays import PROJECT_RELAY_NODE_IDS
 from .names import is_reserved_name, is_reserved_node_name, official_cell_ids, relayed_push_title
 from .limits import new_cells_limiter, open_node_joins_limiter
+
+# Chunk ids the sender can resume from — see Node._ack_accepted.
+RESUMABLE_CHUNK_PREFIX = "u-r-"
+
+# The app's own interface languages. A person whose phone language is another one reads the
+# app in English, so the administrator writes to them in English (the panel says so).
+CELL_LANGS = ("en", "uk", "ru", "de", "tr", "es", "it", "fr")
+_LANG_CODE = re.compile(r"^[a-z]{2,3}$")
+
+
+def cell_lang(value) -> str:
+    """cell_register's "lang" as stored: the phone's real language as an ISO 639 code
+    ("pl", "hu", "ru", …) — also outside CELL_LANGS, on purpose: it shows which languages
+    to add to the app first (user decision 2026-11-07). Anything that isn't such a code,
+    and no field at all (app before 1.3) → '' (unknown, shown as "—")."""
+    lang = str(value or "").strip().lower()
+    return lang if _LANG_CODE.match(lang) else ""
 
 log = logging.getLogger(__name__)
 
@@ -420,6 +438,7 @@ class Node:
             if t != T.MSG and self._is_service_address(pkt.to_addr):
                 return
             await self.router.route(pkt)
+            await self._ack_accepted(pkt, conn)
 
         elif t == T.VCALL_OFFER:
             # Nobody can ever answer a call to a server-side service cell.
@@ -756,6 +775,9 @@ class Node:
             is_home      = bool(data.get("is_home", True))
             invite_code  = data.get("invite_code", "")
             display_name = str(data.get("display_name", "")).strip()[:64]
+            # App 1.3+: the interface language, for the administrator (see CellEntry.lang).
+            # The real phone language, also outside the app's 8 (see cell_lang).
+            lang = cell_lang(data.get("lang"))
         except Exception:
             return
 
@@ -819,7 +841,7 @@ class Node:
             return
 
         is_new = await self.storage.register_cell(
-            cell_id, signing_pub, enc_pub, is_home, display_name)
+            cell_id, signing_pub, enc_pub, is_home, display_name, lang)
         await self.storage.update_presence(
             cell_id,
             home_node_id=self.identity.node_id,
@@ -1103,6 +1125,40 @@ class Node:
         routed to them that isn't consumed in-process would sit in message_buffer forever
         (see _is_registrar_address)."""
         return self._is_registrar_address(addr) or self._is_administrator_address(addr)
+
+    async def _ack_accepted(self, pkt: Packet, conn: PeerConnection):
+        """Tell the sending phone this node now holds its message ("accepted"), straight
+        down the connection it came on. Until then the phone can't know: a write that
+        "succeeded" there may only have reached its own TCP buffer — device test
+        2026-11-04: a video's last two chunks were lost when iOS suspended the app 3 s after
+        it was put in the background, and the message waited on "sent" forever. A phone that
+        sees no "accepted" sends the message again after reconnecting (same id, the
+        recipient drops what it already has). Only for a T.MSG from the sender's own
+        connection: that is a whole text message or a file's last chunk (chunk ids are
+        untracked "u-…"), and a packet relayed by another node was already accepted by the
+        sender's own node. Older apps ignore an ack status they don't know.
+
+        Also for a file chunk whose id is resumable ("u-r-<transfer>-<index>", from 1.3
+        (263)): the phone records which chunks this node holds and, after a drop, sends only
+        the missing ones instead of the whole file again (device tests 2026-11-05/06: one
+        27 MB video went out 2–3.5 times). A fixed id per chunk also lets the buffer's
+        primary key drop a chunk it already holds."""
+        if pkt.type == T.MSG_CHUNK:
+            if not pkt.id.startswith(RESUMABLE_CHUNK_PREFIX):
+                return
+        elif pkt.type != T.MSG or pkt.id.startswith("u-"):
+            return
+        sender_cell, _ = parse_addr(pkt.from_addr)
+        if not sender_cell or sender_cell != conn.peer_node_id:
+            return
+        ack = Packet(type=T.ACK,
+                     payload=encode_payload({"message_id": pkt.id, "status": "accepted"}),
+                     from_addr=pkt.to_addr, to_addr=pkt.from_addr)
+        try:
+            await self.transport.send_via(conn, ack)
+        except Exception as e:
+            # Lost with the connection — the phone then re-sends after reconnecting.
+            log.debug("accepted ack to %s not sent: %s", sender_cell[:8], e)
 
     async def _maybe_handle_administrator_msg(self, pkt: Packet) -> bool:
         """An appeal to this node's administrator: decrypted in-process, stored for the

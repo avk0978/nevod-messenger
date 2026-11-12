@@ -37,7 +37,9 @@ Qué pasa antes de enviar:
 
 El tamaño máximo de un adjunto es **50 MB**. La app no envía un archivo mayor y te lo dice. Un vídeo enviado como «Archivo» no se comprime: para clips largos elige «Foto o vídeo».
 
-Un archivo grande se envía por partes y ves el progreso bajo el mensaje. Si se corta la conexión, el envío continúa solo al reconectar. **Durante una llamada, la transferencia de archivos se pausa** para que la llamada no se resienta, y se reanuda después.
+Un archivo grande se envía por partes y ves el progreso bajo el mensaje. Si se corta la conexión o se cierra la app, el envío continúa solo al reconectar, desde donde se detuvo y no desde el principio. **Durante una llamada, la transferencia de archivos se pausa** para que la llamada no se resienta, y se reanuda después.
+
+Los mensajes de un chat llegan en el orden en que los enviaste: un pie de foto o un comentario de voz enviado después de una foto o un vídeo llega después.
 
 > Mientras se envía un archivo grande, no cierres Nevod ni dejes el teléfono bloqueado mucho tiempo: iOS detiene una app en segundo plano al cabo de un rato, y el envío solo continuará cuando vuelvas a abrir Nevod.
 
@@ -58,6 +60,7 @@ Mantén pulsado un mensaje y aparece un menú:
 | Acción | Qué hace |
 |---|---|
 | **Responder** | respuesta citando este mensaje |
+| **Copiar** | copiar el texto del mensaje — en los mensajes de texto |
 | **Compartir** | copiar el texto, guardar la foto o el archivo, reenviarlo con otra app |
 | **Editar** | corregir el texto de tu mensaje; también cambia para la otra persona |
 | **Eliminar para mí** | eliminar el mensaje solo en tu teléfono |
@@ -67,6 +70,8 @@ Mantén pulsado un mensaje y aparece un menú:
 «Editar» solo existe en tus propios mensajes de texto, «Eliminar para todos» solo en tus propios mensajes, «Denunciar» solo en los ajenos.
 
 > «Eliminar para todos» borra el mensaje en la app de la otra persona. Pero si ya lo leyó, guardó la foto o hizo una captura de pantalla, eliminarlo no lo deshace.
+
+Para no ver «Mensaje eliminado» en lugar de los mensajes eliminados para todos, desactiva **Perfil → Chats → Mostrar «Mensaje eliminado»**.
 
 ## Notificaciones de mensajes
 
